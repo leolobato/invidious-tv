@@ -11,7 +11,10 @@ final class AppModel {
     let settings: AppSettings
     let channelAvatars: ChannelAvatarCache
     let playlists = PlaylistStore()
+    let topShelf = TopShelfSnapshotStore(appGroup: Bundle.main.object(forInfoDictionaryKey: "InvidiousAppGroup") as? String ?? "")
     private let sessions: any SessionStore
+    /// Video requested through a deep link (Top Shelf), consumed by the tab view.
+    var pendingVideoID: String?
 
     private(set) var active: ActiveSession?
 
@@ -85,6 +88,27 @@ final class AppModel {
         if active?.profile.id == profile.id {
             active = nil
         }
+    }
+
+    /// Refreshes what the Top Shelf extension shows for the active profile.
+    func updateTopShelf(latest: [VideoSummary]) {
+        guard let session = active else { return }
+        let client = session.client
+        func item(_ video: VideoSummary, progress: Double?) -> TopShelfSnapshot.Item {
+            let thumbs = video.videoThumbnails
+            let thumb = thumbs.first { $0.quality == "maxresdefault" } ?? thumbs.first { $0.quality == "sddefault" } ?? thumbs.best(maxWidth: 1280)
+            return TopShelfSnapshot.Item(
+                videoID: video.videoId,
+                title: video.title,
+                subtitle: video.author,
+                imageURL: thumb.flatMap(client.url(for:)),
+                progress: progress
+            )
+        }
+        let continueWatching = resume.continueWatching(profile: session.profile.id, limit: 10)
+            .compactMap { entry in entry.video.map { item($0, progress: entry.progress) } }
+        let latestItems = latest.prefix(12).map { item($0, progress: nil) }
+        topShelf.save(TopShelfSnapshot(profileName: session.profile.name, continueWatching: continueWatching, latest: Array(latestItems)))
     }
 
     func hasSession(_ profile: Profile) -> Bool {

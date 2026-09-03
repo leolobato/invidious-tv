@@ -47,6 +47,7 @@ struct HomeView: View {
             .padding(.vertical, 30)
         }
         .task {
+            model.onLatestLoaded = { videos in app.updateTopShelf(latest: videos) }
             await model.load(force: false)
         }
         .refreshable {
@@ -106,6 +107,10 @@ final class HomeViewModel {
 
         if let page = await latestTask {
             latest = .loaded(page.videos)
+            onLatestLoaded?(page.videos)
         }
     }
+
+    /// Lets the app publish the latest uploads to the Top Shelf extension.
+    var onLatestLoaded: (([VideoSummary]) -> Void)?
 }

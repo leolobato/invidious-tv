@@ -74,6 +74,14 @@ struct MainTabView: View {
         .onChange(of: session.sessionExpired) { _, expired in
             showReauth = expired
         }
+        .task(id: app.pendingVideoID) {
+            guard let id = app.pendingVideoID else { return }
+            app.pendingVideoID = nil
+            if let details = try? await session.client.video(id: id) {
+                selectedTab = "home"
+                homePath.append(Route.video(details.summary))
+            }
+        }
         .fullScreenCover(isPresented: $showReauth) {
             LoginView(mode: .reauthenticate(session.profile))
         }
