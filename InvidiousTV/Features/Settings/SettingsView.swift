@@ -49,6 +49,10 @@ struct SettingsView: View {
                     }
                 }
                 Toggle("Autoplay next video", isOn: $settings.autoplayNext)
+                Toggle("Hide Shorts", isOn: $settings.hideShorts)
+                Text("Hides videos of 60 seconds or less and titles tagged #shorts. Invidious does not flag Shorts, so this is a best-effort guess.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 Toggle("Proxy media through instance", isOn: $settings.proxyMedia)
                 Text("Proxying routes video data through the Invidious server. Turn it off to stream directly from YouTube's servers when the instance is on a slow link.")
                     .font(.caption)

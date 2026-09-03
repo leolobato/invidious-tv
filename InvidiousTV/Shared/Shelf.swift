@@ -16,7 +16,7 @@ struct Shelf: View {
                 .padding(.horizontal, 60)
             ScrollView(.horizontal) {
                 LazyHStack(alignment: .top, spacing: 40) {
-                    ForEach(videos) { video in
+                    ForEach(app.settings.filtered(videos)) { video in
                         VideoCard(
                             video: video,
                             progress: progress(for: video),

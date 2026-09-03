@@ -39,6 +39,15 @@ final class AppSettings {
         didSet { defaults.set(sponsorBlockCategories.map(\.rawValue).sorted(), forKey: Keys.sponsorBlockCategories) }
     }
 
+    var hideShorts: Bool {
+        didSet { defaults.set(hideShorts, forKey: Keys.hideShorts) }
+    }
+
+    /// Applies the Hide Shorts preference to a list.
+    func filtered(_ videos: [VideoSummary]) -> [VideoSummary] {
+        hideShorts ? ShortsFilter.removingShorts(videos) : videos
+    }
+
     var autoplayNext: Bool {
         didSet { defaults.set(autoplayNext, forKey: Keys.autoplayNext) }
     }
@@ -59,6 +68,7 @@ final class AppSettings {
         let speed = defaults.double(forKey: Keys.defaultSpeed)
         defaultSpeed = speed > 0 ? speed : 1.0
         autoplayNext = defaults.object(forKey: Keys.autoplayNext) as? Bool ?? true
+        hideShorts = defaults.bool(forKey: Keys.hideShorts)
         sponsorBlockEnabled = defaults.object(forKey: Keys.sponsorBlockEnabled) as? Bool ?? true
         if let stored = defaults.stringArray(forKey: Keys.sponsorBlockCategories) {
             sponsorBlockCategories = Set(stored.compactMap(SponsorBlockCategory.init))
@@ -109,6 +119,7 @@ final class AppSettings {
         static let maxQuality = "settings.maxQuality"
         static let defaultSpeed = "settings.defaultSpeed"
         static let autoplayNext = "settings.autoplayNext"
+        static let hideShorts = "settings.hideShorts"
         static let sponsorBlockEnabled = "settings.sponsorBlockEnabled"
         static let sponsorBlockCategories = "settings.sponsorBlockCategories"
         static let channelSort = "settings.channelSort"
