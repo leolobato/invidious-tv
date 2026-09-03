@@ -66,10 +66,13 @@ struct ProfilePickerView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
         .onAppear {
+            focusedProfile = app.profiles.lastUsedProfileID ?? app.profiles.profiles.first?.id ?? Self.addID
+        }
+        .task {
+            if await app.performDebugAutoLoginIfRequested() { return }
             if app.profiles.profiles.isEmpty {
                 showLogin = true
             }
-            focusedProfile = app.profiles.lastUsedProfileID ?? app.profiles.profiles.first?.id ?? Self.addID
         }
         .fullScreenCover(isPresented: $showLogin) {
             LoginView(mode: .newProfile)

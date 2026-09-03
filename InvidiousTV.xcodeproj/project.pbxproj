@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0C1119DF007A60C47E483C83 /* ProfilePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = B078FCBFC6A40A5145D10E29 /* ProfilePalette.swift */; };
+		1C4A2BE22786E1FD91F72350 /* MPVRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5FB1035796E6D33DBFA91D /* MPVRenderView.swift */; };
+		1E0B48AA060452EF70342EB2 /* PlayerSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */; };
 		2EA5B28084531E767B1E21FB /* InvidiousTVApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */; };
 		3737FA79B24FB95DA45FFFF7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E1A303B7855C69321E233 /* HomeView.swift */; };
 		43DB51CEEBF74A4AC39704BE /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7275D870A74F19703C6A6736 /* AppModel.swift */; };
@@ -19,11 +21,13 @@
 		73597B0E04287A35F888118D /* VideoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68844913B0169C3FCF4A91C1 /* VideoGrid.swift */; };
 		7470318390685649CF66F5C2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9F36AB7B49131E70D6862B /* RootView.swift */; };
 		7B3731A7008B5DD692A8E350 /* ProfilePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */; };
+		7DC2D799EF27C502836A7DA7 /* MPVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E2FDD4DAEEA078C7F375F3 /* MPVPlayer.swift */; };
 		845459E62E36CC2F51D707BE /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 3BE4B9753C5D29D0A0F63B21 /* Nuke */; };
 		8650DE8194302058BDD41572 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8713894BE7019F63D8E1E66D /* MainTabView.swift */; };
 		8749FCFB41F22ED84CD5E953 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC672E222C1058987E82EE7F /* SettingsView.swift */; };
 		984090AE8959AF6D9AF93426 /* ChannelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98D550D4ECD1F9802FBDD3 /* ChannelDetailView.swift */; };
 		A95072BA0FCD38B3CFEB2CEC /* VideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863FFAA098129F3074C6DE37 /* VideoDetailView.swift */; };
+		AB76D1FA0B0C781192EAB166 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DFFFE63A737BDC96B93CFD /* PlayerViewModel.swift */; };
 		AE51EBD1FDE771057BD6B7BB /* InvidiousKit in Frameworks */ = {isa = PBXBuildFile; productRef = A94CC9FAFC34F272896CE8AC /* InvidiousKit */; };
 		B2A241EB4A16C24E3A3DCFAD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12045615266B24845E59CFE4 /* Assets.xcassets */; };
 		B5E50E8A19DB4AAB8C83486D /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B89EDEC8875AA4AD3E89FD /* Route.swift */; };
@@ -42,6 +46,9 @@
 		134C846C538998DADAE75A4A /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		1EA6DDFBF56A062D0BDE15BC /* VideoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCard.swift; sourceTree = "<group>"; };
 		2A8C0394AB994FAAED85589C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		2B5FB1035796E6D33DBFA91D /* MPVRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVRenderView.swift; sourceTree = "<group>"; };
+		2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSurfaceView.swift; sourceTree = "<group>"; };
+		37E2FDD4DAEEA078C7F375F3 /* MPVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVPlayer.swift; sourceTree = "<group>"; };
 		3C8E1A303B7855C69321E233 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePickerView.swift; sourceTree = "<group>"; };
 		4E9F36AB7B49131E70D6862B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -55,6 +62,7 @@
 		863FFAA098129F3074C6DE37 /* VideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailView.swift; sourceTree = "<group>"; };
 		8713894BE7019F63D8E1E66D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		895C0DADB95A1BAC8DD3A5BA /* ChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsView.swift; sourceTree = "<group>"; };
+		89DFFFE63A737BDC96B93CFD /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		90740D6F323332190A479E6E /* ChannelTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTile.swift; sourceTree = "<group>"; };
 		91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvidiousTVApp.swift; sourceTree = "<group>"; };
 		AEBBE3785A4EA8661B32116E /* ChannelAvatarCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarCache.swift; sourceTree = "<group>"; };
@@ -170,7 +178,11 @@
 		9579D142B3229259BD50553C /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				37E2FDD4DAEEA078C7F375F3 /* MPVPlayer.swift */,
+				2B5FB1035796E6D33DBFA91D /* MPVRenderView.swift */,
+				2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */,
 				F024D22BFD1F96C4086A2C69 /* PlayerView.swift */,
+				89DFFFE63A737BDC96B93CFD /* PlayerViewModel.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -327,8 +339,12 @@
 				3737FA79B24FB95DA45FFFF7 /* HomeView.swift in Sources */,
 				2EA5B28084531E767B1E21FB /* InvidiousTVApp.swift in Sources */,
 				64BE86F64B44F31FF62E0A31 /* LoginView.swift in Sources */,
+				7DC2D799EF27C502836A7DA7 /* MPVPlayer.swift in Sources */,
+				1C4A2BE22786E1FD91F72350 /* MPVRenderView.swift in Sources */,
 				8650DE8194302058BDD41572 /* MainTabView.swift in Sources */,
+				1E0B48AA060452EF70342EB2 /* PlayerSurfaceView.swift in Sources */,
 				EA5AF3F9A71B03020E94DC85 /* PlayerView.swift in Sources */,
+				AB76D1FA0B0C781192EAB166 /* PlayerViewModel.swift in Sources */,
 				0C1119DF007A60C47E483C83 /* ProfilePalette.swift in Sources */,
 				7B3731A7008B5DD692A8E350 /* ProfilePickerView.swift in Sources */,
 				E87F72F9697B9C72E64A8171 /* RemoteImage.swift in Sources */,

@@ -89,6 +89,39 @@ final class AppModel {
     func hasSession(_ profile: Profile) -> Bool {
         (try? sessions.sid(for: profile.id)) != nil
     }
+
+    /// Debug builds only: signs in from `INVIDIOUS_AUTOLOGIN_USER` / `INVIDIOUS_AUTOLOGIN_PASSWORD`
+    /// (and optionally `INVIDIOUS_AUTOLOGIN_INSTANCE`) so the simulator can skip the keyboard.
+    /// Returns true when a profile became active.
+    func performDebugAutoLoginIfRequested() async -> Bool {
+        #if DEBUG
+        let env = ProcessInfo.processInfo.environment
+        guard let user = env["INVIDIOUS_AUTOLOGIN_USER"], let password = env["INVIDIOUS_AUTOLOGIN_PASSWORD"] else {
+            return false
+        }
+        let instance = AppSettings.normalizedURL(from: env["INVIDIOUS_AUTOLOGIN_INSTANCE"] ?? settings.instanceURLString)
+        guard let instance else { return false }
+        if let existing = profiles.profiles.first(where: { $0.username == user && $0.instanceURL == instance }) {
+            if (try? activate(existing)) != nil { return true }
+            do {
+                try await reauthenticate(existing, password: password)
+                try activate(existing)
+                return true
+            } catch {
+                return false
+            }
+        }
+        do {
+            let profile = try await addProfile(name: "", username: user, password: password, instanceURL: instance)
+            try activate(profile)
+            return true
+        } catch {
+            return false
+        }
+        #else
+        return false
+        #endif
+    }
 }
 
 /// The signed-in profile plus its API client and account state.
