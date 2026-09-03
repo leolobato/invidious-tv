@@ -72,6 +72,14 @@ public final class InvidiousClient: Sendable {
         return StoryboardTrack.parse(webVTT: text, relativeTo: baseURL)
     }
 
+    // MARK: - Comments
+
+    public func comments(videoID: String, continuation: String? = nil) async throws -> CommentsPage {
+        var query: [String: String] = [:]
+        if let continuation { query["continuation"] = continuation }
+        return try await get("/api/v1/comments/\(videoID)", query: query)
+    }
+
     // MARK: - Search
 
     public func search(query: String, page: Int = 1, type: SearchType = .all) async throws -> [SearchItem] {

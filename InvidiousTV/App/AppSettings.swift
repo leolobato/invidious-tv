@@ -31,6 +31,14 @@ final class AppSettings {
         didSet { defaults.set(defaultSpeed, forKey: Keys.defaultSpeed) }
     }
 
+    var sponsorBlockEnabled: Bool {
+        didSet { defaults.set(sponsorBlockEnabled, forKey: Keys.sponsorBlockEnabled) }
+    }
+
+    var sponsorBlockCategories: Set<SponsorBlockCategory> {
+        didSet { defaults.set(sponsorBlockCategories.map(\.rawValue).sorted(), forKey: Keys.sponsorBlockCategories) }
+    }
+
     var autoplayNext: Bool {
         didSet { defaults.set(autoplayNext, forKey: Keys.autoplayNext) }
     }
@@ -51,6 +59,12 @@ final class AppSettings {
         let speed = defaults.double(forKey: Keys.defaultSpeed)
         defaultSpeed = speed > 0 ? speed : 1.0
         autoplayNext = defaults.object(forKey: Keys.autoplayNext) as? Bool ?? true
+        sponsorBlockEnabled = defaults.object(forKey: Keys.sponsorBlockEnabled) as? Bool ?? true
+        if let stored = defaults.stringArray(forKey: Keys.sponsorBlockCategories) {
+            sponsorBlockCategories = Set(stored.compactMap(SponsorBlockCategory.init))
+        } else {
+            sponsorBlockCategories = SponsorBlockCategory.defaults
+        }
         channelSort = defaults.string(forKey: Keys.channelSort).flatMap(ChannelSortOrder.init) ?? .nameAscending
         channelLayout = defaults.string(forKey: Keys.channelLayout).flatMap(ChannelLayout.init) ?? .grid
     }
@@ -95,6 +109,8 @@ final class AppSettings {
         static let maxQuality = "settings.maxQuality"
         static let defaultSpeed = "settings.defaultSpeed"
         static let autoplayNext = "settings.autoplayNext"
+        static let sponsorBlockEnabled = "settings.sponsorBlockEnabled"
+        static let sponsorBlockCategories = "settings.sponsorBlockCategories"
         static let channelSort = "settings.channelSort"
         static let channelLayout = "settings.channelLayout"
     }

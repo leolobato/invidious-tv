@@ -293,6 +293,24 @@ struct PlayerView: View {
                 autoplayOverlay(upNext)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+
+            if let notice = model.skipNotice {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Label(notice, systemImage: "forward.fill")
+                            .font(.callout.weight(.semibold))
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 10)
+                            .background(.black.opacity(0.75), in: Capsule())
+                            .padding(.leading, 80)
+                            .padding(.bottom, model.controlsVisible ? 200 : 80)
+                        Spacer()
+                    }
+                }
+                .transition(.opacity)
+                .animation(.easeInOut(duration: 0.2), value: model.skipNotice)
+            }
         }
         .animation(.easeInOut(duration: 0.25), value: upNext?.videoId)
         .animation(.easeInOut(duration: 0.2), value: model.controlsVisible)

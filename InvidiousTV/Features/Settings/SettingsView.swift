@@ -55,6 +55,23 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            Section("SponsorBlock") {
+                Toggle("Skip segments with SponsorBlock", isOn: $settings.sponsorBlockEnabled)
+                if settings.sponsorBlockEnabled {
+                    ForEach(SponsorBlockCategory.allCases) { category in
+                        Toggle(category.label, isOn: Binding(
+                            get: { settings.sponsorBlockCategories.contains(category) },
+                            set: { on in
+                                if on { settings.sponsorBlockCategories.insert(category) } else { settings.sponsorBlockCategories.remove(category) }
+                            }
+                        ))
+                    }
+                }
+                Text("Segments come from the community-run SponsorBlock database at sponsor.ajay.app.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Instance for new profiles") {
                 TextField("Instance URL", text: $instanceText)
                     .keyboardType(.URL)

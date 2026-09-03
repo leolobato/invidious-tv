@@ -25,6 +25,9 @@ struct VideoDetailView: View {
                     Shelf(title: "Up Next", videos: recommended)
                         .padding(.horizontal, -60)
                 }
+                if details.value != nil {
+                    CommentsSection(videoID: video.videoId)
+                }
             }
             .padding(60)
         }

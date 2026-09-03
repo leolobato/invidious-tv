@@ -1,7 +1,10 @@
 import Foundation
 import Observation
+import os
 import AVFoundation
 import InvidiousKit
+
+private let vmLog = Logger(subsystem: "org.lobato.invidioustv", category: "player")
 
 /// Drives one playback session: stream selection, MPV control, progress saving, scrubbing.
 @MainActor
@@ -39,6 +42,12 @@ final class PlayerViewModel {
     private(set) var scrubTarget: TimeInterval?
     private var scrubCommitTask: Task<Void, Never>?
     private(set) var storyboard: StoryboardTrack?
+
+    // SponsorBlock
+    private(set) var sponsorSegments: [SponsorSegment] = []
+    private(set) var skipNotice: String?
+    private var skippedSegmentIDs: Set<String> = []
+    private var skipNoticeTask: Task<Void, Never>?
 
     // Controls
     private(set) var controlsVisible = true
@@ -123,6 +132,7 @@ final class PlayerViewModel {
                 self.errorMessage = "The video renderer could not be started."
             }
             Task { await loadStoryboard() }
+            Task { await loadSponsorSegments() }
             startProgressTimer()
             scheduleHideControls()
         } catch {
@@ -218,6 +228,7 @@ final class PlayerViewModel {
             }
         case .timePosition(let time):
             currentTime = time
+            skipSponsorSegmentIfNeeded(at: time)
         case .duration(let value):
             if value > 0 { duration = value }
         case .paused(let paused):
@@ -370,6 +381,34 @@ final class PlayerViewModel {
             video: details.summary,
             profile: session.profile.id
         )
+    }
+
+    // MARK: - SponsorBlock
+
+    private func loadSponsorSegments() async {
+        guard settings.sponsorBlockEnabled, !details.liveNow else { return }
+        let client = SponsorBlockClient()
+        sponsorSegments = (try? await client.segments(videoID: details.videoId, categories: settings.sponsorBlockCategories)) ?? []
+        vmLog.info("sponsorblock: \(self.sponsorSegments.count) segments for \(self.details.videoId, privacy: .public)")
+    }
+
+    private func skipSponsorSegmentIfNeeded(at time: TimeInterval) {
+        guard !isScrubbing, !sponsorSegments.isEmpty else { return }
+        // Only skip when entering the segment near its start; a user who seeks into the middle stays.
+        guard let segment = sponsorSegments.first(where: { time >= $0.start && time < min($0.end, $0.start + 1.5) }),
+              !skippedSegmentIDs.contains(segment.id) else { return }
+        skippedSegmentIDs.insert(segment.id)
+        let target = min(segment.end, max(duration - 0.5, segment.end))
+        currentTime = target
+        player?.seek(to: target)
+        vmLog.info("sponsorblock: skipped \(segment.categoryLabel, privacy: .public) \(segment.start)-\(segment.end)")
+        skipNotice = "Skipped \(segment.categoryLabel)"
+        skipNoticeTask?.cancel()
+        skipNoticeTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            self?.skipNotice = nil
+        }
     }
 
     // MARK: - Storyboards
