@@ -47,6 +47,7 @@ prefix each with `SIMCTL_CHILD_`.
 | `INVIDIOUS_DEBUG_TAB` | `search`, `home`, `subscriptions`, `channels`, `library` or `settings`. |
 | `INVIDIOUS_DEBUG_SEARCH` | Query to prefill on the Search tab. |
 | `INVIDIOUS_DEBUG_FOCUS` | `rename` or `version` to focus a Settings row. |
+| `INVIDIOUS_DEBUG_COMMENTS` | Any value expands comments on video details. |
 | `INVIDIOUS_DEBUG_ROUTE` | `video:<id>`, `channel:<ucid>` or `playlist:<plid>`, pushed on the Home tab. |
 | `INVIDIOUS_AUTOPLAY_VIDEO` | Video ID to open directly in the player. |
 | `INVIDIOUS_DEBUG_REMOTE` | Scripted remote actions for the player, e.g. `8:select,3:down,1:pan:300,1:panEnd`. Actions: `select`, `playPause`, `left`, `right`, `up`, `down`, `menu`, `pan:<points>`, `panEnd`. |
