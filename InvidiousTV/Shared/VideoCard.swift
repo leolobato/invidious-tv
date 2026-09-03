@@ -58,7 +58,7 @@ struct VideoCard: View {
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
                             Rectangle().fill(.white.opacity(0.3))
-                            Rectangle().fill(Color.accentColor)
+                            Rectangle().fill(Color.red)
                                 .frame(width: geo.size.width * progress)
                         }
                     }

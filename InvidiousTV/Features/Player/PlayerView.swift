@@ -50,6 +50,11 @@ struct PlayerView: View {
         .onDisappear {
             model?.stop()
         }
+        #if DEBUG
+        .task {
+            await runDebugRemoteScript()
+        }
+        #endif
         .onChange(of: model?.finished ?? false) { _, finished in
             if finished { dismiss() }
         }
@@ -59,6 +64,35 @@ struct PlayerView: View {
             }
         }
     }
+
+    #if DEBUG
+    /// `INVIDIOUS_DEBUG_REMOTE="3:select,1:down,2:pan:200,1:panEnd"` replays remote actions after delays.
+    private func runDebugRemoteScript() async {
+        guard let script = ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_REMOTE"] else { return }
+        for step in script.split(separator: ",") {
+            let parts = step.split(separator: ":").map(String.init)
+            guard parts.count >= 2, let delay = Double(parts[0]) else { continue }
+            try? await Task.sleep(for: .seconds(delay))
+            guard let model else { return }
+            let action: PlayerSurfaceAction?
+            switch parts[1] {
+            case "select": action = .select
+            case "playPause": action = .playPause
+            case "left": action = .skipBackward
+            case "right": action = .skipForward
+            case "up": action = .up
+            case "down": action = .down
+            case "menu": action = .menu
+            case "pan": action = .panChanged(deltaX: CGFloat(Double(parts.count > 2 ? parts[2] : "0") ?? 0))
+            case "panEnd": action = .panEnded
+            default: action = nil
+            }
+            if let action {
+                handle(action, model: model, width: 1920)
+            }
+        }
+    }
+    #endif
 
     // MARK: - Remote handling
 
@@ -284,7 +318,7 @@ struct ProgressBarView: View {
                 let x = width * model.progress
                 ZStack(alignment: .leading) {
                     Capsule().fill(.white.opacity(0.3)).frame(height: 8)
-                    Capsule().fill(Color.accentColor).frame(width: x, height: 8)
+                    Capsule().fill(Color.red).frame(width: x, height: 8)
                     Circle()
                         .fill(.white)
                         .frame(width: model.isScrubbing ? 26 : 18, height: model.isScrubbing ? 26 : 18)
@@ -302,13 +336,13 @@ struct ProgressBarView: View {
             .frame(height: 26)
 
             HStack {
-                Text(VideoFormatting.duration(Int(model.displayTime)))
+                Text(VideoFormatting.clockTime(Int(model.displayTime)))
                 Spacer()
                 if model.details.liveNow {
                     Label("LIVE", systemImage: "dot.radiowaves.left.and.right")
                         .foregroundStyle(.red)
                 } else {
-                    Text("-" + VideoFormatting.duration(max(0, Int(model.duration - model.displayTime))))
+                    Text("-" + VideoFormatting.clockTime(max(0, Int(model.duration - model.displayTime))))
                 }
             }
             .font(.callout.monospacedDigit())
@@ -337,7 +371,7 @@ struct SeekPreviewView: View {
             }
             .frame(width: 320, height: 180)
             .overlay(RoundedRectangle(cornerRadius: 10).stroke(.white.opacity(0.7), lineWidth: 2))
-            Text(VideoFormatting.duration(Int(model.displayTime)))
+            Text(VideoFormatting.clockTime(Int(model.displayTime)))
                 .font(.callout.weight(.semibold).monospacedDigit())
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)

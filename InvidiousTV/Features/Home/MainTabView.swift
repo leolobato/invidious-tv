@@ -9,11 +9,12 @@ struct MainTabView: View {
     @State private var showReauth = false
     @State private var debugVideo: VideoDetails?
     @State private var selectedTab: String = ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_TAB"] ?? "home"
+    @State private var homePath = NavigationPath()
 
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab("Home", systemImage: "house", value: "home") {
-                NavigationStack {
+                NavigationStack(path: $homePath) {
                     HomeView(session: session)
                         .withRoutes()
                 }
@@ -42,6 +43,17 @@ struct MainTabView: View {
             #if DEBUG
             if let id = ProcessInfo.processInfo.environment["INVIDIOUS_AUTOPLAY_VIDEO"], debugVideo == nil {
                 debugVideo = try? await session.client.video(id: id, proxy: app.settings.proxyMedia)
+            }
+            // `INVIDIOUS_DEBUG_ROUTE=video:<id>` or `channel:<ucid>` opens that screen on the Home tab.
+            if let route = ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_ROUTE"] {
+                let parts = route.split(separator: ":", maxSplits: 1).map(String.init)
+                if parts.count == 2 {
+                    if parts[0] == "video", let details = try? await session.client.video(id: parts[1]) {
+                        homePath.append(Route.video(details.summary))
+                    } else if parts[0] == "channel" {
+                        homePath.append(Route.channel(id: parts[1], name: ""))
+                    }
+                }
             }
             #endif
         }

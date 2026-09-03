@@ -14,6 +14,11 @@ public enum VideoFormatting {
         return String(format: "%d:%02d", m, s)
     }
 
+    /// Like `duration`, but never empty: `0:00` for zero. For player clocks.
+    public static func clockTime(_ seconds: Int) -> String {
+        seconds > 0 ? duration(seconds) : "0:00"
+    }
+
     /// `1.2M views`, `43K views`, `987 views`.
     public static func viewCount(_ count: Int?) -> String? {
         guard let count else { return nil }

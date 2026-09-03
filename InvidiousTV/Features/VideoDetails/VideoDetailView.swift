@@ -159,6 +159,7 @@ struct VideoDetailView: View {
                     .padding(20)
                 }
                 .buttonStyle(.plain)
+                .tint(.white)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
             }
         }
