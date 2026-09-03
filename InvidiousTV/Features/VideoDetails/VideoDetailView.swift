@@ -38,6 +38,10 @@ struct VideoDetailView: View {
         }
     }
 
+    private var isLive: Bool {
+        details.value?.liveNow ?? video.liveNow
+    }
+
     private var resumePoint: TimeInterval? {
         guard let profile = app.active?.profile.id else { return nil }
         return app.resume.resumePoint(for: video.videoId, profile: profile)
@@ -72,7 +76,7 @@ struct VideoDetailView: View {
                         Label(resumePoint.map { "Resume from \(VideoFormatting.duration(Int($0)))" } ?? "Play", systemImage: "play.fill")
                     }
                     .focused($playFocused)
-                    .disabled(details.value == nil)
+                    .disabled(details.value == nil || isLive)
 
                     if resumePoint != nil {
                         Button {
@@ -82,6 +86,12 @@ struct VideoDetailView: View {
                         }
                         .disabled(details.value == nil)
                     }
+                }
+
+                if isLive {
+                    Text("Livestreams are not supported yet.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
                 }
 
                 if case .failed(let message) = details {

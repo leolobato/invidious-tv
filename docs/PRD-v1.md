@@ -1,6 +1,6 @@
 # Invidious TV — PRD v1
 
-Status: draft for review
+Status: v1 implemented on the tvOS simulator, 2026-09-04; pending validation on a real Apple TV
 Date: 2026-09-03
 Bundle ID: `org.lobato.invidioustv`
 Platform: tvOS 26 (iOS and macOS in later versions)
@@ -27,8 +27,9 @@ reused as the starting point for the player.
 
 ## 3. Non-goals for v1
 
-Deferred to v2 (section 12): search UI, shorts filtering, playlists and Watch Later, autoplay,
-Top Shelf, SponsorBlock, DeArrow, comments, iCloud sync, QR-code login, iOS and macOS targets.
+Deferred to v2 (section 12): livestreams, search UI, shorts filtering, playlists and Watch Later,
+autoplay, Top Shelf, SponsorBlock, DeArrow, comments, iCloud sync, QR-code login, iOS and macOS
+targets.
 
 ## 4. Target instance and API facts
 
@@ -145,8 +146,9 @@ Sections, top to bottom, each a horizontal shelf:
 - Pressing Menu exits to Video Details and saves the position.
 - When the video ends, the app returns to Video Details with **Up next** focused.
   Autoplay is out of scope for v1.
-- Livestreams (`hlsUrl` present, `liveNow` true) play via HLS through MPV. Best effort, not
-  a v1 acceptance criterion.
+- Livestreams (`liveNow` true) are not playable in v1. The Video Details screen says so and
+  disables Play. The instance's `hls_variant` manifest endpoint answered with a redirect during
+  development, so live playback needs its own investigation (v2).
 
 ### 6.8 Settings
 
@@ -203,13 +205,16 @@ invidious-app/
 - **Concurrency**: Swift 6 strict concurrency, async/await, `@Observable` view models.
 - **Images**: Nuke + NukeUI for the grids (disk cache, prefetching, downsampling).
 - **Player**: MPVKit, `https://github.com/yattee/MPVKit.git` exact `1.0.1` (GPL build).
-  The app is therefore GPL-licensed. Yattee's `MPVBackend`, `PlayerBackend` protocol, and
-  `MPVRenderViewRepresentable` are the starting point, stripped of SponsorBlock, DeArrow,
-  queue, and non-tvOS code.
+  The app is therefore GPL-licensed. A small libmpv wrapper (`MPVPlayer`) plus two render
+  views: OpenGL ES into a `CAEAGLLayer` on devices, and mpv's software render API into a
+  `CGImage` in the simulator, where OpenGL ES output is garbled. Yattee's render code served
+  as the reference for both paths.
 - **Dependencies**: MPVKit and Nuke only.
 - **Testing**: `InvidiousKit` tests run with `swift test` on the Mac host (no simulator).
   Recorded fixtures cover decoding of every endpoint used, the home feed builder, session
-  handling, and the resume store. UI is verified manually on the tvOS simulator and Apple TV.
+  handling, and the resume store. UI is verified on the tvOS simulator through DEBUG-only
+  environment hooks (auto-login, start tab or route, autoplay, scripted remote actions; see
+  README) and on a real Apple TV.
 
 ## 9. Error handling
 
@@ -246,6 +251,7 @@ invidious-app/
 
 ## 12. v2 backlog
 
+- Livestream playback (HLS through the instance or DASH live), with live chat later.
 - Search with suggestions (`/api/v1/search`, `/api/v1/search/suggestions`).
 - Hide shorts (duration heuristic plus channel shorts-tab cache).
 - Playlists and Watch Later (`/api/v1/auth/playlists`).
@@ -256,7 +262,6 @@ invidious-app/
 - iCloud sync of resume positions across devices.
 - QR-code login from a phone.
 - iOS and macOS apps on top of `InvidiousKit`.
-- Live chat for livestreams.
 
 ## 13. Milestones
 

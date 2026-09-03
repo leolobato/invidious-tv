@@ -164,9 +164,8 @@ final class PlayerViewModel {
         hasLoaded = false
         videoSize = nil
 
-        if details.liveNow, let hls = details.hlsUrl, let url = try? client.absoluteURL(hls) {
-            selection = nil
-            player.load(url: url, startAt: 0)
+        if details.liveNow {
+            errorMessage = "Livestreams are not supported yet."
             return
         }
 
