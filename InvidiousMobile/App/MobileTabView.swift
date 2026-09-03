@@ -66,12 +66,13 @@ struct MobileTabView: View {
             #endif
         }
         .task(id: app.pendingVideoID) {
+            // Clearing the ID changes this task's identity and would cancel the fetch, so clear it last.
             guard let id = app.pendingVideoID else { return }
-            app.pendingVideoID = nil
             if let details = try? await session.client.video(id: id) {
                 selectedTab = "home"
                 homePath.append(Route.video(details.summary))
             }
+            app.pendingVideoID = nil
         }
         .onChange(of: session.sessionExpired) { _, expired in
             showReauth = expired

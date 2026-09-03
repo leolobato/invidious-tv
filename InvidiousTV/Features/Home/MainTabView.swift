@@ -75,12 +75,13 @@ struct MainTabView: View {
             showReauth = expired
         }
         .task(id: app.pendingVideoID) {
+            // Clearing the ID changes this task's identity and would cancel the fetch, so clear it last.
             guard let id = app.pendingVideoID else { return }
-            app.pendingVideoID = nil
             if let details = try? await session.client.video(id: id) {
                 selectedTab = "home"
                 homePath.append(Route.video(details.summary))
             }
+            app.pendingVideoID = nil
         }
         .fullScreenCover(isPresented: $showReauth) {
             LoginView(mode: .reauthenticate(session.profile))
