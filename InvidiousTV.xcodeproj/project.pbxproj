@@ -10,6 +10,7 @@
 		0C1119DF007A60C47E483C83 /* ProfilePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = B078FCBFC6A40A5145D10E29 /* ProfilePalette.swift */; };
 		1C4A2BE22786E1FD91F72350 /* MPVRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5FB1035796E6D33DBFA91D /* MPVRenderView.swift */; };
 		1E0B48AA060452EF70342EB2 /* PlayerSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */; };
+		2736207DD7EBD1D8F0C331F3 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D41C560EEF3CE5DE000D134 /* SearchView.swift */; };
 		2EA5B28084531E767B1E21FB /* InvidiousTVApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */; };
 		3737FA79B24FB95DA45FFFF7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E1A303B7855C69321E233 /* HomeView.swift */; };
 		43DB51CEEBF74A4AC39704BE /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7275D870A74F19703C6A6736 /* AppModel.swift */; };
@@ -64,6 +65,7 @@
 		8713894BE7019F63D8E1E66D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		895C0DADB95A1BAC8DD3A5BA /* ChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsView.swift; sourceTree = "<group>"; };
 		89DFFFE63A737BDC96B93CFD /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		8D41C560EEF3CE5DE000D134 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		90740D6F323332190A479E6E /* ChannelTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTile.swift; sourceTree = "<group>"; };
 		91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvidiousTVApp.swift; sourceTree = "<group>"; };
 		AEBBE3785A4EA8661B32116E /* ChannelAvatarCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarCache.swift; sourceTree = "<group>"; };
@@ -223,11 +225,20 @@
 				AEEC4F1A5EC7253712F92043 /* Login */,
 				9579D142B3229259BD50553C /* Player */,
 				F98CFABFE3E3650191632319 /* ProfilePicker */,
+				D3C08D64D2C440795ABD0EE6 /* Search */,
 				C893AA79E67C61AB295E5369 /* Settings */,
 				06810396F748CB053EE606C8 /* Subscriptions */,
 				32C7FD35C0E2CF63CF6FB24B /* VideoDetails */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		D3C08D64D2C440795ABD0EE6 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				8D41C560EEF3CE5DE000D134 /* SearchView.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 		DCC93067D058E0F74FCB5A41 /* Shared */ = {
@@ -354,6 +365,7 @@
 				E87F72F9697B9C72E64A8171 /* RemoteImage.swift in Sources */,
 				7470318390685649CF66F5C2 /* RootView.swift in Sources */,
 				B5E50E8A19DB4AAB8C83486D /* Route.swift in Sources */,
+				2736207DD7EBD1D8F0C331F3 /* SearchView.swift in Sources */,
 				8749FCFB41F22ED84CD5E953 /* SettingsView.swift in Sources */,
 				659E8465CA7CCA38EAD4D082 /* Shelf.swift in Sources */,
 				E876BE1948B5783BC03E4E06 /* StatusViews.swift in Sources */,

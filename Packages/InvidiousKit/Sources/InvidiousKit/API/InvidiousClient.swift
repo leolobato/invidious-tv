@@ -72,6 +72,17 @@ public final class InvidiousClient: Sendable {
         return StoryboardTrack.parse(webVTT: text, relativeTo: baseURL)
     }
 
+    // MARK: - Search
+
+    public func search(query: String, page: Int = 1, type: SearchType = .all) async throws -> [SearchItem] {
+        try await get("/api/v1/search", query: ["q": query, "page": String(page), "type": type.rawValue])
+    }
+
+    public func searchSuggestions(query: String) async throws -> [String] {
+        let response: SearchSuggestions = try await get("/api/v1/search/suggestions", query: ["q": query])
+        return response.suggestions
+    }
+
     // MARK: - Authenticated endpoints
 
     public func feed(page: Int = 1, maxResults: Int = 40) async throws -> FeedPage {

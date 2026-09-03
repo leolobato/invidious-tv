@@ -13,6 +13,9 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            Tab("Search", systemImage: "magnifyingglass", value: "search") {
+                SearchView(session: session)
+            }
             Tab("Home", systemImage: "house", value: "home") {
                 NavigationStack(path: $homePath) {
                     HomeView(session: session)
