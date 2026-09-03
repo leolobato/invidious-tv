@@ -35,6 +35,8 @@ targets:
       path: InvidiousTV/Info.plist
       properties:
         CFBundleDisplayName: Invidious TV
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true

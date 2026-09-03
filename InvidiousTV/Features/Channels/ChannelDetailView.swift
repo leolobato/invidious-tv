@@ -91,6 +91,9 @@ struct ChannelDetailView: View {
             }
             .padding(.horizontal, 60)
             .padding(.top, 30)
+            // Whole header is a focus target, so "up" from any thumbnail reaches the Subscribe
+            // button, and one more "up" reaches the tab bar.
+            .focusSection()
         }
     }
 }

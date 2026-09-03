@@ -12,9 +12,9 @@ struct VideoCard: View {
 
     var body: some View {
         NavigationLink(value: Route.video(video)) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 12) {
                 thumbnail
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(video.title)
                         .font(.callout.weight(.medium))
                         .lineLimit(2, reservesSpace: true)
@@ -24,7 +24,9 @@ struct VideoCard: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
-                .padding(.horizontal, 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 14)
             }
         }
         .buttonStyle(.card)

@@ -12,18 +12,26 @@ struct SettingsView: View {
     @State private var showRename = false
     @State private var showReauth = false
     @State private var confirmRemove = false
+    @FocusState private var focusedRow: Row?
+
+    private enum Row: Hashable { case rename, version }
 
     var body: some View {
         @Bindable var settings = app.settings
         Form {
             Section("Profile") {
+                // Info rows are focusable so the remote can scroll through them and reach the tab bar.
                 LabeledContent("Name", value: session.profile.name)
+                    .focusable()
                 LabeledContent("Username", value: session.profile.username)
+                    .focusable()
                 LabeledContent("Instance", value: session.profile.instanceURL.absoluteString)
+                    .focusable()
                 Button("Rename Profile") {
                     renameText = session.profile.name
                     showRename = true
                 }
+                .focused($focusedRow, equals: .rename)
                 Button("Sign In Again") { showReauth = true }
                 Button("Switch Profile") { app.deactivate() }
                 Button("Remove Profile", role: .destructive) { confirmRemove = true }
@@ -69,10 +77,22 @@ struct SettingsView: View {
 
             Section("About") {
                 LabeledContent("App version", value: Self.appVersion)
-                LabeledContent("Player", value: "MPV")
+                    .focusable()
+                    .focused($focusedRow, equals: .version)
+                LabeledContent("Player", value: "MPV via MPVKit")
+                    .focusable()
             }
         }
-        .onAppear { instanceText = app.settings.instanceURLString }
+        .onAppear {
+            instanceText = app.settings.instanceURLString
+            #if DEBUG
+            switch ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_FOCUS"] {
+            case "rename": focusedRow = .rename
+            case "version": focusedRow = .version
+            default: break
+            }
+            #endif
+        }
         .alert("Rename Profile", isPresented: $showRename) {
             TextField("Name", text: $renameText)
             Button("Save") {

@@ -31,6 +31,14 @@ final class AppSettings {
         didSet { defaults.set(defaultSpeed, forKey: Keys.defaultSpeed) }
     }
 
+    var channelSort: ChannelSortOrder {
+        didSet { defaults.set(channelSort.rawValue, forKey: Keys.channelSort) }
+    }
+
+    var channelLayout: ChannelLayout {
+        didSet { defaults.set(channelLayout.rawValue, forKey: Keys.channelLayout) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         instanceURLString = defaults.string(forKey: Keys.instance) ?? Self.defaultInstance
@@ -38,6 +46,8 @@ final class AppSettings {
         maxQuality = defaults.integer(forKey: Keys.maxQuality)
         let speed = defaults.double(forKey: Keys.defaultSpeed)
         defaultSpeed = speed > 0 ? speed : 1.0
+        channelSort = defaults.string(forKey: Keys.channelSort).flatMap(ChannelSortOrder.init) ?? .nameAscending
+        channelLayout = defaults.string(forKey: Keys.channelLayout).flatMap(ChannelLayout.init) ?? .grid
     }
 
     var instanceURL: URL? {
@@ -79,5 +89,29 @@ final class AppSettings {
         static let proxyMedia = "settings.proxyMedia"
         static let maxQuality = "settings.maxQuality"
         static let defaultSpeed = "settings.defaultSpeed"
+        static let channelSort = "settings.channelSort"
+        static let channelLayout = "settings.channelLayout"
     }
+}
+
+enum ChannelSortOrder: String, CaseIterable, Identifiable {
+    case nameAscending, nameDescending, recentUploads
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .nameAscending: return "Name A–Z"
+        case .nameDescending: return "Name Z–A"
+        case .recentUploads: return "Recent uploads"
+        }
+    }
+}
+
+enum ChannelLayout: String, CaseIterable {
+    case grid, list
+
+    var toggled: ChannelLayout { self == .grid ? .list : .grid }
+    var label: String { self == .grid ? "Grid" : "List" }
+    var systemImage: String { self == .grid ? "square.grid.3x2" : "list.bullet" }
 }
