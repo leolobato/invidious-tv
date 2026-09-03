@@ -1,0 +1,62 @@
+name: InvidiousTV
+options:
+  bundleIdPrefix: org.lobato
+  deploymentTarget:
+    tvOS: "26.0"
+  xcodeVersion: "26.0"
+  generateEmptyDirectories: true
+configFiles:
+  Debug: Configuration/Base.xcconfig
+  Release: Configuration/Base.xcconfig
+packages:
+  InvidiousKit:
+    path: Packages/InvidiousKit
+  MPVKit:
+    url: https://github.com/yattee/MPVKit.git
+    exactVersion: 1.0.1
+  Nuke:
+    url: https://github.com/kean/Nuke
+    from: 12.8.0
+targets:
+  InvidiousTV:
+    type: application
+    platform: tvOS
+    sources:
+      - InvidiousTV
+    dependencies:
+      - package: InvidiousKit
+      - package: MPVKit
+        product: MPVKit-GPL
+      - package: Nuke
+        product: Nuke
+      - package: Nuke
+        product: NukeUI
+    info:
+      path: InvidiousTV/Info.plist
+      properties:
+        CFBundleDisplayName: Invidious TV
+        UILaunchScreen: {}
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        UIRequiredDeviceCapabilities: [arm64]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID)
+        PRODUCT_NAME: Invidious TV
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image
+        TARGETED_DEVICE_FAMILY: "3"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+schemes:
+  InvidiousTV:
+    build:
+      targets:
+        InvidiousTV: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: []

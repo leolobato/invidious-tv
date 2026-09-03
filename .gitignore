@@ -1,0 +1,19 @@
+# Signing (personal credentials)
+Configuration/LocalSigning.xcconfig
+
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+*.xcworkspace
+!*.xcodeproj/project.xcworkspace
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/*/Package.resolved
+
+# macOS
+.DS_Store
