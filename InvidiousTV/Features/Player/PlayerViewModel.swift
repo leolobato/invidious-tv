@@ -46,6 +46,8 @@ final class PlayerViewModel {
     private var progressTimer: Timer?
     private var pendingStart: TimeInterval
     private var markedWatched = false
+    private var didBeginLoading = false
+    private var renderTimeoutTask: Task<Void, Never>?
 
     static let skipInterval: TimeInterval = 10
     static let controlsTimeout: TimeInterval = 4
@@ -101,7 +103,19 @@ final class PlayerViewModel {
             self.player = player
             player.setSpeed(settings.defaultSpeed)
             speed = settings.defaultSpeed
-            loadStreams(startAt: pendingStart)
+            // Loading must wait for the render view to create mpv's render context, otherwise the
+            // video output fails to initialize and the file plays without video.
+            player.onRenderContextReady = { [weak self] in
+                self?.beginLoadingIfNeeded()
+            }
+            if player.hasRenderContext {
+                beginLoadingIfNeeded()
+            }
+            renderTimeoutTask = Task { [weak self] in
+                try? await Task.sleep(for: .seconds(5))
+                guard let self, !Task.isCancelled, !self.didBeginLoading else { return }
+                self.errorMessage = "The video renderer could not be started."
+            }
             Task { await loadStoryboard() }
             startProgressTimer()
             scheduleHideControls()
@@ -110,7 +124,15 @@ final class PlayerViewModel {
         }
     }
 
+    private func beginLoadingIfNeeded() {
+        guard !didBeginLoading else { return }
+        didBeginLoading = true
+        renderTimeoutTask?.cancel()
+        loadStreams(startAt: pendingStart)
+    }
+
     func stop() {
+        renderTimeoutTask?.cancel()
         progressTimer?.invalidate()
         progressTimer = nil
         hideControlsTask?.cancel()
@@ -148,14 +170,14 @@ final class PlayerViewModel {
             return
         }
 
-        if let chosen = StreamSelector.select(details, preferences: streamPreferences), let url = URL(string: chosen.video.url) {
+        if let chosen = StreamSelector.select(details, preferences: streamPreferences), let url = try? client.absoluteURL(chosen.video.url) {
             selection = chosen
             player.load(url: url, startAt: startAt)
             return
         }
 
         // Fall back to a muxed progressive stream (720p at best).
-        if let stream = details.formatStreams.max(by: { ($0.qualityLabel ?? "") < ($1.qualityLabel ?? "") }), let url = URL(string: stream.url) {
+        if let stream = details.formatStreams.max(by: { ($0.qualityLabel ?? "") < ($1.qualityLabel ?? "") }), let url = try? client.absoluteURL(stream.url) {
             selection = nil
             player.load(url: url, startAt: startAt)
             return
@@ -178,7 +200,7 @@ final class PlayerViewModel {
         switch event {
         case .fileLoaded:
             hasLoaded = true
-            if let audio = selection?.audio, let url = URL(string: audio.url) {
+            if let audio = selection?.audio, let url = try? client.absoluteURL(audio.url) {
                 player?.addAudio(url: url)
             }
             if let selectedCaption, let url = client.captionURL(selectedCaption) {

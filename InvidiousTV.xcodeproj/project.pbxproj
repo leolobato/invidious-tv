@@ -18,6 +18,7 @@
 		5BC264E254C7F73676362C88 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 54BF1D9E3628D638EBBBC49C /* NukeUI */; };
 		64BE86F64B44F31FF62E0A31 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8C0394AB994FAAED85589C /* LoginView.swift */; };
 		659E8465CA7CCA38EAD4D082 /* Shelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = C162D496434DB98C36B2F6DF /* Shelf.swift */; };
+		67A6D07C57947E6EA94349F7 /* MPVSoftwareRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA52F836EEBDDFA88F2A6662 /* MPVSoftwareRenderView.swift */; };
 		73597B0E04287A35F888118D /* VideoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68844913B0169C3FCF4A91C1 /* VideoGrid.swift */; };
 		7470318390685649CF66F5C2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9F36AB7B49131E70D6862B /* RootView.swift */; };
 		7B3731A7008B5DD692A8E350 /* ProfilePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */; };
@@ -68,6 +69,7 @@
 		AEBBE3785A4EA8661B32116E /* ChannelAvatarCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarCache.swift; sourceTree = "<group>"; };
 		B078FCBFC6A40A5145D10E29 /* ProfilePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePalette.swift; sourceTree = "<group>"; };
 		C162D496434DB98C36B2F6DF /* Shelf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shelf.swift; sourceTree = "<group>"; };
+		CA52F836EEBDDFA88F2A6662 /* MPVSoftwareRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVSoftwareRenderView.swift; sourceTree = "<group>"; };
 		D5B19F233EAA92BB69BE409D /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		DD920CF4F50B41A702F51703 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		DE4E58A0E8F06E13B251FF0D /* InvidiousTV.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InvidiousTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -180,6 +182,7 @@
 			children = (
 				37E2FDD4DAEEA078C7F375F3 /* MPVPlayer.swift */,
 				2B5FB1035796E6D33DBFA91D /* MPVRenderView.swift */,
+				CA52F836EEBDDFA88F2A6662 /* MPVSoftwareRenderView.swift */,
 				2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */,
 				F024D22BFD1F96C4086A2C69 /* PlayerView.swift */,
 				89DFFFE63A737BDC96B93CFD /* PlayerViewModel.swift */,
@@ -341,6 +344,7 @@
 				64BE86F64B44F31FF62E0A31 /* LoginView.swift in Sources */,
 				7DC2D799EF27C502836A7DA7 /* MPVPlayer.swift in Sources */,
 				1C4A2BE22786E1FD91F72350 /* MPVRenderView.swift in Sources */,
+				67A6D07C57947E6EA94349F7 /* MPVSoftwareRenderView.swift in Sources */,
 				8650DE8194302058BDD41572 /* MainTabView.swift in Sources */,
 				1E0B48AA060452EF70342EB2 /* PlayerSurfaceView.swift in Sources */,
 				EA5AF3F9A71B03020E94DC85 /* PlayerView.swift in Sources */,

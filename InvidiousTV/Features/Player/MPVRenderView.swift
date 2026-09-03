@@ -2,6 +2,9 @@ import UIKit
 import OpenGLES
 import QuartzCore
 import SwiftUI
+import os
+
+private let renderLog = Logger(subsystem: "org.lobato.invidioustv", category: "render")
 
 /// Looks up OpenGL ES entry points for libmpv.
 private func mpvGetProcAddress(_ context: UnsafeMutableRawPointer?, _ name: UnsafePointer<CChar>?) -> UnsafeMutableRawPointer? {
@@ -26,6 +29,7 @@ final class MPVRenderView: UIView {
     private var renderScheduled = false
     private let scheduleLock = NSLock()
     private var isTornDown = false
+    private var renderedFrames = 0
 
     override class var layerClass: AnyClass { CAEAGLLayer.self }
 
@@ -51,14 +55,16 @@ final class MPVRenderView: UIView {
         guard self.player == nil else { return }
         self.player = player
         renderQueue.async { [self] in
-            guard let context = EAGLContext(api: .openGLES3) ?? EAGLContext(api: .openGLES2) else { return }
+            guard let context = EAGLContext(api: .openGLES3) ?? EAGLContext(api: .openGLES2) else {
+                renderLog.error("EAGLContext creation failed")
+                return
+            }
             glContext = context
             EAGLContext.setCurrent(context)
-            DispatchQueue.main.sync {
-                createFramebufferLocked()
-            }
-            _ = player.createRenderContext(getProcAddress: mpvGetProcAddress)
+            createFramebufferLocked()
+            let created = player.createRenderContext(getProcAddress: mpvGetProcAddress)
             EAGLContext.setCurrent(nil)
+            renderLog.info("render context created=\(created) framebuffer=\(self.framebuffer) size=\(self.renderWidth)x\(self.renderHeight)")
             player.onRenderUpdate = { [weak self] in
                 self?.scheduleRender()
             }
@@ -123,6 +129,12 @@ final class MPVRenderView: UIView {
         glBindRenderbuffer(GLenum(GL_RENDERBUFFER), colorRenderbuffer)
         if glContext.presentRenderbuffer(Int(GL_RENDERBUFFER)) {
             player.reportSwap()
+            renderedFrames += 1
+            if renderedFrames == 1 || renderedFrames % 300 == 0 {
+                renderLog.info("presented frame #\(self.renderedFrames) at \(self.renderWidth)x\(self.renderHeight)")
+            }
+        } else {
+            renderLog.warning("presentRenderbuffer failed")
         }
         EAGLContext.setCurrent(nil)
     }
@@ -142,6 +154,7 @@ final class MPVRenderView: UIView {
         glGetRenderbufferParameteriv(GLenum(GL_RENDERBUFFER), GLenum(GL_RENDERBUFFER_HEIGHT), &renderHeight)
         glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), colorRenderbuffer)
         if glCheckFramebufferStatus(GLenum(GL_FRAMEBUFFER)) != GLenum(GL_FRAMEBUFFER_COMPLETE) || renderWidth == 0 || renderHeight == 0 {
+            renderLog.warning("framebuffer incomplete or empty (\(self.renderWidth)x\(self.renderHeight)), bounds=\(self.bounds.debugDescription)")
             deleteFramebuffer()
             return
         }
@@ -163,19 +176,25 @@ final class MPVRenderView: UIView {
     }
 }
 
-/// SwiftUI wrapper for `MPVRenderView`.
+/// SwiftUI wrapper for the platform render view: OpenGL ES on devices, CPU rendering in the simulator.
 struct MPVVideoView: UIViewRepresentable {
     let player: MPVPlayer
 
-    func makeUIView(context: Context) -> MPVRenderView {
-        let view = MPVRenderView(frame: .zero)
+    #if targetEnvironment(simulator)
+    typealias RenderView = MPVSoftwareRenderView
+    #else
+    typealias RenderView = MPVRenderView
+    #endif
+
+    func makeUIView(context: Context) -> RenderView {
+        let view = RenderView(frame: .zero)
         view.attach(player)
         return view
     }
 
-    func updateUIView(_ uiView: MPVRenderView, context: Context) {}
+    func updateUIView(_ uiView: RenderView, context: Context) {}
 
-    static func dismantleUIView(_ uiView: MPVRenderView, coordinator: ()) {
+    static func dismantleUIView(_ uiView: RenderView, coordinator: ()) {
         uiView.tearDown()
     }
 }

@@ -8,28 +8,29 @@ struct MainTabView: View {
     @Environment(AppModel.self) private var app
     @State private var showReauth = false
     @State private var debugVideo: VideoDetails?
+    @State private var selectedTab: String = ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_TAB"] ?? "home"
 
     var body: some View {
-        TabView {
-            Tab("Home", systemImage: "house") {
+        TabView(selection: $selectedTab) {
+            Tab("Home", systemImage: "house", value: "home") {
                 NavigationStack {
                     HomeView(session: session)
                         .withRoutes()
                 }
             }
-            Tab("Subscriptions", systemImage: "rectangle.stack") {
+            Tab("Subscriptions", systemImage: "rectangle.stack", value: "subscriptions") {
                 NavigationStack {
                     SubscriptionsView(session: session)
                         .withRoutes()
                 }
             }
-            Tab("Channels", systemImage: "person.2") {
+            Tab("Channels", systemImage: "person.2", value: "channels") {
                 NavigationStack {
                     ChannelsView(session: session)
                         .withRoutes()
                 }
             }
-            Tab("Settings", systemImage: "gearshape") {
+            Tab("Settings", systemImage: "gearshape", value: "settings") {
                 NavigationStack {
                     SettingsView(session: session)
                         .withRoutes()

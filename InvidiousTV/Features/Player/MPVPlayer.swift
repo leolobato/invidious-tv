@@ -1,5 +1,8 @@
 import Foundation
+import os
 import Libmpv
+
+private let mpvLog = Logger(subsystem: "org.lobato.invidioustv", category: "mpv")
 
 /// Events the player reports, delivered on the main thread.
 enum MPVPlayerEvent: Sendable {
@@ -30,6 +33,14 @@ final class MPVPlayer: @unchecked Sendable {
     var onEvent: (@MainActor (MPVPlayerEvent) -> Void)?
     /// Called on an arbitrary mpv thread whenever a new frame or redraw is needed.
     var onRenderUpdate: (@Sendable () -> Void)?
+    /// Called on the main thread once the render context exists and files can be loaded.
+    var onRenderContextReady: (@MainActor () -> Void)?
+
+    var hasRenderContext: Bool {
+        renderContextLock.lock()
+        defer { renderContextLock.unlock() }
+        return renderContext != nil
+    }
 
     enum PlayerError: Error, LocalizedError {
         case createFailed
@@ -90,6 +101,12 @@ final class MPVPlayer: @unchecked Sendable {
             throw PlayerError.initializeFailed(result)
         }
 
+        #if DEBUG
+        mpv_request_log_messages(mpv, "info")
+        #else
+        mpv_request_log_messages(mpv, "warn")
+        #endif
+
         observe("time-pos", MPV_FORMAT_DOUBLE)
         observe("duration", MPV_FORMAT_DOUBLE)
         observe("pause", MPV_FORMAT_FLAG)
@@ -111,8 +128,10 @@ final class MPVPlayer: @unchecked Sendable {
 
     /// Loads a video URL, starting paused at `startAt`. Call `play()` once ready.
     func load(url: URL, startAt: TimeInterval) {
-        let options = startAt > 1 ? "start=\(Int(startAt))" : ""
-        command(["loadfile", url.absoluteString, "replace", options])
+        // `start` is a per-file option; setting it before loadfile avoids the loadfile argument
+        // layout that changed between mpv versions.
+        setProperty("start", string: startAt > 1 ? String(Int(startAt)) : "none")
+        command(["loadfile", url.absoluteString, "replace"])
     }
 
     /// Attaches a separate audio stream (used with video-only adaptive formats).
@@ -185,7 +204,69 @@ final class MPVPlayer: @unchecked Sendable {
             let player = Unmanaged<MPVPlayer>.fromOpaque(pointer).takeUnretainedValue()
             player.onRenderUpdate?()
         }, selfPointer)
+        Task { @MainActor [weak self] in
+            self?.onRenderContextReady?()
+        }
         return true
+    }
+
+    /// Creates a CPU render context (used in the simulator, where OpenGL ES is unreliable).
+    func createSoftwareRenderContext() -> Bool {
+        guard let handle, renderContext == nil else { return false }
+        var apiType = MPV_RENDER_API_TYPE_SW
+        var context: OpaquePointer?
+        let result: Int32 = withUnsafeMutablePointer(to: &apiType) { apiPtr in
+            var params: [mpv_render_param] = [
+                mpv_render_param(type: MPV_RENDER_PARAM_API_TYPE, data: apiPtr),
+                mpv_render_param(type: MPV_RENDER_PARAM_INVALID, data: nil),
+            ]
+            return params.withUnsafeMutableBufferPointer { buffer in
+                mpv_render_context_create(&context, handle, buffer.baseAddress)
+            }
+        }
+        guard result >= 0, let context else {
+            mpvLog.error("software render context failed: \(String(cString: mpv_error_string(result)), privacy: .public)")
+            return false
+        }
+        renderContextLock.lock()
+        renderContext = context
+        renderContextLock.unlock()
+        let selfPointer = Unmanaged.passUnretained(self).toOpaque()
+        mpv_render_context_set_update_callback(context, { pointer in
+            guard let pointer else { return }
+            let player = Unmanaged<MPVPlayer>.fromOpaque(pointer).takeUnretainedValue()
+            player.onRenderUpdate?()
+        }, selfPointer)
+        Task { @MainActor [weak self] in
+            self?.onRenderContextReady?()
+        }
+        return true
+    }
+
+    /// Renders into a CPU buffer of `rgb0` pixels. Returns false when nothing was rendered.
+    func renderSoftware(width: Int32, height: Int32, stride: Int, pixels: UnsafeMutableRawPointer) -> Bool {
+        renderContextLock.lock()
+        defer { renderContextLock.unlock() }
+        guard let renderContext else { return false }
+        var size: [Int32] = [width, height]
+        var strideValue = stride
+        let format = strdup("rgb0")
+        defer { free(format) }
+        let result: Int32 = size.withUnsafeMutableBufferPointer { sizePtr in
+            withUnsafeMutablePointer(to: &strideValue) { stridePtr in
+                var params: [mpv_render_param] = [
+                    mpv_render_param(type: MPV_RENDER_PARAM_SW_SIZE, data: sizePtr.baseAddress),
+                    mpv_render_param(type: MPV_RENDER_PARAM_SW_FORMAT, data: format),
+                    mpv_render_param(type: MPV_RENDER_PARAM_SW_STRIDE, data: stridePtr),
+                    mpv_render_param(type: MPV_RENDER_PARAM_SW_POINTER, data: pixels),
+                    mpv_render_param(type: MPV_RENDER_PARAM_INVALID, data: nil),
+                ]
+                return params.withUnsafeMutableBufferPointer { buffer in
+                    mpv_render_context_render(renderContext, buffer.baseAddress)
+                }
+            }
+        }
+        return result >= 0
     }
 
     /// Returns true when mpv has a new frame to draw. Call from the render thread.
@@ -293,8 +374,11 @@ final class MPVPlayer: @unchecked Sendable {
             let cStrings = arguments.map { strdup($0) }
             var pointers: [UnsafePointer<CChar>?] = cStrings.map { UnsafePointer($0) }
             pointers.append(nil)
-            pointers.withUnsafeMutableBufferPointer { buffer in
-                _ = mpv_command(handle, buffer.baseAddress)
+            let status = pointers.withUnsafeMutableBufferPointer { buffer in
+                mpv_command(handle, buffer.baseAddress)
+            }
+            if status < 0 {
+                mpvLog.error("command \(arguments.first ?? "", privacy: .public) failed: \(String(cString: mpv_error_string(status)), privacy: .public)")
             }
             cStrings.forEach { free($0) }
         }
@@ -342,6 +426,25 @@ final class MPVPlayer: @unchecked Sendable {
 
     private func map(_ event: mpv_event) -> MPVPlayerEvent? {
         switch event.event_id {
+        case MPV_EVENT_LOG_MESSAGE:
+            guard let data = event.data else { return nil }
+            let message = data.assumingMemoryBound(to: mpv_event_log_message.self).pointee
+            let prefix = String(cString: message.prefix)
+            let text = String(cString: message.text).trimmingCharacters(in: .whitespacesAndNewlines)
+            switch message.log_level {
+            case MPV_LOG_LEVEL_FATAL, MPV_LOG_LEVEL_ERROR:
+                mpvLog.error("[\(prefix, privacy: .public)] \(text, privacy: .public)")
+            case MPV_LOG_LEVEL_WARN:
+                mpvLog.warning("[\(prefix, privacy: .public)] \(text, privacy: .public)")
+            default:
+                mpvLog.info("[\(prefix, privacy: .public)] \(text, privacy: .public)")
+            }
+            return nil
+        case MPV_EVENT_COMMAND_REPLY:
+            if event.error < 0 {
+                mpvLog.error("command failed: \(String(cString: mpv_error_string(event.error)), privacy: .public)")
+            }
+            return nil
         case MPV_EVENT_FILE_LOADED:
             return .fileLoaded
         case MPV_EVENT_END_FILE:

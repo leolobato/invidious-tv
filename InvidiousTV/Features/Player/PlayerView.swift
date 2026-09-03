@@ -163,7 +163,7 @@ struct PlayerView: View {
 
             // Bottom: progress and options
             VStack(spacing: 24) {
-                if model.isPaused && !model.isScrubbing {
+                if model.isPaused && model.hasLoaded && !model.isScrubbing {
                     Image(systemName: "pause.fill")
                         .font(.system(size: 44))
                         .padding(.bottom, 10)
