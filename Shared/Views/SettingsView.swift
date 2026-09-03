@@ -79,6 +79,8 @@ struct SettingsView: View {
             Section("Instance for new profiles") {
                 TextField("Instance URL", text: $instanceText)
                     .keyboardType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                     .onSubmit { Task { await checkInstance() } }
                 Button {
                     Task { await checkInstance() }
@@ -105,6 +107,9 @@ struct SettingsView: View {
                     .focusable()
             }
         }
+        #if os(iOS)
+        .navigationTitle("Settings")
+        #endif
         .onAppear {
             instanceText = app.settings.instanceURLString
             #if DEBUG

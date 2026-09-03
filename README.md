@@ -1,8 +1,8 @@
 # Invidious TV
 
-A tvOS client for a self-hosted [Invidious](https://github.com/iv-org/invidious) instance, in the
-style of the YouTube TV app. SwiftUI, tvOS 26, MPV playback. See `docs/PRD-v1.md` for the product
-requirements and `docs/` for design notes.
+A tvOS and iOS client for a self-hosted [Invidious](https://github.com/iv-org/invidious) instance, in
+the style of the YouTube apps. SwiftUI, tvOS 26 and iOS 26, MPV playback. See `docs/PRD-v1.md` and
+`docs/PRD-v2.md` for the product requirements.
 
 ## Layout
 
@@ -10,8 +10,10 @@ requirements and `docs/` for design notes.
 | --- | --- |
 | `project.yml` | XcodeGen spec. Run `xcodegen generate` after adding files. |
 | `Configuration/` | Signing. `Base.xcconfig` is committed; copy `LocalSigning.xcconfig.example` to `LocalSigning.xcconfig` and fill in your team and bundle ID. |
-| `Packages/InvidiousKit` | Platform-agnostic Swift package: API client, models, login, profiles, resume store, home feed builder, stream selection. |
-| `InvidiousTV/` | The tvOS app. |
+| `Packages/InvidiousKit` | Platform-agnostic Swift package: API client, models, login, profiles, resume store, home feed builder, stream selection, search, playlists, comments, SponsorBlock. |
+| `Shared/` | App code compiled into both apps: app model, settings, stores, view models, MPV player core, shared views. |
+| `InvidiousTV/` | tvOS views and remote handling. `InvidiousTVTopShelf/` is the Top Shelf extension. |
+| `InvidiousMobile/` | iPhone and iPad views and touch player. `InvidiousMobileShare/` is the share extension that opens YouTube links. |
 
 ## Build
 
@@ -27,6 +29,9 @@ Package tests run on the Mac, no simulator needed:
 ```sh
 cd Packages/InvidiousKit && swift test
 ```
+
+Schemes: `InvidiousTV` (Apple TV) and `InvidiousMobile` (iPhone and iPad). Both share the debug hooks below;
+the iOS bundle ID is the tvOS one with `.mobile` appended.
 
 ## Playback
 

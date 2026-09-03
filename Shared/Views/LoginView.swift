@@ -59,8 +59,16 @@ struct LoginView: View {
                         .onSubmit(submit)
                 }
             }
+            #if os(tvOS)
             .textFieldStyle(.plain)
             .frame(width: 700)
+            #else
+            .textFieldStyle(.roundedBorder)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .frame(maxWidth: 500)
+            .padding(.horizontal, 24)
+            #endif
 
             if let errorMessage {
                 Text(errorMessage)
@@ -84,7 +92,9 @@ struct LoginView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        #if os(tvOS)
         .background(Color.black)
+        #endif
         .onAppear {
             switch mode {
             case .newProfile:

@@ -16,9 +16,3 @@ struct InvidiousMobileApp: App {
         }
     }
 }
-
-struct MobileRootView: View {
-    var body: some View {
-        Text("Invidious")
-    }
-}

@@ -296,6 +296,13 @@ final class PlayerViewModel {
         scheduleScrubCommit()
     }
 
+    /// Sets the scrub target directly (slider dragging). Commit with `commitScrub()`.
+    func scrub(to time: TimeInterval) {
+        scrubCommitTask?.cancel()
+        scrubTarget = min(max(time, 0), max(duration - 1, 0))
+        showControls(autoHide: false)
+    }
+
     /// Seeks to the scrub target.
     func commitScrub() {
         scrubCommitTask?.cancel()

@@ -28,7 +28,12 @@ Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
 
 Deferred beyond v2: iCloud sync of resume positions, QR-code login.
 
-## iOS (after v2)
+## iOS (done on the simulator, 2026-09-04)
 
-iPhone and iPad app on the same `InvidiousKit` and feature code where SwiftUI allows, with an AVKit or
-MPV player, a share extension that accepts YouTube links and opens the video, and paste-a-link in search.
+iPhone and iPad app (`InvidiousMobile`) on the same `InvidiousKit`, app model, stores and view models as
+tvOS. Tabs: Home, Subscriptions, Channels, Library, Settings and a Search tab. Touch player on MPV with
+tap-to-show controls, slider scrubbing, speed, captions, quality, autoplay and playlist queues. Share
+extension (`InvidiousMobileShare`) accepts YouTube links from any app and opens the video; if the
+extension cannot open the app directly, the link waits in the app group and opens on next activation.
+Paste-a-link in search works as on tvOS. AVKit was not used because the instance returns no muxed
+progressive streams, so MPV is required for any playback.
