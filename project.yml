@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: org.lobato
   deploymentTarget:
     tvOS: "26.0"
+    iOS: "26.0"
   xcodeVersion: "26.0"
   generateEmptyDirectories: true
 configFiles:
@@ -22,6 +23,7 @@ targets:
     type: application
     platform: tvOS
     sources:
+      - Shared
       - InvidiousTV
     dependencies:
       - package: InvidiousKit
@@ -61,6 +63,50 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image
         TARGETED_DEVICE_FAMILY: "3"
         ENABLE_USER_SCRIPT_SANDBOXING: YES
+  InvidiousMobile:
+    type: application
+    platform: iOS
+    sources:
+      - Shared
+      - InvidiousMobile
+    dependencies:
+      - package: InvidiousKit
+      - package: MPVKit
+        product: MPVKit-GPL
+      - package: Nuke
+        product: Nuke
+      - package: Nuke
+        product: NukeUI
+    entitlements:
+      path: InvidiousMobile/InvidiousMobile.entitlements
+      properties:
+        com.apple.security.application-groups: [$(APP_GROUP_ID)]
+    info:
+      path: InvidiousMobile/Info.plist
+      properties:
+        CFBundleDisplayName: Invidious
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        InvidiousAppGroup: $(APP_GROUP_ID)
+        CFBundleURLTypes:
+          - CFBundleURLName: org.lobato.invidioustv.links
+            CFBundleURLSchemes: [invidioustv]
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIBackgroundModes: [audio]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID).mobile
+        PRODUCT_NAME: Invidious
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
   InvidiousTVTopShelf:
     type: tv-app-extension
     platform: tvOS
@@ -95,6 +141,15 @@ schemes:
     build:
       targets:
         InvidiousTV: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: []
+  InvidiousMobile:
+    build:
+      targets:
+        InvidiousMobile: all
     run:
       config: Debug
     test:
