@@ -17,7 +17,7 @@ struct ChannelDetailView: View {
                 LoadingView()
             }
         }
-        .navigationTitle(channelName)
+        .navigationBarHidden(true)
         .task {
             guard model == nil, let session = app.active else { return }
             let vm = ChannelDetailViewModel(channelID: channelID, session: session, avatars: app.channelAvatars)

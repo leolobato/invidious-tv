@@ -47,9 +47,9 @@ struct VideoDetailView: View {
         let client = app.active?.client
         let thumbs = details.value?.videoThumbnails ?? video.videoThumbnails
         let primary = thumbs.first { $0.quality == "maxresdefault" } ?? thumbs.best(maxWidth: 1280)
-        let fallback = thumbs.first { $0.quality == "medium" }
+        let fallbacks = ["sddefault", "high", "medium"].compactMap { q in thumbs.first { $0.quality == q } }
         return HStack(alignment: .top, spacing: 50) {
-            RemoteImage(url: primary.flatMap { client?.url(for: $0) }, fallback: fallback.flatMap { client?.url(for: $0) })
+            RemoteImage(url: primary.flatMap { client?.url(for: $0) }, fallbacks: fallbacks.compactMap { client?.url(for: $0) })
                 .aspectRatio(16 / 9, contentMode: .fill)
                 .frame(width: 880, height: 495)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))

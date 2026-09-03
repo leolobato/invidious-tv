@@ -46,7 +46,6 @@ struct HomeView: View {
             }
             .padding(.vertical, 30)
         }
-        .navigationTitle("Home")
         .task {
             await model.load(force: false)
         }

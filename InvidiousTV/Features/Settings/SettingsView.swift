@@ -72,7 +72,6 @@ struct SettingsView: View {
                 LabeledContent("Player", value: "MPV")
             }
         }
-        .navigationTitle("Settings")
         .onAppear { instanceText = app.settings.instanceURLString }
         .alert("Rename Profile", isPresented: $showRename) {
             TextField("Name", text: $renameText)

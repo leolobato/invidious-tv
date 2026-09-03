@@ -35,11 +35,11 @@ struct VideoCard: View {
         let client = app.active?.client
         let thumbs = video.videoThumbnails
         let primary = thumbs.first { $0.quality == "maxresdefault" } ?? thumbs.best(maxWidth: 1280)
-        let fallback = thumbs.first { $0.quality == "medium" } ?? thumbs.best(maxWidth: 480)
+        let fallbacks = ["sddefault", "high", "medium"].compactMap { q in thumbs.first { $0.quality == q } }
         return ZStack(alignment: .bottomTrailing) {
             RemoteImage(
                 url: primary.flatMap { client?.url(for: $0) },
-                fallback: fallback.flatMap { client?.url(for: $0) }
+                fallbacks: fallbacks.compactMap { client?.url(for: $0) }
             )
             .aspectRatio(16 / 9, contentMode: .fill)
             .clipped()

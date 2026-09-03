@@ -1,22 +1,32 @@
 import SwiftUI
 import NukeUI
 
-/// Cached network image with a placeholder and an optional fallback URL.
+/// Cached network image with a placeholder and an ordered list of fallback URLs.
 struct RemoteImage: View {
     let url: URL?
-    var fallback: URL? = nil
+    var fallbacks: [URL] = []
     var contentMode: ContentMode = .fill
 
-    @State private var useFallback = false
+    @State private var attempt = 0
+
+    private var candidates: [URL] {
+        ([url].compactMap { $0 } + fallbacks)
+    }
+
+    private var currentURL: URL? {
+        let list = candidates
+        guard attempt < list.count else { return nil }
+        return list[attempt]
+    }
 
     var body: some View {
-        LazyImage(url: useFallback ? fallback : url) { state in
+        LazyImage(url: currentURL) { state in
             if let image = state.image {
                 image
                     .resizable()
                     .aspectRatio(contentMode: contentMode)
-            } else if state.error != nil, fallback != nil, !useFallback {
-                Color.clear.onAppear { useFallback = true }
+            } else if state.error != nil, attempt + 1 < candidates.count {
+                Color.clear.onAppear { attempt += 1 }
             } else {
                 placeholder
             }
@@ -31,5 +41,12 @@ struct RemoteImage: View {
                 .font(.system(size: 40, weight: .light))
                 .foregroundStyle(.white.opacity(0.25))
         }
+    }
+}
+
+extension RemoteImage {
+    /// Convenience for the common single-fallback case.
+    init(url: URL?, fallback: URL?, contentMode: ContentMode = .fill) {
+        self.init(url: url, fallbacks: [fallback].compactMap { $0 }, contentMode: contentMode)
     }
 }

@@ -34,7 +34,6 @@ struct SubscriptionsView: View {
                 }
             }
         }
-        .navigationTitle("Subscriptions")
         .task { await model.loadIfNeeded() }
         .refreshable { await model.reload() }
     }

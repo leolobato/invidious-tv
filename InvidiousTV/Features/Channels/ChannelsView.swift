@@ -32,7 +32,6 @@ struct ChannelsView: View {
                 }
             }
         }
-        .navigationTitle("Channels")
         .task { await load() }
         .refreshable { await load() }
     }

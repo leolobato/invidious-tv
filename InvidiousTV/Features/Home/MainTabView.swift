@@ -7,6 +7,7 @@ struct MainTabView: View {
 
     @Environment(AppModel.self) private var app
     @State private var showReauth = false
+    @State private var debugVideo: VideoDetails?
 
     var body: some View {
         TabView {
@@ -37,6 +38,14 @@ struct MainTabView: View {
         }
         .task {
             await session.refreshHistory()
+            #if DEBUG
+            if let id = ProcessInfo.processInfo.environment["INVIDIOUS_AUTOPLAY_VIDEO"], debugVideo == nil {
+                debugVideo = try? await session.client.video(id: id, proxy: app.settings.proxyMedia)
+            }
+            #endif
+        }
+        .fullScreenCover(item: $debugVideo) { video in
+            PlayerView(details: video, summary: video.summary, startAt: 0, session: session)
         }
         .onChange(of: session.sessionExpired) { _, expired in
             showReauth = expired
