@@ -10,6 +10,8 @@ struct PlayerView: View {
     let summary: VideoSummary
     let startAt: TimeInterval
     let session: ActiveSession
+    /// Videos to continue with before falling back to recommendations (playlist playback).
+    var queue: [VideoSummary] = []
 
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
@@ -69,7 +71,9 @@ struct PlayerView: View {
         .onChange(of: model?.finished ?? false) { _, finished in
             playerLog.info("finished changed: \(finished) upNext=\(upNext?.videoId ?? "nil", privacy: .public)")
             guard finished, let model else { return }
-            if app.settings.autoplayNext, let next = model.nextVideo(excluding: session.watchedIDs) {
+            if let next = queuedNext(after: model.details.videoId) {
+                startAutoplayCountdown(next)
+            } else if app.settings.autoplayNext, let next = model.nextVideo(excluding: session.watchedIDs) {
                 startAutoplayCountdown(next)
             } else {
                 dismiss()
@@ -83,6 +87,12 @@ struct PlayerView: View {
     }
 
     // MARK: - Autoplay
+
+    /// The next queued video after `videoID`, if the player was started from a playlist.
+    private func queuedNext(after videoID: String) -> VideoSummary? {
+        guard let index = queue.firstIndex(where: { $0.videoId == videoID }) else { return nil }
+        return queue.dropFirst(index + 1).first { !$0.isUpcoming && !$0.liveNow }
+    }
 
     private func startAutoplayCountdown(_ next: VideoSummary) {
         upNext = next

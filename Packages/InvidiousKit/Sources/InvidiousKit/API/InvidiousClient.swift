@@ -110,6 +110,45 @@ public final class InvidiousClient: Sendable {
         try await send("POST", "/api/v1/auth/history/\(videoID)")
     }
 
+    // MARK: - Playlists
+
+    /// The account's playlists. Each includes up to 100 videos.
+    public func playlists() async throws -> [Playlist] {
+        try await get("/api/v1/auth/playlists")
+    }
+
+    /// One playlist page (100 videos per page).
+    public func playlist(id: String, page: Int = 1) async throws -> Playlist {
+        try await get("/api/v1/auth/playlists/\(id)", query: ["page": String(page)])
+    }
+
+    /// Creates a playlist and returns its ID.
+    public func createPlaylist(title: String, privacy: PlaylistPrivacy = .private) async throws -> String {
+        let body = try JSONSerialization.data(withJSONObject: ["title": title, "privacy": privacy.rawValue])
+        let (data, response) = try await sendJSON("POST", "/api/v1/auth/playlists", body: body)
+        if let location = response.value(forHTTPHeaderField: "Location"), let id = location.split(separator: "/").last {
+            return String(id)
+        }
+        if let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any], let id = object["playlistId"] as? String {
+            return id
+        }
+        throw InvidiousError.invalidResponse
+    }
+
+    public func deletePlaylist(id: String) async throws {
+        try await send("DELETE", "/api/v1/auth/playlists/\(id)")
+    }
+
+    public func addVideo(_ videoID: String, toPlaylist playlistID: String) async throws {
+        let body = try JSONSerialization.data(withJSONObject: ["videoId": videoID])
+        _ = try await sendJSON("POST", "/api/v1/auth/playlists/\(playlistID)/videos", body: body)
+    }
+
+    /// Removes an entry by its `indexId`.
+    public func removeVideo(indexId: String, fromPlaylist playlistID: String) async throws {
+        try await send("DELETE", "/api/v1/auth/playlists/\(playlistID)/videos/\(indexId)")
+    }
+
     // MARK: - Login
 
     /// Signs in with username and password and returns the session ID.
@@ -222,6 +261,23 @@ public final class InvidiousClient: Sendable {
             throw InvidiousError.network(error.localizedDescription)
         }
         try validate(response, data: data)
+    }
+
+    private func sendJSON(_ method: String, _ path: String, body: Data) async throws -> (Data, HTTPURLResponse) {
+        let url = try makeURL(path)
+        var request = request(url: url)
+        request.httpMethod = method
+        request.httpBody = body
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            throw InvidiousError.network(error.localizedDescription)
+        }
+        try validate(response, data: data)
+        guard let http = response as? HTTPURLResponse else { throw InvidiousError.invalidResponse }
+        return (data, http)
     }
 
     private func makeURL(_ path: String, query: [String: String] = [:]) throws -> URL {

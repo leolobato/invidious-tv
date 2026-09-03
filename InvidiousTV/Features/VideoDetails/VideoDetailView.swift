@@ -10,6 +10,10 @@ struct VideoDetailView: View {
     @State private var isPlaying = false
     @State private var startAt: TimeInterval = 0
     @State private var descriptionExpanded = false
+    @State private var playlists: [Playlist] = []
+    @State private var saveMessage: String?
+    @State private var showNewPlaylist = false
+    @State private var newPlaylistName = ""
     @FocusState private var playFocused: Bool
 
     var body: some View {
@@ -86,6 +90,15 @@ struct VideoDetailView: View {
                         }
                         .disabled(details.value == nil)
                     }
+
+                    saveMenu
+                }
+
+                if let saveMessage {
+                    Label(saveMessage, systemImage: "checkmark.circle")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .transition(.opacity)
                 }
 
                 if isLive {
@@ -104,6 +117,62 @@ struct VideoDetailView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var saveMenu: some View {
+        Menu {
+            Button {
+                save { try await app.playlists.addToWatchLater(video.videoId, using: $0) }
+            } label: {
+                Label("Watch Later", systemImage: "clock")
+            }
+            Button {
+                newPlaylistName = ""
+                showNewPlaylist = true
+            } label: {
+                Label("New Playlist…", systemImage: "plus")
+            }
+            if !playlists.isEmpty {
+                Divider()
+                ForEach(playlists.filter { !PlaylistStore.isWatchLater($0) }) { playlist in
+                    Button(playlist.title) {
+                        save { try await app.playlists.add(video.videoId, to: playlist.playlistId, using: $0) }
+                    }
+                }
+            }
+        } label: {
+            Label("Save", systemImage: "plus.square.on.square")
+        }
+        .task {
+            if let client = app.active?.client {
+                playlists = (try? await app.playlists.all(using: client)) ?? []
+            }
+        }
+        .alert("New Playlist", isPresented: $showNewPlaylist) {
+            TextField("Name", text: $newPlaylistName)
+            Button("Create and Save") {
+                let name = newPlaylistName.trimmingCharacters(in: .whitespaces)
+                guard !name.isEmpty else { return }
+                save { try await app.playlists.createAndAdd(video.videoId, title: name, using: $0) }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
+
+    private func save(_ action: @escaping (InvidiousClient) async throws -> Void) {
+        guard let client = app.active?.client else { return }
+        Task {
+            do {
+                try await action(client)
+                withAnimation { saveMessage = "Saved" }
+                playlists = (try? await app.playlists.all(using: client)) ?? playlists
+            } catch {
+                app.active?.handle(error)
+                withAnimation { saveMessage = "Could not save: \(error.localizedDescription)" }
+            }
+            try? await Task.sleep(for: .seconds(3))
+            withAnimation { saveMessage = nil }
         }
     }
 

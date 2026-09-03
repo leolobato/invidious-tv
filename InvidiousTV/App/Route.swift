@@ -5,4 +5,5 @@ import InvidiousKit
 enum Route: Hashable {
     case video(VideoSummary)
     case channel(id: String, name: String)
+    case playlist(id: String, title: String)
 }

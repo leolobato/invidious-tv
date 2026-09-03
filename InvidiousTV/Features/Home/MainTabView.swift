@@ -13,7 +13,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab("Search", systemImage: "magnifyingglass", value: "search") {
+            Tab("Search", systemImage: "magnifyingglass", value: "search", role: .search) {
                 SearchView(session: session)
             }
             Tab("Home", systemImage: "house", value: "home") {
@@ -31,6 +31,12 @@ struct MainTabView: View {
             Tab("Channels", systemImage: "person.2", value: "channels") {
                 NavigationStack {
                     ChannelsView(session: session)
+                        .withRoutes()
+                }
+            }
+            Tab("Library", systemImage: "books.vertical", value: "library") {
+                NavigationStack {
+                    LibraryView(session: session)
                         .withRoutes()
                 }
             }
@@ -55,6 +61,8 @@ struct MainTabView: View {
                         homePath.append(Route.video(details.summary))
                     } else if parts[0] == "channel" {
                         homePath.append(Route.channel(id: parts[1], name: ""))
+                    } else if parts[0] == "playlist" {
+                        homePath.append(Route.playlist(id: parts[1], title: ""))
                     }
                 }
             }
@@ -81,6 +89,8 @@ extension View {
                 VideoDetailView(video: video)
             case .channel(let id, let name):
                 ChannelDetailView(channelID: id, channelName: name)
+            case .playlist(let id, let title):
+                PlaylistDetailView(playlistID: id, title: title)
             }
         }
     }

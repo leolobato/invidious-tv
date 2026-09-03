@@ -10,6 +10,7 @@ final class AppModel {
     let resume: ResumeStore
     let settings: AppSettings
     let channelAvatars: ChannelAvatarCache
+    let playlists = PlaylistStore()
     private let sessions: any SessionStore
 
     private(set) var active: ActiveSession?
