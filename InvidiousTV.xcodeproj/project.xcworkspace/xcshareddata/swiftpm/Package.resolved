@@ -1,0 +1,24 @@
+{
+  "originHash" : "52b5abf647e13224a3c3c063edb116b8444d0544333a10565c1e15395ff29290",
+  "pins" : [
+    {
+      "identity" : "mpvkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yattee/MPVKit.git",
+      "state" : {
+        "revision" : "671d3484b00f438407564573a4e188631d81bc90",
+        "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke",
+      "state" : {
+        "revision" : "83e19143355b02e9261edb2323b3e1e93287ebb9",
+        "version" : "12.9.0"
+      }
+    }
+  ],
+  "version" : 3
+}

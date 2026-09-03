@@ -1,0 +1,83 @@
+import Foundation
+import Observation
+import InvidiousKit
+
+/// User preferences backed by UserDefaults.
+@MainActor
+@Observable
+final class AppSettings {
+    static let defaultInstance = "http://10.0.1.9:3001"
+
+    /// Vertical resolutions offered in the quality setting. 0 means unlimited.
+    static let qualityOptions: [Int] = [0, 2160, 1440, 1080, 720, 480]
+    static let speedOptions: [Double] = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+
+    private let defaults: UserDefaults
+
+    var instanceURLString: String {
+        didSet { defaults.set(instanceURLString, forKey: Keys.instance) }
+    }
+
+    var proxyMedia: Bool {
+        didSet { defaults.set(proxyMedia, forKey: Keys.proxyMedia) }
+    }
+
+    /// 0 means unlimited.
+    var maxQuality: Int {
+        didSet { defaults.set(maxQuality, forKey: Keys.maxQuality) }
+    }
+
+    var defaultSpeed: Double {
+        didSet { defaults.set(defaultSpeed, forKey: Keys.defaultSpeed) }
+    }
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        instanceURLString = defaults.string(forKey: Keys.instance) ?? Self.defaultInstance
+        proxyMedia = defaults.object(forKey: Keys.proxyMedia) as? Bool ?? true
+        maxQuality = defaults.integer(forKey: Keys.maxQuality)
+        let speed = defaults.double(forKey: Keys.defaultSpeed)
+        defaultSpeed = speed > 0 ? speed : 1.0
+    }
+
+    var instanceURL: URL? {
+        Self.normalizedURL(from: instanceURLString)
+    }
+
+    /// Stream preferences for this device, honoring the quality cap.
+    var streamPreferences: StreamPreferences {
+        #if targetEnvironment(simulator)
+        // No hardware decoding in the simulator; keep it light.
+        let cap = min(maxQuality == 0 ? 720 : maxQuality, 720)
+        return StreamPreferences(maxHeight: cap, codecPreference: [.avc1], preferHighFrameRate: false)
+        #else
+        return StreamPreferences(maxHeight: maxQuality == 0 ? nil : maxQuality, codecPreference: [.avc1, .hevc, .vp9])
+        #endif
+    }
+
+    static func normalizedURL(from text: String) -> URL? {
+        var trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if !trimmed.hasPrefix("http://") && !trimmed.hasPrefix("https://") {
+            trimmed = "http://" + trimmed
+        }
+        while trimmed.hasSuffix("/") { trimmed.removeLast() }
+        guard let url = URL(string: trimmed), url.host != nil else { return nil }
+        return url
+    }
+
+    static func qualityLabel(_ height: Int) -> String {
+        switch height {
+        case 0: return "Best available"
+        case 2160: return "4K (2160p)"
+        default: return "\(height)p"
+        }
+    }
+
+    private enum Keys {
+        static let instance = "settings.instanceURL"
+        static let proxyMedia = "settings.proxyMedia"
+        static let maxQuality = "settings.maxQuality"
+        static let defaultSpeed = "settings.defaultSpeed"
+    }
+}

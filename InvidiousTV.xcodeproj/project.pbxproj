@@ -1,0 +1,587 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C1119DF007A60C47E483C83 /* ProfilePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = B078FCBFC6A40A5145D10E29 /* ProfilePalette.swift */; };
+		2EA5B28084531E767B1E21FB /* InvidiousTVApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */; };
+		3737FA79B24FB95DA45FFFF7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E1A303B7855C69321E233 /* HomeView.swift */; };
+		43DB51CEEBF74A4AC39704BE /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7275D870A74F19703C6A6736 /* AppModel.swift */; };
+		4ABD571FD81DD7FA50E658A0 /* ChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895C0DADB95A1BAC8DD3A5BA /* ChannelsView.swift */; };
+		57661207809F4D13DA3F6C3E /* MPVKit-GPL in Frameworks */ = {isa = PBXBuildFile; productRef = 6A8E1850C0C688EF64FDBFF4 /* MPVKit-GPL */; };
+		5BC264E254C7F73676362C88 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 54BF1D9E3628D638EBBBC49C /* NukeUI */; };
+		64BE86F64B44F31FF62E0A31 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8C0394AB994FAAED85589C /* LoginView.swift */; };
+		659E8465CA7CCA38EAD4D082 /* Shelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = C162D496434DB98C36B2F6DF /* Shelf.swift */; };
+		73597B0E04287A35F888118D /* VideoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68844913B0169C3FCF4A91C1 /* VideoGrid.swift */; };
+		7470318390685649CF66F5C2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9F36AB7B49131E70D6862B /* RootView.swift */; };
+		7B3731A7008B5DD692A8E350 /* ProfilePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */; };
+		845459E62E36CC2F51D707BE /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 3BE4B9753C5D29D0A0F63B21 /* Nuke */; };
+		8650DE8194302058BDD41572 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8713894BE7019F63D8E1E66D /* MainTabView.swift */; };
+		8749FCFB41F22ED84CD5E953 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC672E222C1058987E82EE7F /* SettingsView.swift */; };
+		984090AE8959AF6D9AF93426 /* ChannelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98D550D4ECD1F9802FBDD3 /* ChannelDetailView.swift */; };
+		A95072BA0FCD38B3CFEB2CEC /* VideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863FFAA098129F3074C6DE37 /* VideoDetailView.swift */; };
+		AE51EBD1FDE771057BD6B7BB /* InvidiousKit in Frameworks */ = {isa = PBXBuildFile; productRef = A94CC9FAFC34F272896CE8AC /* InvidiousKit */; };
+		B2A241EB4A16C24E3A3DCFAD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12045615266B24845E59CFE4 /* Assets.xcassets */; };
+		B5E50E8A19DB4AAB8C83486D /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B89EDEC8875AA4AD3E89FD /* Route.swift */; };
+		BA9AE3423F7B7E28FEF70A47 /* ChannelTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90740D6F323332190A479E6E /* ChannelTile.swift */; };
+		BECC62D2BEE3066690D39C08 /* VideoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA6DDFBF56A062D0BDE15BC /* VideoCard.swift */; };
+		CD5482DCC5D1408BA921120B /* ChannelAvatarCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBBE3785A4EA8661B32116E /* ChannelAvatarCache.swift */; };
+		DC59FDFC47182F957A8EEDEE /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134C846C538998DADAE75A4A /* AppSettings.swift */; };
+		E876BE1948B5783BC03E4E06 /* StatusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B41A49EAB14F156BCC6D45 /* StatusViews.swift */; };
+		E87F72F9697B9C72E64A8171 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD920CF4F50B41A702F51703 /* RemoteImage.swift */; };
+		EA5AF3F9A71B03020E94DC85 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F024D22BFD1F96C4086A2C69 /* PlayerView.swift */; };
+		F996D7EBE75E28256E74F247 /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CCB4D5B010CA4CE6F4E806 /* SubscriptionsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		12045615266B24845E59CFE4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		134C846C538998DADAE75A4A /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		1EA6DDFBF56A062D0BDE15BC /* VideoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCard.swift; sourceTree = "<group>"; };
+		2A8C0394AB994FAAED85589C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		3C8E1A303B7855C69321E233 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePickerView.swift; sourceTree = "<group>"; };
+		4E9F36AB7B49131E70D6862B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		54CCB4D5B010CA4CE6F4E806 /* SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
+		55B89EDEC8875AA4AD3E89FD /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		58B41A49EAB14F156BCC6D45 /* StatusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViews.swift; sourceTree = "<group>"; };
+		68844913B0169C3FCF4A91C1 /* VideoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoGrid.swift; sourceTree = "<group>"; };
+		6D074168193EBE4AB9F601BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		7275D870A74F19703C6A6736 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		7D98D550D4ECD1F9802FBDD3 /* ChannelDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailView.swift; sourceTree = "<group>"; };
+		863FFAA098129F3074C6DE37 /* VideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailView.swift; sourceTree = "<group>"; };
+		8713894BE7019F63D8E1E66D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		895C0DADB95A1BAC8DD3A5BA /* ChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsView.swift; sourceTree = "<group>"; };
+		90740D6F323332190A479E6E /* ChannelTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTile.swift; sourceTree = "<group>"; };
+		91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvidiousTVApp.swift; sourceTree = "<group>"; };
+		AEBBE3785A4EA8661B32116E /* ChannelAvatarCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarCache.swift; sourceTree = "<group>"; };
+		B078FCBFC6A40A5145D10E29 /* ProfilePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePalette.swift; sourceTree = "<group>"; };
+		C162D496434DB98C36B2F6DF /* Shelf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shelf.swift; sourceTree = "<group>"; };
+		D5B19F233EAA92BB69BE409D /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		DD920CF4F50B41A702F51703 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
+		DE4E58A0E8F06E13B251FF0D /* InvidiousTV.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InvidiousTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0BED8CAEA1E0ECD94F1257A /* InvidiousKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InvidiousKit; path = Packages/InvidiousKit; sourceTree = SOURCE_ROOT; };
+		EC672E222C1058987E82EE7F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F024D22BFD1F96C4086A2C69 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		779CB344C39D75EFBE5A7ED8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE51EBD1FDE771057BD6B7BB /* InvidiousKit in Frameworks */,
+				57661207809F4D13DA3F6C3E /* MPVKit-GPL in Frameworks */,
+				845459E62E36CC2F51D707BE /* Nuke in Frameworks */,
+				5BC264E254C7F73676362C88 /* NukeUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		06810396F748CB053EE606C8 /* Subscriptions */ = {
+			isa = PBXGroup;
+			children = (
+				54CCB4D5B010CA4CE6F4E806 /* SubscriptionsView.swift */,
+			);
+			path = Subscriptions;
+			sourceTree = "<group>";
+		};
+		0C9F1490BEEE5D4546E1FB07 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				3C8E1A303B7855C69321E233 /* HomeView.swift */,
+				8713894BE7019F63D8E1E66D /* MainTabView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		0D658B6F31F772383DC609A7 /* InvidiousTV */ = {
+			isa = PBXGroup;
+			children = (
+				12045615266B24845E59CFE4 /* Assets.xcassets */,
+				6D074168193EBE4AB9F601BE /* Info.plist */,
+				182EEB7511BF6D2F201D375F /* App */,
+				CB65F48AD5B0CA3835A16256 /* Features */,
+				DCC93067D058E0F74FCB5A41 /* Shared */,
+			);
+			path = InvidiousTV;
+			sourceTree = "<group>";
+		};
+		182EEB7511BF6D2F201D375F /* App */ = {
+			isa = PBXGroup;
+			children = (
+				7275D870A74F19703C6A6736 /* AppModel.swift */,
+				134C846C538998DADAE75A4A /* AppSettings.swift */,
+				AEBBE3785A4EA8661B32116E /* ChannelAvatarCache.swift */,
+				91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */,
+				4E9F36AB7B49131E70D6862B /* RootView.swift */,
+				55B89EDEC8875AA4AD3E89FD /* Route.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		32C7FD35C0E2CF63CF6FB24B /* VideoDetails */ = {
+			isa = PBXGroup;
+			children = (
+				863FFAA098129F3074C6DE37 /* VideoDetailView.swift */,
+			);
+			path = VideoDetails;
+			sourceTree = "<group>";
+		};
+		5461F4ECA9C48F24F029789C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DE4E58A0E8F06E13B251FF0D /* InvidiousTV.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		57BA252500B7D58172EA96AD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E0BED8CAEA1E0ECD94F1257A /* InvidiousKit */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		6976D1988C5B661075DA75CA = {
+			isa = PBXGroup;
+			children = (
+				746714F5D5F6CA4FBECA6F5D /* Configuration */,
+				0D658B6F31F772383DC609A7 /* InvidiousTV */,
+				57BA252500B7D58172EA96AD /* Packages */,
+				5461F4ECA9C48F24F029789C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		746714F5D5F6CA4FBECA6F5D /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				D5B19F233EAA92BB69BE409D /* Base.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		9579D142B3229259BD50553C /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				F024D22BFD1F96C4086A2C69 /* PlayerView.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		997359E992BC0D2CD6D44293 /* Channels */ = {
+			isa = PBXGroup;
+			children = (
+				7D98D550D4ECD1F9802FBDD3 /* ChannelDetailView.swift */,
+				895C0DADB95A1BAC8DD3A5BA /* ChannelsView.swift */,
+			);
+			path = Channels;
+			sourceTree = "<group>";
+		};
+		AEEC4F1A5EC7253712F92043 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				2A8C0394AB994FAAED85589C /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		C893AA79E67C61AB295E5369 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				EC672E222C1058987E82EE7F /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		CB65F48AD5B0CA3835A16256 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				997359E992BC0D2CD6D44293 /* Channels */,
+				0C9F1490BEEE5D4546E1FB07 /* Home */,
+				AEEC4F1A5EC7253712F92043 /* Login */,
+				9579D142B3229259BD50553C /* Player */,
+				F98CFABFE3E3650191632319 /* ProfilePicker */,
+				C893AA79E67C61AB295E5369 /* Settings */,
+				06810396F748CB053EE606C8 /* Subscriptions */,
+				32C7FD35C0E2CF63CF6FB24B /* VideoDetails */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		DCC93067D058E0F74FCB5A41 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				90740D6F323332190A479E6E /* ChannelTile.swift */,
+				B078FCBFC6A40A5145D10E29 /* ProfilePalette.swift */,
+				DD920CF4F50B41A702F51703 /* RemoteImage.swift */,
+				C162D496434DB98C36B2F6DF /* Shelf.swift */,
+				58B41A49EAB14F156BCC6D45 /* StatusViews.swift */,
+				1EA6DDFBF56A062D0BDE15BC /* VideoCard.swift */,
+				68844913B0169C3FCF4A91C1 /* VideoGrid.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		F98CFABFE3E3650191632319 /* ProfilePicker */ = {
+			isa = PBXGroup;
+			children = (
+				4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */,
+			);
+			path = ProfilePicker;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A0B805A3646D7F210A21D956 /* InvidiousTV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8436C63B83EBB78AF1DB7515 /* Build configuration list for PBXNativeTarget "InvidiousTV" */;
+			buildPhases = (
+				E66B1661288CB7C83660D95B /* Sources */,
+				7216E535704143F4D35C1A64 /* Resources */,
+				779CB344C39D75EFBE5A7ED8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = InvidiousTV;
+			packageProductDependencies = (
+				A94CC9FAFC34F272896CE8AC /* InvidiousKit */,
+				6A8E1850C0C688EF64FDBFF4 /* MPVKit-GPL */,
+				3BE4B9753C5D29D0A0F63B21 /* Nuke */,
+				54BF1D9E3628D638EBBBC49C /* NukeUI */,
+			);
+			productName = InvidiousTV;
+			productReference = DE4E58A0E8F06E13B251FF0D /* InvidiousTV.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1AABA075E927B9CDE4C3C56C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					A0B805A3646D7F210A21D956 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = D93389D7A7EB89C0CE389A45 /* Build configuration list for PBXProject "InvidiousTV" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6976D1988C5B661075DA75CA;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CAA7585429372402C5B6F03A /* XCRemoteSwiftPackageReference "MPVKit" */,
+				A8A681B1DEFEE20D12D1FFDD /* XCRemoteSwiftPackageReference "Nuke" */,
+				D2E710BCB68FAAC8AF10E267 /* XCLocalSwiftPackageReference "Packages/InvidiousKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A0B805A3646D7F210A21D956 /* InvidiousTV */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7216E535704143F4D35C1A64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2A241EB4A16C24E3A3DCFAD /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E66B1661288CB7C83660D95B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43DB51CEEBF74A4AC39704BE /* AppModel.swift in Sources */,
+				DC59FDFC47182F957A8EEDEE /* AppSettings.swift in Sources */,
+				CD5482DCC5D1408BA921120B /* ChannelAvatarCache.swift in Sources */,
+				984090AE8959AF6D9AF93426 /* ChannelDetailView.swift in Sources */,
+				BA9AE3423F7B7E28FEF70A47 /* ChannelTile.swift in Sources */,
+				4ABD571FD81DD7FA50E658A0 /* ChannelsView.swift in Sources */,
+				3737FA79B24FB95DA45FFFF7 /* HomeView.swift in Sources */,
+				2EA5B28084531E767B1E21FB /* InvidiousTVApp.swift in Sources */,
+				64BE86F64B44F31FF62E0A31 /* LoginView.swift in Sources */,
+				8650DE8194302058BDD41572 /* MainTabView.swift in Sources */,
+				EA5AF3F9A71B03020E94DC85 /* PlayerView.swift in Sources */,
+				0C1119DF007A60C47E483C83 /* ProfilePalette.swift in Sources */,
+				7B3731A7008B5DD692A8E350 /* ProfilePickerView.swift in Sources */,
+				E87F72F9697B9C72E64A8171 /* RemoteImage.swift in Sources */,
+				7470318390685649CF66F5C2 /* RootView.swift in Sources */,
+				B5E50E8A19DB4AAB8C83486D /* Route.swift in Sources */,
+				8749FCFB41F22ED84CD5E953 /* SettingsView.swift in Sources */,
+				659E8465CA7CCA38EAD4D082 /* Shelf.swift in Sources */,
+				E876BE1948B5783BC03E4E06 /* StatusViews.swift in Sources */,
+				F996D7EBE75E28256E74F247 /* SubscriptionsView.swift in Sources */,
+				BECC62D2BEE3066690D39C08 /* VideoCard.swift in Sources */,
+				A95072BA0FCD38B3CFEB2CEC /* VideoDetailView.swift in Sources */,
+				73597B0E04287A35F888118D /* VideoGrid.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		05C702CAB84E2F1917DBB3FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D5B19F233EAA92BB69BE409D /* Base.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		299F655FC93F0ACFE1ACD207 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D5B19F233EAA92BB69BE409D /* Base.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		7C97C528612E987A386E52AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				INFOPLIST_FILE = InvidiousTV/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID)";
+				PRODUCT_NAME = "Invidious TV";
+				SDKROOT = appletvos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		E550FBF8A44C6582F2D57489 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				INFOPLIST_FILE = InvidiousTV/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID)";
+				PRODUCT_NAME = "Invidious TV";
+				SDKROOT = appletvos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8436C63B83EBB78AF1DB7515 /* Build configuration list for PBXNativeTarget "InvidiousTV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C97C528612E987A386E52AC /* Debug */,
+				E550FBF8A44C6582F2D57489 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D93389D7A7EB89C0CE389A45 /* Build configuration list for PBXProject "InvidiousTV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				299F655FC93F0ACFE1ACD207 /* Debug */,
+				05C702CAB84E2F1917DBB3FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		D2E710BCB68FAAC8AF10E267 /* XCLocalSwiftPackageReference "Packages/InvidiousKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/InvidiousKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A8A681B1DEFEE20D12D1FFDD /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
+		CAA7585429372402C5B6F03A /* XCRemoteSwiftPackageReference "MPVKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yattee/MPVKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3BE4B9753C5D29D0A0F63B21 /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A8A681B1DEFEE20D12D1FFDD /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		54BF1D9E3628D638EBBBC49C /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A8A681B1DEFEE20D12D1FFDD /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
+		};
+		6A8E1850C0C688EF64FDBFF4 /* MPVKit-GPL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAA7585429372402C5B6F03A /* XCRemoteSwiftPackageReference "MPVKit" */;
+			productName = "MPVKit-GPL";
+		};
+		A94CC9FAFC34F272896CE8AC /* InvidiousKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = InvidiousKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1AABA075E927B9CDE4C3C56C /* Project object */;
+}
