@@ -31,6 +31,10 @@ final class AppSettings {
         didSet { defaults.set(defaultSpeed, forKey: Keys.defaultSpeed) }
     }
 
+    var autoplayNext: Bool {
+        didSet { defaults.set(autoplayNext, forKey: Keys.autoplayNext) }
+    }
+
     var channelSort: ChannelSortOrder {
         didSet { defaults.set(channelSort.rawValue, forKey: Keys.channelSort) }
     }
@@ -46,6 +50,7 @@ final class AppSettings {
         maxQuality = defaults.integer(forKey: Keys.maxQuality)
         let speed = defaults.double(forKey: Keys.defaultSpeed)
         defaultSpeed = speed > 0 ? speed : 1.0
+        autoplayNext = defaults.object(forKey: Keys.autoplayNext) as? Bool ?? true
         channelSort = defaults.string(forKey: Keys.channelSort).flatMap(ChannelSortOrder.init) ?? .nameAscending
         channelLayout = defaults.string(forKey: Keys.channelLayout).flatMap(ChannelLayout.init) ?? .grid
     }
@@ -89,6 +94,7 @@ final class AppSettings {
         static let proxyMedia = "settings.proxyMedia"
         static let maxQuality = "settings.maxQuality"
         static let defaultSpeed = "settings.defaultSpeed"
+        static let autoplayNext = "settings.autoplayNext"
         static let channelSort = "settings.channelSort"
         static let channelLayout = "settings.channelLayout"
     }

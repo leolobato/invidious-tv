@@ -1,5 +1,8 @@
 import SwiftUI
+import os
 import InvidiousKit
+
+private let playerLog = Logger(subsystem: "org.lobato.invidioustv", category: "player")
 
 /// Full-screen player with custom controls.
 struct PlayerView: View {
@@ -13,10 +16,16 @@ struct PlayerView: View {
     @State private var model: PlayerViewModel?
     @State private var surface = PlayerSurfaceHandle()
     @State private var optionsVisible = false
+    @State private var upNext: VideoSummary?
+    @State private var countdown = PlayerView.autoplayDelay
+    @State private var countdownTask: Task<Void, Never>?
+    @State private var isLoadingNext = false
     @FocusState private var optionFocus: OptionFocus?
 
+    static let autoplayDelay = 8
+
     enum OptionFocus: Hashable {
-        case speed, captions, quality, close
+        case speed, captions, quality, close, autoplayCancel, autoplayNow
     }
 
     var body: some View {
@@ -27,10 +36,12 @@ struct PlayerView: View {
                 if let model {
                     if let player = model.player {
                         MPVVideoView(player: player)
+                            .id(ObjectIdentifier(player))
                             .ignoresSafeArea()
                     }
 
-                    PlayerSurface(handle: surface, handlesMenu: { true }) { action in
+                    PlayerSurface(handle: surface, handlesMenu: { upNext == nil }) { action in
+                        guard upNext == nil else { return }
                         handle(action, model: model, width: geo.size.width)
                     }
                     .ignoresSafeArea()
@@ -56,13 +67,118 @@ struct PlayerView: View {
         }
         #endif
         .onChange(of: model?.finished ?? false) { _, finished in
-            if finished { dismiss() }
+            playerLog.info("finished changed: \(finished) upNext=\(upNext?.videoId ?? "nil", privacy: .public)")
+            guard finished, let model else { return }
+            if app.settings.autoplayNext, let next = model.nextVideo(excluding: session.watchedIDs) {
+                startAutoplayCountdown(next)
+            } else {
+                dismiss()
+            }
         }
         .onChange(of: optionFocus) { _, focus in
             if focus != nil {
                 model?.showControls(autoHide: false)
             }
         }
+    }
+
+    // MARK: - Autoplay
+
+    private func startAutoplayCountdown(_ next: VideoSummary) {
+        upNext = next
+        countdown = Self.autoplayDelay
+        optionFocus = .autoplayCancel
+        countdownTask?.cancel()
+        countdownTask = Task {
+            while countdown > 0 {
+                try? await Task.sleep(for: .seconds(1))
+                guard !Task.isCancelled else { return }
+                countdown -= 1
+            }
+            await playNext()
+        }
+    }
+
+    private func cancelAutoplay() {
+        playerLog.info("autoplay cancelled")
+        countdownTask?.cancel()
+        upNext = nil
+        dismiss()
+    }
+
+    /// Replaces the current player with the next video.
+    private func playNext() async {
+        guard let next = upNext, !isLoadingNext else {
+            playerLog.info("playNext skipped: upNext=\(upNext?.videoId ?? "nil", privacy: .public) loading=\(isLoadingNext)")
+            return
+        }
+        // Do not cancel the countdown task here: when the countdown itself calls playNext, cancelling
+        // would abort the network fetch below.
+        isLoadingNext = true
+        defer { isLoadingNext = false }
+        playerLog.info("playNext: loading \(next.videoId, privacy: .public)")
+        do {
+            let nextDetails = try await session.client.video(id: next.videoId, proxy: app.settings.proxyMedia)
+            model?.stop()
+            let resumeAt = app.resume.resumePoint(for: next.videoId, profile: session.profile.id) ?? 0
+            let vm = PlayerViewModel(details: nextDetails, summary: next, startAt: resumeAt, session: session, settings: app.settings, resume: app.resume)
+            model = vm
+            upNext = nil
+            optionFocus = nil
+            surface.focus()
+            vm.start()
+            playerLog.info("playNext: started \(next.videoId, privacy: .public)")
+        } catch {
+            playerLog.error("playNext failed: \(error.localizedDescription, privacy: .public)")
+            session.handle(error)
+            dismiss()
+        }
+    }
+
+    private func autoplayOverlay(_ next: VideoSummary) -> some View {
+        let client = session.client
+        let thumb = next.videoThumbnails.first { $0.quality == "medium" } ?? next.videoThumbnails.best(maxWidth: 640)
+        return VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                HStack(alignment: .top, spacing: 24) {
+                    RemoteImage(url: thumb.flatMap { client.url(for: $0) })
+                        .aspectRatio(16 / 9, contentMode: .fill)
+                        .frame(width: 320, height: 180)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Up next in \(countdown)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        Text(next.title)
+                            .font(.callout.weight(.semibold))
+                            .lineLimit(2)
+                        Text(next.author)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 16) {
+                            Button("Cancel") { cancelAutoplay() }
+                                .focused($optionFocus, equals: .autoplayCancel)
+                            Button {
+                                countdownTask?.cancel()
+                                Task { await playNext() }
+                            } label: {
+                                Label(isLoadingNext ? "Loading…" : "Play Now", systemImage: "play.fill")
+                            }
+                            .focused($optionFocus, equals: .autoplayNow)
+                            .disabled(isLoadingNext)
+                        }
+                        .padding(.top, 6)
+                    }
+                    .frame(width: 520, alignment: .leading)
+                }
+                .padding(28)
+                .background(.black.opacity(0.85), in: RoundedRectangle(cornerRadius: 20))
+                .padding(60)
+            }
+        }
+        .onExitCommand { cancelAutoplay() }
     }
 
     #if DEBUG
@@ -162,7 +278,13 @@ struct PlayerView: View {
                 controls(model)
                     .transition(.opacity)
             }
+
+            if let upNext {
+                autoplayOverlay(upNext)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
+        .animation(.easeInOut(duration: 0.25), value: upNext?.videoId)
         .animation(.easeInOut(duration: 0.2), value: model.controlsVisible)
         .animation(.easeInOut(duration: 0.2), value: optionsVisible)
     }

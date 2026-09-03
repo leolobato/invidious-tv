@@ -48,6 +48,7 @@ struct SettingsView: View {
                         Text(speed == 1 ? "Normal" : String(format: "%g×", speed)).tag(speed)
                     }
                 }
+                Toggle("Autoplay next video", isOn: $settings.autoplayNext)
                 Toggle("Proxy media through instance", isOn: $settings.proxyMedia)
                 Text("Proxying routes video data through the Invidious server. Turn it off to stream directly from YouTube's servers when the instance is on a slow link.")
                     .font(.caption)

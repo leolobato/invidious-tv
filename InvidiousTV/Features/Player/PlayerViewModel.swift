@@ -85,6 +85,12 @@ final class PlayerViewModel {
         return selection?.label ?? ""
     }
 
+    /// The video autoplay should continue with: the first recommendation not yet watched.
+    func nextVideo(excluding watched: Set<String>) -> VideoSummary? {
+        let candidates = details.recommendedVideos.filter { !$0.isUpcoming && !$0.liveNow && $0.videoId != details.videoId }
+        return candidates.first { !watched.contains($0.videoId) } ?? candidates.first
+    }
+
     // MARK: - Lifecycle
 
     func start() {
