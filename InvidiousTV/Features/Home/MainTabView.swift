@@ -10,6 +10,9 @@ struct MainTabView: View {
     @State private var debugVideo: VideoDetails?
     @State private var selectedTab: String = ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_TAB"] ?? "home"
     @State private var homePath = NavigationPath()
+    @State private var subscriptionsPath = NavigationPath()
+    @State private var channelsPath = NavigationPath()
+    @State private var libraryPath = NavigationPath()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -21,24 +24,28 @@ struct MainTabView: View {
                     HomeView(session: session)
                         .withRoutes()
                 }
+                .environment(\.pushRoute) { homePath.append($0) }
             }
             Tab("Subscriptions", systemImage: "rectangle.stack", value: "subscriptions") {
-                NavigationStack {
+                NavigationStack(path: $subscriptionsPath) {
                     SubscriptionsView(session: session)
                         .withRoutes()
                 }
+                .environment(\.pushRoute) { subscriptionsPath.append($0) }
             }
             Tab("Channels", systemImage: "person.2", value: "channels") {
-                NavigationStack {
+                NavigationStack(path: $channelsPath) {
                     ChannelsView(session: session)
                         .withRoutes()
                 }
+                .environment(\.pushRoute) { channelsPath.append($0) }
             }
             Tab("Library", systemImage: "books.vertical", value: "library") {
-                NavigationStack {
+                NavigationStack(path: $libraryPath) {
                     LibraryView(session: session)
                         .withRoutes()
                 }
+                .environment(\.pushRoute) { libraryPath.append($0) }
             }
             Tab("Settings", systemImage: "gearshape", value: "settings") {
                 NavigationStack {

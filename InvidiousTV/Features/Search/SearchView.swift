@@ -31,6 +31,7 @@ struct SearchView: View {
             }
             .withRoutes()
         }
+        .environment(\.pushRoute) { path.append($0) }
         .task(id: model.query) {
             await model.queryChanged()
         }

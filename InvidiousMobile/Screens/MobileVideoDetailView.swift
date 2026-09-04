@@ -8,7 +8,7 @@ struct MobileVideoDetailView: View {
     @State private var details: LoadState<VideoDetails> = .idle
     @State private var playback: PlaybackRequest?
     @State private var descriptionExpanded = false
-    @State private var linkedRoute: Route?
+    @Environment(\.pushRoute) private var pushRoute
     @State private var playlists: [Playlist] = []
     @State private var saveMessage: String?
     @State private var showNewPlaylist = false
@@ -191,7 +191,7 @@ struct MobileVideoDetailView: View {
                         }
                         Task {
                             if let route = await LinkRouter.route(for: link, client: client) {
-                                linkedRoute = route
+                                pushRoute(route)
                             }
                         }
                         return .handled
@@ -207,9 +207,6 @@ struct MobileVideoDetailView: View {
             }
             .padding(12)
             .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
-            .navigationDestination(item: $linkedRoute) { route in
-                MobileRouteDestination(route: route)
-            }
         }
     }
 

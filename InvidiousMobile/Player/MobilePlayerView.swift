@@ -87,6 +87,7 @@ struct MobilePlayerView: View {
         VStack {
             HStack(alignment: .top) {
                 Button { dismiss() } label: { Image(systemName: "chevron.down").font(.title2).padding(10) }
+                    .accessibilityLabel("Close player")
                 VStack(alignment: .leading) {
                     Text(model.title).font(.subheadline.weight(.semibold)).lineLimit(1)
                     Text(model.author).font(.caption).foregroundStyle(.white.opacity(0.8))

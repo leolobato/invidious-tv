@@ -29,6 +29,7 @@ struct MobileSearchView: View {
             .onSubmit(of: .search) { Task { await submit() } }
             .withMobileRoutes()
         }
+        .environment(\.pushRoute) { path.append($0) }
         .task(id: model.query) { await model.queryChanged() }
         .onAppear {
             #if DEBUG

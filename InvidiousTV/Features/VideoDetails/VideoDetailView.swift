@@ -9,7 +9,7 @@ struct VideoDetailView: View {
     @State private var details: LoadState<VideoDetails> = .idle
     @State private var playback: PlaybackRequest?
     @State private var descriptionExpanded = false
-    @State private var linkedRoute: Route?
+    @Environment(\.pushRoute) private var pushRoute
     @State private var playlists: [Playlist] = []
     @State private var saveMessage: String?
     @State private var showNewPlaylist = false
@@ -254,7 +254,7 @@ struct VideoDetailView: View {
                                     guard let client = app.active?.client else { return }
                                     Task {
                                         if let route = await LinkRouter.route(for: item.link, client: client) {
-                                            linkedRoute = route
+                                            pushRoute(route)
                                         }
                                     }
                                 } label: {
@@ -267,9 +267,6 @@ struct VideoDetailView: View {
                     }
                     .scrollClipDisabled()
                 }
-            }
-            .navigationDestination(item: $linkedRoute) { route in
-                RouteDestination(route: route)
             }
         }
     }

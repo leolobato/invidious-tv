@@ -7,6 +7,9 @@ struct MobileTabView: View {
     @Environment(AppModel.self) private var app
     @State private var selectedTab: String = ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_TAB"] ?? "home"
     @State private var homePath = NavigationPath()
+    @State private var subscriptionsPath = NavigationPath()
+    @State private var channelsPath = NavigationPath()
+    @State private var libraryPath = NavigationPath()
     @State private var showReauth = false
     @State private var debugVideo: VideoDetails?
 
@@ -17,24 +20,28 @@ struct MobileTabView: View {
                     MobileHomeView(session: session)
                         .withMobileRoutes()
                 }
+                .environment(\.pushRoute) { homePath.append($0) }
             }
             Tab("Subscriptions", systemImage: "rectangle.stack", value: "subscriptions") {
-                NavigationStack {
+                NavigationStack(path: $subscriptionsPath) {
                     MobileSubscriptionsView(session: session)
                         .withMobileRoutes()
                 }
+                .environment(\.pushRoute) { subscriptionsPath.append($0) }
             }
             Tab("Channels", systemImage: "person.2", value: "channels") {
-                NavigationStack {
+                NavigationStack(path: $channelsPath) {
                     MobileChannelsView(session: session)
                         .withMobileRoutes()
                 }
+                .environment(\.pushRoute) { channelsPath.append($0) }
             }
             Tab("Library", systemImage: "books.vertical", value: "library") {
-                NavigationStack {
+                NavigationStack(path: $libraryPath) {
                     MobileLibraryView(session: session)
                         .withMobileRoutes()
                 }
+                .environment(\.pushRoute) { libraryPath.append($0) }
             }
             Tab("Search", systemImage: "magnifyingglass", value: "search", role: .search) {
                 MobileSearchView(session: session)
