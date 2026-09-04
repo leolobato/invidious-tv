@@ -9,56 +9,63 @@ The interface follows the YouTube apps for Apple TV and iPhone: a profile picker
 home screen with recommendations, a chronological subscriptions feed, and a full-screen player. It is
 written in SwiftUI for tvOS 26 and iOS 26.
 
-This is an unofficial client. It is not affiliated with or endorsed by the Invidious project, and the
+**This is an unofficial client.** It is not affiliated with or endorsed by the Invidious project, and the
 Invidious name and logo belong to that project.
 
 ## Features
 
-- Profiles: several household members, each signed in to their own Invidious account on the instance.
-- Sign in with username and password, or on Apple TV by scanning a QR code with your phone and approving
-  in the instance's website.
-- Home with recommendations built from your history, plus the latest uploads from your subscriptions.
-- Subscriptions feed, channel browser with sorting and a name filter, and channel pages.
-- Search with suggestions; paste a YouTube link or video ID to open it directly.
-- Playlists and Watch Later, with Save from any video, and the account's watch history.
-- Player with scrubbing and thumbnail previews, quality, speed, captions, and audio language selection
-  so auto-dubbed videos play in their original language.
-- Resume where you left off, on any of your devices, with positions synced through iCloud.
-- Autoplay of the next video with a countdown.
-- SponsorBlock skipping of sponsor and self-promotion segments.
-- Comments on the video page, and tappable links in descriptions.
-- Optional Hide Shorts filter.
-- Apple TV Top Shelf with Continue Watching and the latest subscriptions, refreshed in the background.
-- iOS share extension: send a YouTube link from any app to open it here.
+- **Profiles** for the household, each signed in to its own Invidious account.
+- **Phone sign-in** on Apple TV: scan a QR code and approve on the instance's website, no typing.
+- **Home** with recommendations from your history and the latest uploads from your subscriptions.
+- **Subscriptions and channels**, with sorting and a name filter.
+- **Search** with suggestions; paste a YouTube link or video ID to open it.
+- **Playlists, Watch Later and watch history**, shared with the instance's website.
+- **Player** with scrubbing previews, quality, speed, captions and audio language, so auto-dubbed videos
+  play in their original language.
+- **Resume anywhere**: positions sync between your devices through iCloud.
+- **Autoplay** of the next video with a countdown.
+- **SponsorBlock** skipping of sponsor and self-promotion segments.
+- **Comments** and tappable description links.
+- **Top Shelf** on Apple TV with Continue Watching and new uploads, refreshed in the background.
+- **Share extension** on iOS: send a YouTube link from any app to open it here.
 
 ## Planned
 
-- Livestreams. Instances running invidious-companion currently return no playable manifest for live
-  videos, so live playback waits on a fix there.
-- A macOS app on the same core.
+- **Livestreams.** Instances running invidious-companion return no playable manifest for live videos yet.
+- **macOS app** on the same core.
 
 ## Build
 
+### Configure signing and your instance
+
+Copy `Configuration/LocalSigning.xcconfig.example` to `Configuration/LocalSigning.xcconfig` (gitignored) and
+edit it:
+
+```
+DEVELOPMENT_TEAM = ABCDE12345                      # your Apple Developer team ID
+APP_BUNDLE_ID = com.yourcompany.invidioustv         # tvOS bundle ID; iOS uses it with .mobile appended
+DEFAULT_INSTANCE_URL = http:/$()/192.168.1.10:3000  # optional; offered on the login screen
+```
+
+`DEFAULT_INSTANCE_URL` is optional, and without it the user types the instance URL on first launch. The
+odd `http:/$()/` escapes the slashes, which xcconfig would otherwise read as a comment. The bundle ID also
+names the app group, the shared keychain group and the unified-log subsystem.
+
+### Generate and build
+
 ```sh
 brew install xcodegen
-cp Configuration/LocalSigning.xcconfig.example Configuration/LocalSigning.xcconfig  # edit values
 xcodegen generate
 open InvidiousTV.xcodeproj
 ```
 
-`LocalSigning.xcconfig` holds your team, bundle ID and, optionally, `DEFAULT_INSTANCE_URL`, the instance
-offered on the login screen (slashes escaped as `http:/$()/host:port`). Without it the user types the
-instance URL on first launch. The bundle ID also names the app group, the shared keychain group and the
-unified-log subsystem.
+Schemes: `InvidiousTV` (Apple TV) and `InvidiousMobile` (iPhone and iPad).
 
 Package tests run on the Mac, no simulator needed:
 
 ```sh
 cd Packages/InvidiousKit && swift test
 ```
-
-Schemes: `InvidiousTV` (Apple TV) and `InvidiousMobile` (iPhone and iPad). The iOS bundle ID is the tvOS
-one with `.mobile` appended.
 
 ## Playback
 
