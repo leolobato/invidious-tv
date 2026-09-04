@@ -1,25 +1,41 @@
 # Invidious TV
 
-A tvOS and iOS client for a self-hosted [Invidious](https://github.com/iv-org/invidious) instance, in
-the style of the YouTube apps. SwiftUI, tvOS 26 and iOS 26, MPV playback. See `docs/PRD-v1.md` and
-`docs/PRD-v2.md` for the product requirements.
+Invidious TV is a tvOS and iOS client for [Invidious](https://invidious.io), the open-source alternative
+front end to YouTube. Invidious runs on a server, either a public instance or one you host yourself, and
+exposes YouTube without ads or tracking. This app talks to one instance and signs in to accounts on it,
+so subscriptions, playlists and watch history are the same ones you see on the instance's website.
+
+The interface follows the YouTube apps for Apple TV and iPhone: a profile picker for the household, a
+home screen with recommendations, a chronological subscriptions feed, and a full-screen player. It is
+written in SwiftUI for tvOS 26 and iOS 26.
 
 This is an unofficial client. It is not affiliated with or endorsed by the Invidious project, and the
 Invidious name and logo belong to that project.
 
-Planned: livestreams. Invidious instances running invidious-companion currently return no playable
-manifest for live videos, so live playback is not available yet.
+## Features
 
-## Layout
+- Profiles: several household members, each signed in to their own Invidious account on the instance.
+- Sign in with username and password, or on Apple TV by scanning a QR code with your phone and approving
+  in the instance's website.
+- Home with recommendations built from your history, plus the latest uploads from your subscriptions.
+- Subscriptions feed, channel browser with sorting and a name filter, and channel pages.
+- Search with suggestions; paste a YouTube link or video ID to open it directly.
+- Playlists and Watch Later, with Save from any video, and the account's watch history.
+- Player with scrubbing and thumbnail previews, quality, speed, captions, and audio language selection
+  so auto-dubbed videos play in their original language.
+- Resume where you left off, on any of your devices, with positions synced through iCloud.
+- Autoplay of the next video with a countdown.
+- SponsorBlock skipping of sponsor and self-promotion segments.
+- Comments on the video page, and tappable links in descriptions.
+- Optional Hide Shorts filter.
+- Apple TV Top Shelf with Continue Watching and the latest subscriptions, refreshed in the background.
+- iOS share extension: send a YouTube link from any app to open it here.
 
-| Path | Purpose |
-| --- | --- |
-| `project.yml` | XcodeGen spec. Run `xcodegen generate` after adding files. |
-| `Configuration/` | Signing. `Base.xcconfig` is committed; copy `LocalSigning.xcconfig.example` to `LocalSigning.xcconfig` and fill in your team and bundle ID. |
-| `Packages/InvidiousKit` | Platform-agnostic Swift package: API client, models, login, profiles, resume store, home feed builder, stream selection, search, playlists, comments, SponsorBlock. |
-| `Shared/` | App code compiled into both apps: app model, settings, stores, view models, MPV player core, shared views. |
-| `InvidiousTV/` | tvOS views and remote handling. `InvidiousTVTopShelf/` is the Top Shelf extension. |
-| `InvidiousMobile/` | iPhone and iPad views and touch player. `InvidiousMobileShare/` is the share extension that opens YouTube links. |
+## Planned
+
+- Livestreams. Instances running invidious-companion currently return no playable manifest for live
+  videos, so live playback waits on a fix there.
+- A macOS app on the same core.
 
 ## Build
 
@@ -41,62 +57,16 @@ Package tests run on the Mac, no simulator needed:
 cd Packages/InvidiousKit && swift test
 ```
 
-Schemes: `InvidiousTV` (Apple TV) and `InvidiousMobile` (iPhone and iPad). Both share the debug hooks below;
-the iOS bundle ID is the tvOS one with `.mobile` appended.
+Schemes: `InvidiousTV` (Apple TV) and `InvidiousMobile` (iPhone and iPad). The iOS bundle ID is the tvOS
+one with `.mobile` appended.
 
 ## Playback
 
-The player uses libmpv through [MPVKit](https://github.com/yattee/MPVKit) (GPL build, so the app is
-GPL). It plays the best adaptive video stream the device can decode plus a separate audio stream.
-Audio languages come from the `xtags` parameter of each audio stream URL (Invidious does not expose them
-as a field); the original language plays by default and the player's Audio menu switches dubs without
-reloading the video. On devices, mpv renders through OpenGL ES into a `CAEAGLLayer`. In the simulator, where OpenGL ES
-output is unreliable, it renders through mpv's software API into a `CGImage`, so simulator playback
-is capped at 720p and decoded on the CPU.
-
-## Sign-in and sync
-
-Profiles sign in with username and password, or on tvOS with a phone: the TV shows a QR code for the
-instance's `/authorize_token` page with a callback to a small HTTP listener on the TV (`TokenCallbackServer`
-in `InvidiousKit`). After approving in the phone's browser, the browser is redirected to the TV with the
-token and username, and the profile then authenticates with `Authorization: Bearer`. Phone and TV must
-share a network. Removing a token profile revokes its token on the instance.
-
-Resume positions sync through the iCloud key-value store (entitlement
-`com.apple.developer.ubiquity-kvstore-identifier`, shared by the tvOS and iOS apps). Buckets are keyed by
-instance and username, so any device signed in to the same Invidious account with the same iCloud account
-shares them. The Settings toggle turns it off. In the simulator without an iCloud account the store is local only.
-
-## Debug hooks (DEBUG builds only)
-
-Environment variables let you drive the app in the simulator without the remote. With `simctl`,
-prefix each with `SIMCTL_CHILD_`.
-
-| Variable | Effect |
-| --- | --- |
-| `INVIDIOUS_AUTOLOGIN_USER`, `INVIDIOUS_AUTOLOGIN_PASSWORD` | Sign in and activate that profile on launch. Optional `INVIDIOUS_AUTOLOGIN_INSTANCE`. |
-| `INVIDIOUS_DEBUG_TAB` | `search`, `home`, `subscriptions`, `channels`, `library` or `settings` (tvOS only; iOS opens Settings from the profile menu). |
-| `INVIDIOUS_DEBUG_SEARCH` | Query to prefill on the Search tab. |
-| `INVIDIOUS_DEBUG_FOCUS` | `rename` or `version` to focus a Settings row. |
-| `INVIDIOUS_DEBUG_COMMENTS` | Any value expands comments on video details. |
-| `INVIDIOUS_DEBUG_PHONE_LOGIN` | Any value opens the QR-code phone sign-in as soon as the login screen appears (tvOS). |
-| `INVIDIOUS_DEBUG_ROUTE` | `video:<id>`, `channel:<ucid>` or `playlist:<plid>`, pushed on the Home tab. |
-| `INVIDIOUS_AUTOPLAY_VIDEO` | Video ID to open directly in the player. |
-| `INVIDIOUS_DEBUG_REMOTE` | Scripted remote actions for the player, e.g. `8:select,3:down,1:pan:300,1:panEnd`. Actions: `select`, `playPause`, `left`, `right`, `up`, `down`, `menu`, `pan:<points>`, `panEnd`. |
-
-Example:
-
-```sh
-SIMCTL_CHILD_INVIDIOUS_AUTOLOGIN_USER=me SIMCTL_CHILD_INVIDIOUS_AUTOLOGIN_PASSWORD=secret \
-SIMCTL_CHILD_INVIDIOUS_AUTOPLAY_VIDEO=dQw4w9WgXcQ \
-xcrun simctl launch <simulator-udid> <your-bundle-id>
-```
-
-mpv and renderer messages go to the unified log under a subsystem named after your bundle ID:
-
-```sh
-xcrun simctl spawn <simulator-udid> log stream --level info --predicate 'subsystem == "<your-bundle-id>"'
-```
+Video plays through libmpv via [MPVKit](https://github.com/yattee/MPVKit), the same player component
+[Yattee](https://github.com/yattee/yattee) uses. The app picks the best adaptive video stream the device
+can decode, up to 4K, plus a separate audio stream, and prefers the original audio language when
+YouTube offers dubs. On devices, mpv renders through OpenGL ES. In the simulator it falls back to mpv's
+software renderer, capped at 720p.
 
 ## License and third-party notices
 
