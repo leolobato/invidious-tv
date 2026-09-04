@@ -1,6 +1,6 @@
 # Invidious TV — PRD v1
 
-Status: v1 implemented on the tvOS simulator, 2026-09-04; pending validation on a real Apple TV
+Status: v1 complete; acceptance checklist run on a real Apple TV and iPhone on 2026-09-04 (v1.0)
 Date: 2026-09-03
 Bundle ID: `org.lobato.invidioustv`
 Platform: tvOS 26 (iOS and macOS in later versions)

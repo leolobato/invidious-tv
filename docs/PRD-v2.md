@@ -1,7 +1,6 @@
 # Invidious TV — v2 scope
 
-Status: complete on the simulators, 2026-09-04, except livestreams (see 7); 9 and 10 still need a run with a real
-account and a real phone
+Status: complete and checked on real devices, 2026-09-04 (v1.0), except livestreams (see 7)
 Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
 
 ## Order of work
@@ -43,6 +42,8 @@ Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
   grid (tvOS, from Library), paged, with Clear History. Invidious returns only IDs, so pages are resolved to video
   summaries a few at a time and resume snapshots are reused.
 - Channel name filter on the Channels tab.
+- Top Shelf refreshes its uploads in the background: the extension fetches the feed itself with the profile's credential
+  from a shared keychain group when the app's snapshot is older than 15 minutes.
 - Original-language audio by default and an Audio menu for dubs; tappable description links; profile menu on iOS.
 
 ## Scoped out
