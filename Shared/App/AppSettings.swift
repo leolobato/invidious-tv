@@ -10,6 +10,12 @@ final class AppSettings {
 
     /// Vertical resolutions offered in the quality setting. 0 means unlimited.
     static let qualityOptions: [Int] = [0, 2160, 1440, 1080, 720, 480]
+    /// Phones and tablets default to 1080p; the TV plays the best the video offers (up to 4K).
+    #if os(iOS)
+    static let defaultMaxQuality = 1080
+    #else
+    static let defaultMaxQuality = 0
+    #endif
     static let speedOptions: [Double] = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
 
     private let defaults: UserDefaults
@@ -43,6 +49,11 @@ final class AppSettings {
         didSet { defaults.set(hideShorts, forKey: Keys.hideShorts) }
     }
 
+    /// Sync resume positions between this user's devices through iCloud.
+    var iCloudSync: Bool {
+        didSet { defaults.set(iCloudSync, forKey: Keys.iCloudSync) }
+    }
+
     /// Applies the Hide Shorts preference to a list.
     func filtered(_ videos: [VideoSummary]) -> [VideoSummary] {
         hideShorts ? ShortsFilter.removingShorts(videos) : videos
@@ -64,11 +75,12 @@ final class AppSettings {
         self.defaults = defaults
         instanceURLString = defaults.string(forKey: Keys.instance) ?? Self.defaultInstance
         proxyMedia = defaults.object(forKey: Keys.proxyMedia) as? Bool ?? true
-        maxQuality = defaults.integer(forKey: Keys.maxQuality)
+        maxQuality = defaults.object(forKey: Keys.maxQuality) as? Int ?? Self.defaultMaxQuality
         let speed = defaults.double(forKey: Keys.defaultSpeed)
         defaultSpeed = speed > 0 ? speed : 1.0
         autoplayNext = defaults.object(forKey: Keys.autoplayNext) as? Bool ?? true
         hideShorts = defaults.bool(forKey: Keys.hideShorts)
+        iCloudSync = defaults.object(forKey: Keys.iCloudSync) as? Bool ?? true
         sponsorBlockEnabled = defaults.object(forKey: Keys.sponsorBlockEnabled) as? Bool ?? true
         if let stored = defaults.stringArray(forKey: Keys.sponsorBlockCategories) {
             sponsorBlockCategories = Set(stored.compactMap(SponsorBlockCategory.init))
@@ -120,6 +132,7 @@ final class AppSettings {
         static let defaultSpeed = "settings.defaultSpeed"
         static let autoplayNext = "settings.autoplayNext"
         static let hideShorts = "settings.hideShorts"
+        static let iCloudSync = "settings.iCloudSync"
         static let sponsorBlockEnabled = "settings.sponsorBlockEnabled"
         static let sponsorBlockCategories = "settings.sponsorBlockCategories"
         static let channelSort = "settings.channelSort"

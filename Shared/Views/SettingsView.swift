@@ -38,11 +38,14 @@ struct SettingsView: View {
             }
 
             Section("Playback") {
-                Picker("Maximum quality", selection: $settings.maxQuality) {
+                Picker("Default quality", selection: $settings.maxQuality) {
                     ForEach(AppSettings.qualityOptions, id: \.self) { height in
                         Text(AppSettings.qualityLabel(height)).tag(height)
                     }
                 }
+                Text("Videos start at the best quality up to this. The player's Quality menu can still change it for one video.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 Picker("Default speed", selection: $settings.defaultSpeed) {
                     ForEach(AppSettings.speedOptions, id: \.self) { speed in
                         Text(speed == 1 ? "Normal" : String(format: "%g×", speed)).tag(speed)
@@ -55,6 +58,14 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
                 Toggle("Proxy media through instance", isOn: $settings.proxyMedia)
                 Text("Proxying routes video data through the Invidious server. Turn it off to stream directly from YouTube's servers when the instance is on a slow link.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Sync") {
+                Toggle("Sync resume positions with iCloud", isOn: $settings.iCloudSync)
+                    .onChange(of: settings.iCloudSync) { _, _ in app.applyCloudSyncSetting() }
+                Text("Where you stopped in a video follows you to your other devices signed in to the same Invidious account with the same iCloud account.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

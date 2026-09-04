@@ -29,14 +29,31 @@ final class AppModel {
         self.settings = settings
         self.sessions = sessions
         self.channelAvatars = ChannelAvatarCache()
+        for profile in profiles.profiles {
+            resume.setAccountKey(Self.accountKey(for: profile), for: profile.id)
+        }
+        applyCloudSyncSetting()
+    }
+
+    /// Turns iCloud sync of resume positions on or off to match the setting.
+    func applyCloudSyncSetting() {
+        if settings.iCloudSync {
+            if resume.cloud == nil { resume.cloud = UbiquitousResumeCloud() }
+        } else {
+            resume.cloud = nil
+        }
+    }
+
+    private static func accountKey(for profile: Profile) -> String {
+        ResumeStore.accountKey(instanceURL: profile.instanceURL, username: profile.username)
     }
 
     /// Makes `profile` the active one. Fails when its session is missing.
     func activate(_ profile: Profile) throws {
-        guard let sid = try sessions.sid(for: profile.id) else {
+        guard let credential = try sessions.credential(for: profile.id) else {
             throw InvidiousError.unauthorized
         }
-        let client = InvidiousClient(baseURL: profile.instanceURL, sid: sid)
+        let client = InvidiousClient(baseURL: profile.instanceURL, credential: credential)
         active = ActiveSession(profile: profile, client: client)
         profiles.markUsed(id: profile.id)
     }
@@ -59,6 +76,47 @@ final class AppModel {
         )
         try sessions.setSID(sid, for: profile.id)
         profiles.add(profile)
+        resume.setAccountKey(Self.accountKey(for: profile), for: profile.id)
+        return profile
+    }
+
+    /// Finishes a phone (token) sign-in. Checks the token against the instance first.
+    ///
+    /// When `existing` is given, or a profile for the same account already exists, that profile
+    /// gets the new credential instead of a duplicate being created.
+    func completeTokenLogin(_ result: TokenLogin.Result, instanceURL: URL, name: String = "", existing: Profile? = nil) async throws -> Profile {
+        let client = InvidiousClient(baseURL: instanceURL, credential: result.credential)
+        do {
+            _ = try await client.feed(page: 1, maxResults: 1)
+        } catch InvidiousError.unauthorized {
+            throw InvidiousError.tokenRejected
+        }
+        let username = result.username ?? existing?.username ?? ""
+        let match = existing
+            ?? profiles.profiles.first { $0.instanceURL == instanceURL && !username.isEmpty && $0.username == username }
+        if let match {
+            try sessions.setCredential(result.credential, for: match.id)
+            var updated = match
+            if updated.username.isEmpty { updated.username = username }
+            profiles.update(updated)
+            if active?.profile.id == match.id {
+                active = ActiveSession(profile: updated, client: client)
+            }
+            resume.setAccountKey(Self.accountKey(for: updated), for: updated.id)
+            return updated
+        }
+        let displayName = name.trimmingCharacters(in: .whitespaces)
+        let profile = Profile(
+            name: displayName.isEmpty ? (username.isEmpty ? "Apple TV" : username) : displayName,
+            username: username,
+            instanceURL: instanceURL,
+            colorIndex: profiles.nextColorIndex(paletteSize: ProfilePalette.colors.count)
+        )
+        try sessions.setCredential(result.credential, for: profile.id)
+        profiles.add(profile)
+        if !username.isEmpty {
+            resume.setAccountKey(Self.accountKey(for: profile), for: profile.id)
+        }
         return profile
     }
 
@@ -82,6 +140,11 @@ final class AppModel {
     }
 
     func removeProfile(_ profile: Profile) {
+        if case .token? = try? sessions.credential(for: profile.id) {
+            // Best effort: revoke the token on the instance so it does not linger in the token manager.
+            let client = InvidiousClient(baseURL: profile.instanceURL, credential: try? sessions.credential(for: profile.id))
+            Task { try? await client.unregisterToken() }
+        }
         try? sessions.removeSID(for: profile.id)
         resume.removeAll(profile: profile.id)
         profiles.remove(id: profile.id)

@@ -1,6 +1,7 @@
 # Invidious TV — v2 scope
 
-Status: complete on the tvOS simulator, 2026-09-04, except livestreams (see 7)
+Status: complete on the simulators, 2026-09-04, except livestreams (see 7); 9 and 10 still need a run with a real
+account and a real phone
 Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
 
 ## Order of work
@@ -24,9 +25,26 @@ Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
    either an Invidious/companion fix or a YouTube HLS manifest fetched by other means, so it stays
    out until then.
 8. **Hide Shorts** (done, off by default): videos of 60 seconds or less and titles tagged #shorts.
-   The channel shorts-tab cache was not needed for a first version.
+   No further work planned (see scoped out).
+9. **iCloud sync of resume positions** (done, on by default): positions sync across the user's devices through the iCloud
+   key-value store. Buckets are keyed by instance and username, so a profile for the same account on
+   another device picks them up regardless of the local profile ID. Newest `updatedAt` wins per video;
+   finished videos are kept as tombstones so they stay finished everywhere. Setting to turn it off.
+10. **QR-code login from a phone** (done, tvOS): the login screen offers "Sign in with your phone". The TV
+    shows a QR code for the instance's `/authorize_token` page with a callback to a small HTTP listener
+    on the TV. The phone signs in to Invidious in its browser, approves, and the browser is redirected
+    to the TV with the token and username. The app then uses `Authorization: Bearer` for that profile.
+    Scopes requested: `:feed`, `:subscriptions*`, `:history*`, `:playlists*`, `POST:tokens/unregister`
+    (so removing the profile revokes its own token). Phone and TV must be on the same network.
 
-Deferred beyond v2: iCloud sync of resume positions, QR-code login.
+## Scoped out
+
+- DeArrow.
+- Hide Shorts improvements (channel shorts-tab cache).
+
+## v3
+
+- macOS app on top of `InvidiousKit`.
 
 ## iOS (done on the simulator, 2026-09-04)
 

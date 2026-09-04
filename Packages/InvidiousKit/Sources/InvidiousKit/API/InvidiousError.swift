@@ -9,6 +9,7 @@ public enum InvidiousError: Error, LocalizedError, Sendable, Equatable {
     case decoding(String)
     case network(String)
     case loginDisabled
+    case tokenRejected
 
     public var errorDescription: String? {
         switch self {
@@ -31,6 +32,8 @@ public enum InvidiousError: Error, LocalizedError, Sendable, Equatable {
             return detail
         case .loginDisabled:
             return "Login is disabled on this instance."
+        case .tokenRejected:
+            return "The instance did not accept the token from your phone. Please try again."
         }
     }
 

@@ -37,9 +37,24 @@ the iOS bundle ID is the tvOS one with `.mobile` appended.
 
 The player uses libmpv through [MPVKit](https://github.com/yattee/MPVKit) (GPL build, so the app is
 GPL). It plays the best adaptive video stream the device can decode plus a separate audio stream.
-On devices, mpv renders through OpenGL ES into a `CAEAGLLayer`. In the simulator, where OpenGL ES
+Audio languages come from the `xtags` parameter of each audio stream URL (Invidious does not expose them
+as a field); the original language plays by default and the player's Audio menu switches dubs without
+reloading the video. On devices, mpv renders through OpenGL ES into a `CAEAGLLayer`. In the simulator, where OpenGL ES
 output is unreliable, it renders through mpv's software API into a `CGImage`, so simulator playback
 is capped at 720p and decoded on the CPU.
+
+## Sign-in and sync
+
+Profiles sign in with username and password, or on tvOS with a phone: the TV shows a QR code for the
+instance's `/authorize_token` page with a callback to a small HTTP listener on the TV (`TokenCallbackServer`
+in `InvidiousKit`). After approving in the phone's browser, the browser is redirected to the TV with the
+token and username, and the profile then authenticates with `Authorization: Bearer`. Phone and TV must
+share a network. Removing a token profile revokes its token on the instance.
+
+Resume positions sync through the iCloud key-value store (entitlement
+`com.apple.developer.ubiquity-kvstore-identifier`, shared by the tvOS and iOS apps). Buckets are keyed by
+instance and username, so any device signed in to the same Invidious account with the same iCloud account
+shares them. The Settings toggle turns it off. In the simulator without an iCloud account the store is local only.
 
 ## Debug hooks (DEBUG builds only)
 
@@ -53,6 +68,7 @@ prefix each with `SIMCTL_CHILD_`.
 | `INVIDIOUS_DEBUG_SEARCH` | Query to prefill on the Search tab. |
 | `INVIDIOUS_DEBUG_FOCUS` | `rename` or `version` to focus a Settings row. |
 | `INVIDIOUS_DEBUG_COMMENTS` | Any value expands comments on video details. |
+| `INVIDIOUS_DEBUG_PHONE_LOGIN` | Any value opens the QR-code phone sign-in as soon as the login screen appears (tvOS). |
 | `INVIDIOUS_DEBUG_ROUTE` | `video:<id>`, `channel:<ucid>` or `playlist:<plid>`, pushed on the Home tab. |
 | `INVIDIOUS_AUTOPLAY_VIDEO` | Video ID to open directly in the player. |
 | `INVIDIOUS_DEBUG_REMOTE` | Scripted remote actions for the player, e.g. `8:select,3:down,1:pan:300,1:panEnd`. Actions: `select`, `playPause`, `left`, `right`, `up`, `down`, `menu`, `pan:<points>`, `panEnd`. |

@@ -1,24 +1,39 @@
 import Foundation
 
-/// HTTP client for one Invidious instance, optionally authenticated with a session ID.
+/// HTTP client for one Invidious instance, optionally authenticated with a session ID or token.
 ///
-/// The client is immutable; create a new one when the instance or session changes.
+/// The client is immutable; create a new one when the instance or credential changes.
 public final class InvidiousClient: Sendable {
     public let baseURL: URL
-    public let sid: String?
+    public let credential: InvidiousCredential?
 
     private let session: URLSession
     private let decoder = InvidiousDecoder.make()
 
-    public init(baseURL: URL, sid: String? = nil, session: URLSession? = nil) {
+    public init(baseURL: URL, credential: InvidiousCredential?, session: URLSession? = nil) {
         self.baseURL = baseURL
-        self.sid = sid
+        self.credential = credential
         self.session = session ?? Self.makeSession()
+    }
+
+    public convenience init(baseURL: URL, sid: String? = nil, session: URLSession? = nil) {
+        self.init(baseURL: baseURL, credential: sid.map(InvidiousCredential.sid), session: session)
+    }
+
+    /// The session cookie, when the client authenticates with one.
+    public var sid: String? {
+        if case .sid(let sid)? = credential { return sid }
+        return nil
     }
 
     /// Returns a copy of this client authenticated with `sid`.
     public func authenticated(sid: String?) -> InvidiousClient {
-        InvidiousClient(baseURL: baseURL, sid: sid, session: session)
+        authenticated(credential: sid.map(InvidiousCredential.sid))
+    }
+
+    /// Returns a copy of this client authenticated with `credential`.
+    public func authenticated(credential: InvidiousCredential?) -> InvidiousClient {
+        InvidiousClient(baseURL: baseURL, credential: credential, session: session)
     }
 
     static func makeSession() -> URLSession {
@@ -155,6 +170,12 @@ public final class InvidiousClient: Sendable {
     /// Removes an entry by its `indexId`.
     public func removeVideo(indexId: String, fromPlaylist playlistID: String) async throws {
         try await send("DELETE", "/api/v1/auth/playlists/\(playlistID)/videos/\(indexId)")
+    }
+
+    /// Revokes the client's own access token on the server (token credentials only).
+    public func unregisterToken() async throws {
+        let body = try JSONSerialization.data(withJSONObject: [String: String]())
+        _ = try await sendJSON("POST", "/api/v1/auth/tokens/unregister", body: body)
     }
 
     // MARK: - Login
@@ -300,8 +321,13 @@ public final class InvidiousClient: Sendable {
     private func request(url: URL) -> URLRequest {
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        if let sid {
+        switch credential {
+        case .sid(let sid)?:
             request.setValue("SID=\(sid)", forHTTPHeaderField: "Cookie")
+        case .token(let token)?:
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        case nil:
+            break
         }
         return request
     }
