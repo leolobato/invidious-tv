@@ -12,7 +12,6 @@ struct VideoGrid: View {
     static let columns = Array(repeating: GridItem(.flexible(), spacing: 40), count: 4)
 
     var body: some View {
-        let videos = app.settings.filtered(videos)
         LazyVGrid(columns: Self.columns, alignment: .leading, spacing: 48) {
             ForEach(videos) { video in
                 VideoCard(

@@ -105,7 +105,6 @@ struct MobileVideoList: View {
     @Environment(AppModel.self) private var app
 
     var body: some View {
-        let videos = app.settings.filtered(videos)
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 320, maximum: 520), spacing: 16, alignment: .top)], alignment: .leading, spacing: 24) {
             ForEach(videos) { video in
                 MobileVideoCard(video: video, showChannel: showChannel)
@@ -132,7 +131,7 @@ struct MobileShelf: View {
                 .padding(.horizontal, 16)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(alignment: .top, spacing: 12) {
-                    ForEach(app.settings.filtered(videos)) { video in
+                    ForEach(videos) { video in
                         MobileVideoCard(video: video, showChannel: false)
                             .frame(width: 260)
                     }

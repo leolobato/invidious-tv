@@ -46,18 +46,9 @@ final class AppSettings {
         didSet { defaults.set(sponsorBlockCategories.map(\.rawValue).sorted(), forKey: Keys.sponsorBlockCategories) }
     }
 
-    var hideShorts: Bool {
-        didSet { defaults.set(hideShorts, forKey: Keys.hideShorts) }
-    }
-
     /// Sync resume positions between this user's devices through iCloud.
     var iCloudSync: Bool {
         didSet { defaults.set(iCloudSync, forKey: Keys.iCloudSync) }
-    }
-
-    /// Applies the Hide Shorts preference to a list.
-    func filtered(_ videos: [VideoSummary]) -> [VideoSummary] {
-        hideShorts ? ShortsFilter.removingShorts(videos) : videos
     }
 
     var autoplayNext: Bool {
@@ -80,7 +71,6 @@ final class AppSettings {
         let speed = defaults.double(forKey: Keys.defaultSpeed)
         defaultSpeed = speed > 0 ? speed : 1.0
         autoplayNext = defaults.object(forKey: Keys.autoplayNext) as? Bool ?? true
-        hideShorts = defaults.bool(forKey: Keys.hideShorts)
         iCloudSync = defaults.object(forKey: Keys.iCloudSync) as? Bool ?? true
         sponsorBlockEnabled = defaults.object(forKey: Keys.sponsorBlockEnabled) as? Bool ?? true
         if let stored = defaults.stringArray(forKey: Keys.sponsorBlockCategories) {
@@ -132,7 +122,6 @@ final class AppSettings {
         static let maxQuality = "settings.maxQuality"
         static let defaultSpeed = "settings.defaultSpeed"
         static let autoplayNext = "settings.autoplayNext"
-        static let hideShorts = "settings.hideShorts"
         static let iCloudSync = "settings.iCloudSync"
         static let sponsorBlockEnabled = "settings.sponsorBlockEnabled"
         static let sponsorBlockCategories = "settings.sponsorBlockCategories"

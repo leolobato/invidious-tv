@@ -33,6 +33,7 @@ Invidious name and logo belong to that project.
 
 - **Livestreams.** Instances running invidious-companion return no playable manifest for live videos yet.
 - **macOS app** on the same core.
+- **Hide Shorts.** Invidious does not flag Shorts, so a reliable filter needs more than a duration guess.
 
 ## Build
 

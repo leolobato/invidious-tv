@@ -23,8 +23,8 @@ Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
    play directly. The earlier `hls_variant` attempt returned an empty body. Live playback needs
    either an Invidious/companion fix or a YouTube HLS manifest fetched by other means, so it stays
    out until then.
-8. **Hide Shorts** (done, off by default): videos of 60 seconds or less and titles tagged #shorts.
-   No further work planned (see scoped out).
+8. **Hide Shorts**: shipped as a duration heuristic, then removed from the app on 2026-09-04 because Invidious does
+   not flag Shorts and the guess was unreliable. Planned again for when a reliable signal exists.
 9. **iCloud sync of resume positions** (done, on by default): positions sync across the user's devices through the iCloud
    key-value store. Buckets are keyed by instance and username, so a profile for the same account on
    another device picks them up regardless of the local profile ID. Newest `updatedAt` wins per video;
@@ -49,7 +49,6 @@ Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
 ## Scoped out
 
 - DeArrow.
-- Hide Shorts improvements (channel shorts-tab cache).
 
 ## v3
 
