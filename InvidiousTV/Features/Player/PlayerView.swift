@@ -62,6 +62,7 @@ struct PlayerView: View {
         }
         .onDisappear {
             model?.stop()
+            app.refreshTopShelf()
         }
         #if DEBUG
         .task {

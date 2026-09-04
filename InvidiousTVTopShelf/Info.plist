@@ -20,6 +20,13 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>InvidiousAppGroup</key>
 	<string>$(APP_GROUP_ID)</string>
+	<key>InvidiousKeychainGroup</key>
+	<string>$(DEVELOPMENT_TEAM).$(APP_BUNDLE_ID).shared</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

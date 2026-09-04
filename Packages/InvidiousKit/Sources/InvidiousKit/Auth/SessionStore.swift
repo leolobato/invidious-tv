@@ -13,15 +13,33 @@ public enum SessionStoreError: Error, Sendable {
 }
 
 /// Keychain-backed session storage.
+///
+/// With an `accessGroup` the items are shared with app extensions (the Top Shelf extension fetches
+/// the feed itself). Items saved by earlier versions without a group are migrated on first read.
 public struct KeychainSessionStore: SessionStore {
     public let service: String
+    public let accessGroup: String?
 
-    public init(service: String = "org.lobato.invidioustv.session") {
+    public init(service: String = "org.lobato.invidioustv.session", accessGroup: String? = nil) {
         self.service = service
+        self.accessGroup = accessGroup
     }
 
     public func sid(for profileID: UUID) throws -> String? {
-        var query = baseQuery(profileID)
+        if let value = try read(baseQuery(profileID)) {
+            return value
+        }
+        guard accessGroup != nil, let legacy = try read(baseQuery(profileID, includeGroup: false)) else {
+            return nil
+        }
+        // Move the item into the shared group so extensions can see it.
+        try? setSID(legacy, for: profileID)
+        SecItemDelete(baseQuery(profileID, includeGroup: false) as CFDictionary)
+        return legacy
+    }
+
+    private func read(_ base: [String: Any]) throws -> String? {
+        var query = base
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
         var item: CFTypeRef?
@@ -57,12 +75,16 @@ public struct KeychainSessionStore: SessionStore {
         }
     }
 
-    private func baseQuery(_ profileID: UUID) -> [String: Any] {
-        [
+    private func baseQuery(_ profileID: UUID, includeGroup: Bool = true) -> [String: Any] {
+        var query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: profileID.uuidString,
         ]
+        if includeGroup, let accessGroup {
+            query[kSecAttrAccessGroup as String] = accessGroup
+        }
+        return query
     }
 }
 

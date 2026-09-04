@@ -160,4 +160,20 @@ struct StoreTests {
         try store.removeSID(for: id)
         #expect(try store.sid(for: id) == nil)
     }
+
+    @Test func topShelfItemsSkipUpcomingAndKeepAccount() throws {
+        let client = InvidiousClient(baseURL: URL(string: "http://10.0.1.9:3001")!)
+        var live = Fixtures.video("live"); live.liveNow = true
+        let videos = [Fixtures.video("a"), Fixtures.video("up", upcoming: true), live, Fixtures.video("b")]
+        let items = TopShelfSnapshot.latestItems(from: videos, client: client, limit: 12)
+        #expect(items.map(\.videoID) == ["a", "b"])
+
+        let dir = tempDir()
+        let store = TopShelfSnapshotStore(fileURL: dir.appendingPathComponent("topshelf.json"))
+        let account = TopShelfSnapshot.Account(profileID: UUID(), instanceURL: client.baseURL)
+        store.save(TopShelfSnapshot(profileName: "Leo", continueWatching: [], latest: items, updatedAt: .distantPast, account: account))
+        let loaded = try #require(store.load())
+        #expect(loaded.account == account)
+        #expect(Date().timeIntervalSince(loaded.updatedAt) > TopShelfSnapshot.refreshInterval)
+    }
 }

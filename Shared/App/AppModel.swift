@@ -18,11 +18,20 @@ final class AppModel {
 
     private(set) var active: ActiveSession?
 
+    /// Keychain group shared with the Top Shelf extension (tvOS only; empty on other platforms).
+    static var sharedKeychainGroup: String? {
+        guard let group = Bundle.main.object(forInfoDictionaryKey: "InvidiousKeychainGroup") as? String,
+              !group.isEmpty, !group.hasPrefix(".") else { return nil }
+        return group
+    }
+
+    private var latestForTopShelf: [VideoSummary] = []
+
     init(
         profiles: ProfileStore = ProfileStore(),
         resume: ResumeStore = ResumeStore(),
         settings: AppSettings = AppSettings(),
-        sessions: any SessionStore = KeychainSessionStore()
+        sessions: any SessionStore = KeychainSessionStore(accessGroup: AppModel.sharedKeychainGroup)
     ) {
         self.profiles = profiles
         self.resume = resume
@@ -155,23 +164,28 @@ final class AppModel {
 
     /// Refreshes what the Top Shelf extension shows for the active profile.
     func updateTopShelf(latest: [VideoSummary]) {
+        latestForTopShelf = latest
+        refreshTopShelf()
+    }
+
+    /// Rewrites the Top Shelf snapshot from the current resume positions and the last known uploads.
+    /// The extension refreshes the uploads itself when the snapshot gets old.
+    func refreshTopShelf() {
         guard let session = active else { return }
         let client = session.client
-        func item(_ video: VideoSummary, progress: Double?) -> TopShelfSnapshot.Item {
-            let thumbs = video.videoThumbnails
-            let thumb = thumbs.first { $0.quality == "maxresdefault" } ?? thumbs.first { $0.quality == "sddefault" } ?? thumbs.best(maxWidth: 1280)
-            return TopShelfSnapshot.Item(
-                videoID: video.videoId,
-                title: video.title,
-                subtitle: video.author,
-                imageURL: thumb.flatMap(client.url(for:)),
-                progress: progress
-            )
-        }
         let continueWatching = resume.continueWatching(profile: session.profile.id, limit: 10)
-            .compactMap { entry in entry.video.map { item($0, progress: entry.progress) } }
-        let latestItems = latest.prefix(12).map { item($0, progress: nil) }
-        topShelf.save(TopShelfSnapshot(profileName: session.profile.name, continueWatching: continueWatching, latest: Array(latestItems)))
+            .compactMap { entry in entry.video.map { TopShelfSnapshot.item(for: $0, progress: entry.progress, client: client) } }
+        let existing = topShelf.load()
+        let latestItems = latestForTopShelf.isEmpty
+            ? (existing?.latest ?? [])
+            : TopShelfSnapshot.latestItems(from: latestForTopShelf, client: client)
+        topShelf.save(TopShelfSnapshot(
+            profileName: session.profile.name,
+            continueWatching: continueWatching,
+            latest: latestItems,
+            updatedAt: latestForTopShelf.isEmpty ? (existing?.updatedAt ?? .distantPast) : Date(),
+            account: TopShelfSnapshot.Account(profileID: session.profile.id, instanceURL: session.profile.instanceURL)
+        ))
     }
 
     func hasSession(_ profile: Profile) -> Bool {
