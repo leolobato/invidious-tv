@@ -64,7 +64,7 @@ prefix each with `SIMCTL_CHILD_`.
 | Variable | Effect |
 | --- | --- |
 | `INVIDIOUS_AUTOLOGIN_USER`, `INVIDIOUS_AUTOLOGIN_PASSWORD` | Sign in and activate that profile on launch. Optional `INVIDIOUS_AUTOLOGIN_INSTANCE`. |
-| `INVIDIOUS_DEBUG_TAB` | `search`, `home`, `subscriptions`, `channels`, `library` or `settings`. |
+| `INVIDIOUS_DEBUG_TAB` | `search`, `home`, `subscriptions`, `channels`, `library` or `settings` (tvOS only; iOS opens Settings from the profile menu). |
 | `INVIDIOUS_DEBUG_SEARCH` | Query to prefill on the Search tab. |
 | `INVIDIOUS_DEBUG_FOCUS` | `rename` or `version` to focus a Settings row. |
 | `INVIDIOUS_DEBUG_COMMENTS` | Any value expands comments on video details. |

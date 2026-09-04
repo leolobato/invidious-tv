@@ -36,11 +36,6 @@ struct MobileTabView: View {
                         .withMobileRoutes()
                 }
             }
-            Tab("Settings", systemImage: "gearshape", value: "settings") {
-                NavigationStack {
-                    SettingsView(session: session)
-                }
-            }
             Tab("Search", systemImage: "magnifyingglass", value: "search", role: .search) {
                 MobileSearchView(session: session)
             }

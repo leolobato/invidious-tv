@@ -40,29 +40,7 @@ struct MobileHomeView: View {
             .padding(.vertical, 12)
         }
         .navigationTitle("Home")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Section(session.profile.name) {
-                        ForEach(app.profiles.profiles.filter { $0.id != session.profile.id }) { profile in
-                            Button {
-                                if (try? app.activate(profile)) == nil { app.deactivate() }
-                            } label: {
-                                Label(profile.name, systemImage: "person.circle")
-                            }
-                        }
-                        Button {
-                            app.deactivate()
-                        } label: {
-                            Label("Manage Profiles", systemImage: "person.2")
-                        }
-                    }
-                } label: {
-                    ProfileAvatar(profile: session.profile, size: 30)
-                }
-                .accessibilityLabel("Profile")
-            }
-        }
+        .profileToolbar(session: session)
         .task {
             model.onLatestLoaded = { videos in app.updateTopShelf(latest: videos) }
             await model.load(force: false)

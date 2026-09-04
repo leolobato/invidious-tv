@@ -40,6 +40,7 @@ struct MobileChannelsView: View {
             }
         }
         .navigationTitle("Channels")
+        .profileToolbar(session: session)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {

@@ -32,6 +32,7 @@ struct MobileSubscriptionsView: View {
             }
         }
         .navigationTitle("Subscriptions")
+        .profileToolbar(session: session)
         .task { await model.loadIfNeeded() }
         .refreshable { await model.reload() }
     }

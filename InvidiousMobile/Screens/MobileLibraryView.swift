@@ -34,6 +34,7 @@ struct MobileLibraryView: View {
             }
         }
         .navigationTitle("Library")
+        .profileToolbar(session: session)
         .task { await load() }
         .refreshable { await load() }
         .onChange(of: app.playlists.version) { _, _ in Task { await load() } }

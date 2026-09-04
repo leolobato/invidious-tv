@@ -65,6 +65,7 @@
 		866355D85A7A083159DFA8B5 /* ChannelAvatarCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A07E3CF928BC8C80F61A796 /* ChannelAvatarCache.swift */; };
 		8B1EC2354CA8FD22A005879D /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = C65B84B52EEA58D080AB22A4 /* Nuke */; };
 		9308A16190A2171CC018A610 /* InvidiousMobileShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 61712AD5B62E413509701877 /* InvidiousMobileShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		971E71BC74AC48FE3E3013C8 /* ProfileToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C91B9347579D86E6859A180 /* ProfileToolbar.swift */; };
 		97616D7B16DEC2E372818E18 /* DescriptionLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734FE41A48934B68052A93E /* DescriptionLinks.swift */; };
 		984090AE8959AF6D9AF93426 /* ChannelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98D550D4ECD1F9802FBDD3 /* ChannelDetailView.swift */; };
 		9A91FBCB88893D179B7A9F97 /* MPVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490047CEA672877A83996A3 /* MPVPlayer.swift */; };
@@ -199,6 +200,7 @@
 		91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvidiousTVApp.swift; sourceTree = "<group>"; };
 		95317364D886353D5E677A3A /* ContentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProvider.swift; sourceTree = "<group>"; };
 		9A07E3CF928BC8C80F61A796 /* ChannelAvatarCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarCache.swift; sourceTree = "<group>"; };
+		9C91B9347579D86E6859A180 /* ProfileToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolbar.swift; sourceTree = "<group>"; };
 		A6280DDA6620D9F367345040 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		AA6C6E553B1D2B950E5C48B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AAC04DDD0242346CE24BDA95 /* PhoneLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneLoginView.swift; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 			isa = PBXGroup;
 			children = (
 				49F86554D761350ACBF7E2C6 /* MobileVideoCard.swift */,
+				9C91B9347579D86E6859A180 /* ProfileToolbar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -845,6 +848,7 @@
 				2326F1373A102FE0EBA3D6E4 /* PlaylistDetailViewModel.swift in Sources */,
 				B2D6D17A3533B052AA4A9163 /* PlaylistStore.swift in Sources */,
 				BB210A3953FF40A940D1DDC9 /* ProfilePalette.swift in Sources */,
+				971E71BC74AC48FE3E3013C8 /* ProfileToolbar.swift in Sources */,
 				5AAF7626331BF274D781AF14 /* RemoteImage.swift in Sources */,
 				FA099D16F229BDB70C02F2EA /* Route.swift in Sources */,
 				FC442A3E1828CA6D9CE8DBCB /* SearchViewModel.swift in Sources */,
