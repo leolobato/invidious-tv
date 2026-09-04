@@ -74,6 +74,13 @@ public final class InvidiousClient: Sendable {
         return try await get("/api/v1/channels/\(ucid)/videos", query: query)
     }
 
+    /// The channel's public playlists, most recently updated first.
+    public func channelPlaylists(ucid: String, continuation: String? = nil) async throws -> ChannelPlaylistsPage {
+        var query: [String: String] = [:]
+        if let continuation { query["continuation"] = continuation }
+        return try await get("/api/v1/channels/\(ucid)/playlists", query: query)
+    }
+
     public func storyboards(videoID: String) async throws -> StoryboardsResponse {
         try await get("/api/v1/storyboards/\(videoID)")
     }

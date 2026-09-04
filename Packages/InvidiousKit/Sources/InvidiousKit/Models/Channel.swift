@@ -35,6 +35,17 @@ public struct ChannelVideosPage: Codable, Hashable, Sendable {
     }
 }
 
+/// One page of a channel's playlists from `/api/v1/channels/:ucid/playlists`.
+public struct ChannelPlaylistsPage: Codable, Hashable, Sendable {
+    public var playlists: [SearchPlaylist]
+    public var continuation: String?
+
+    public init(playlists: [SearchPlaylist], continuation: String? = nil) {
+        self.playlists = playlists
+        self.continuation = continuation
+    }
+}
+
 /// A channel entry from `/api/v1/auth/subscriptions`.
 public struct SubscribedChannel: Codable, Hashable, Identifiable, Sendable {
     public var author: String

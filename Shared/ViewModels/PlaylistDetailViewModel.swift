@@ -17,6 +17,9 @@ final class PlaylistDetailViewModel {
     private var page = 0
     private var reachedEnd = false
 
+    /// False for YouTube playlists opened from a channel, which the account cannot change.
+    var isEditable: Bool { playlist?.isInvidiousPlaylist ?? true }
+
     init(playlistID: String, session: ActiveSession, store: PlaylistStore) {
         self.playlistID = playlistID
         self.session = session

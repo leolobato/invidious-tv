@@ -12,11 +12,15 @@ final class ChannelDetailViewModel {
 
     private(set) var header: LoadState<Channel> = .idle
     private(set) var videos: [VideoSummary] = []
+    private(set) var playlists: [SearchPlaylist] = []
     private(set) var isLoadingMore = false
+    private(set) var isLoadingPlaylists = false
     private(set) var isSubscribed = false
     private(set) var isTogglingSubscription = false
     private var continuation: String?
     private var reachedEnd = false
+    private var playlistContinuation: String?
+    private var reachedPlaylistsEnd = false
 
     init(channelID: String, session: ActiveSession, avatars: ChannelAvatarCache) {
         self.channelID = channelID
@@ -39,7 +43,28 @@ final class ChannelDetailViewModel {
         if let subs = await subs {
             isSubscribed = subs.contains { $0.authorId == channelID }
         }
+        async let playlists: Void = loadMorePlaylists()
         await loadMore()
+        await playlists
+    }
+
+    /// Next page of the channel's public playlists. A failure leaves the shelf empty; the videos
+    /// still show.
+    func loadMorePlaylists() async {
+        guard !isLoadingPlaylists, !reachedPlaylistsEnd else { return }
+        isLoadingPlaylists = true
+        defer { isLoadingPlaylists = false }
+        do {
+            let page = try await session.client.channelPlaylists(ucid: channelID, continuation: playlistContinuation)
+            let known = Set(playlists.map(\.playlistId))
+            playlists.append(contentsOf: page.playlists.filter { !known.contains($0.playlistId) })
+            playlistContinuation = page.continuation
+            if page.continuation == nil || page.playlists.isEmpty {
+                reachedPlaylistsEnd = true
+            }
+        } catch {
+            reachedPlaylistsEnd = true
+        }
     }
 
     func loadMore() async {

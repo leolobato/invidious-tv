@@ -17,11 +17,11 @@ Invidious name and logo belong to that project.
 - **Profiles** for the household, each signed in to its own Invidious account.
 - **Phone sign-in** on Apple TV: scan a QR code and approve on the instance's website, no typing.
 - **Home** with recommendations from your history and the latest uploads from your subscriptions.
-- **Subscriptions and channels**, with sorting and a name filter.
+- **Subscriptions and channels**, with sorting and a name filter. Channel pages list the channel's playlists.
 - **Search** with suggestions; paste a YouTube link or video ID to open it.
 - **Playlists, Watch Later and watch history**, shared with the instance's website.
 - **Player** with scrubbing previews, quality, speed, captions and audio language, so auto-dubbed videos
-  play in their original language.
+  play in their original language. Swipe down on the remote for these options.
 - **Resume anywhere**: positions sync between your devices through iCloud.
 - **Autoplay** of the next video with a countdown.
 - **SponsorBlock** skipping of sponsor and self-promotion segments.

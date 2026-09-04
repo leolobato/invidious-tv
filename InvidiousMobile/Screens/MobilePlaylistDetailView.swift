@@ -32,7 +32,7 @@ struct MobilePlaylistDetailView: View {
                                 Label("Play All", systemImage: "play.fill")
                             }
                         }
-                        if !(model.playlist.map(PlaylistStore.isWatchLater) ?? false) {
+                        if model.isEditable, !(model.playlist.map(PlaylistStore.isWatchLater) ?? false) {
                             Button(role: .destructive) { confirmDelete = true } label: {
                                 Label("Delete Playlist", systemImage: "trash")
                             }
@@ -81,10 +81,12 @@ struct MobilePlaylistDetailView: View {
                         MobileVideoRow(video: entry.video)
                     }
                     .swipeActions {
-                        Button(role: .destructive) {
-                            Task { await model.remove(entry) }
-                        } label: {
-                            Label("Remove", systemImage: "trash")
+                        if model.isEditable {
+                            Button(role: .destructive) {
+                                Task { await model.remove(entry) }
+                            } label: {
+                                Label("Remove", systemImage: "trash")
+                            }
                         }
                     }
                     .onAppear {

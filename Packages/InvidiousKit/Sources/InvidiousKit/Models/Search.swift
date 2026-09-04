@@ -83,6 +83,13 @@ public struct SearchPlaylist: Codable, Hashable, Identifiable, Sendable {
 
     public var id: String { playlistId }
 
+    /// The video whose thumbnail YouTube uses as the cover, so it can load through the instance.
+    public var coverVideoID: String? {
+        guard let url = playlistThumbnail, let range = url.range(of: "/vi/") else { return nil }
+        let id = url[range.upperBound...].prefix { $0 != "/" }
+        return id.isEmpty ? nil : String(id)
+    }
+
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         title = try c.decodeIfPresent(String.self, forKey: .title) ?? ""

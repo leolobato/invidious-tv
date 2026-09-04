@@ -61,8 +61,10 @@ struct PlaylistDetailView: View {
                                     watched: app.active?.watchedIDs.contains(entry.video.videoId) ?? false
                                 )
                                 .contextMenu {
-                                    Button("Remove from playlist", systemImage: "trash", role: .destructive) {
-                                        Task { await model.remove(entry) }
+                                    if model.isEditable {
+                                        Button("Remove from playlist", systemImage: "trash", role: .destructive) {
+                                            Task { await model.remove(entry) }
+                                        }
                                     }
                                 }
                                 .onAppear {
@@ -88,7 +90,7 @@ struct PlaylistDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(model.playlist?.title ?? title)
                     .font(.title.weight(.semibold))
-                Text("\(model.playlist?.videoCount ?? model.entries.count) videos")
+                Text(countLine(model))
                     .foregroundStyle(.secondary)
                 if let description = model.playlist?.description, !description.isEmpty {
                     Text(description)
@@ -106,7 +108,7 @@ struct PlaylistDetailView: View {
                 }
                 .disabled(isStartingPlayback)
             }
-            if !(model.playlist.map(PlaylistStore.isWatchLater) ?? false) {
+            if model.isEditable, !(model.playlist.map(PlaylistStore.isWatchLater) ?? false) {
                 Button(role: .destructive) {
                     confirmDelete = true
                 } label: {
@@ -125,6 +127,14 @@ struct PlaylistDetailView: View {
         .padding(.horizontal, 60)
         .padding(.top, 40)
         .focusSection()
+    }
+
+    private func countLine(_ model: PlaylistDetailViewModel) -> String {
+        var parts = ["\(model.playlist?.videoCount ?? model.entries.count) videos"]
+        if let playlist = model.playlist, !playlist.isInvidiousPlaylist, !playlist.author.isEmpty {
+            parts.append(playlist.author)
+        }
+        return parts.joined(separator: " · ")
     }
 
     /// Loads the first video and opens the player with the whole playlist queued.

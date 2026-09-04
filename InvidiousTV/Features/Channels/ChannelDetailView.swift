@@ -37,6 +37,13 @@ struct ChannelDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     header(model)
+                    if !model.playlists.isEmpty {
+                        playlistShelf(model)
+                        Text("Videos")
+                            .font(.title3.weight(.semibold))
+                            .padding(.horizontal, 60)
+                            .padding(.top, 20)
+                    }
                     VideoGrid(videos: model.videos, showChannel: false) {
                         Task { await model.loadMore() }
                     }
@@ -46,6 +53,31 @@ struct ChannelDetailView: View {
                 }
             }
         }
+    }
+
+    private func playlistShelf(_ model: ChannelDetailViewModel) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Playlists")
+                .font(.title3.weight(.semibold))
+                .padding(.horizontal, 60)
+            ScrollView(.horizontal) {
+                LazyHStack(alignment: .top, spacing: 40) {
+                    ForEach(model.playlists) { playlist in
+                        ChannelPlaylistCard(playlist: playlist)
+                            .frame(width: 400)
+                            .onAppear {
+                                if playlist.id == model.playlists.last?.id {
+                                    Task { await model.loadMorePlaylists() }
+                                }
+                            }
+                    }
+                }
+                .padding(.horizontal, 60)
+                .padding(.vertical, 30)
+            }
+            .scrollClipDisabled()
+        }
+        .padding(.top, 40)
     }
 
     @ViewBuilder

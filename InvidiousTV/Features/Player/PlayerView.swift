@@ -42,7 +42,7 @@ struct PlayerView: View {
                             .ignoresSafeArea()
                     }
 
-                    PlayerSurface(handle: surface, handlesMenu: { upNext == nil }) { action in
+                    PlayerSurface(handle: surface, handlesMenu: { upNext == nil }, focusEnabled: !optionsVisible && upNext == nil) { action in
                         guard upNext == nil else { return }
                         handle(action, model: model, width: geo.size.width)
                     }
@@ -224,6 +224,20 @@ struct PlayerView: View {
     // MARK: - Remote handling
 
     private func handle(_ action: PlayerSurfaceAction, model: PlayerViewModel, width: CGFloat) {
+        // While the options row is up, input should reach its buttons. If the surface still gets
+        // it, focus did not move (the row was not laid out yet); ask again instead of scrubbing.
+        if optionsVisible {
+            switch action {
+            case .select, .skipBackward, .skipForward, .down, .panChanged, .panEnded:
+                optionFocus = .speed
+                return
+            case .up, .menu:
+                closeOptions(model)
+                return
+            case .playPause:
+                break
+            }
+        }
         switch action {
         case .select:
             if model.isScrubbing {
@@ -356,6 +370,11 @@ struct PlayerView: View {
                 ProgressBarView(model: model, surfaceWidth: 1920 - 160)
                 if optionsVisible {
                     optionsRow(model)
+                } else {
+                    Label("Swipe down for speed, captions, audio and quality", systemImage: "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.6))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             .padding(.horizontal, 80)
@@ -443,6 +462,14 @@ struct PlayerView: View {
             }
             .focused($optionFocus, equals: .close)
         }
+        .onAppear {
+            // Second attempt once the buttons are laid out, in case the first request was too early.
+            DispatchQueue.main.async {
+                if optionsVisible, optionFocus == nil {
+                    optionFocus = .speed
+                }
+            }
+        }
         .onExitCommand {
             closeOptions(model)
         }
@@ -485,6 +512,17 @@ struct ProgressBarView: View {
                 ZStack(alignment: .leading) {
                     Capsule().fill(.white.opacity(0.3)).frame(height: 8)
                     Capsule().fill(Color.red).frame(width: x, height: 8)
+                    // SponsorBlock segments the player will skip.
+                    if model.duration > 0 {
+                        ForEach(model.sponsorSegments.filter(\.isSkippable)) { segment in
+                            let start = width * min(max(segment.start / model.duration, 0), 1)
+                            let end = width * min(max(segment.end / model.duration, 0), 1)
+                            Rectangle()
+                                .fill(Color.green.opacity(0.9))
+                                .frame(width: max(end - start, 3), height: 8)
+                                .offset(x: start)
+                        }
+                    }
                     Circle()
                         .fill(.white)
                         .frame(width: model.isScrubbing ? 26 : 18, height: model.isScrubbing ? 26 : 18)

@@ -8,7 +8,7 @@ struct VideoDetailView: View {
     @Environment(AppModel.self) private var app
     @State private var details: LoadState<VideoDetails> = .idle
     @State private var playback: PlaybackRequest?
-    @State private var descriptionExpanded = false
+    @State private var showDescription = false
     @Environment(\.pushRoute) private var pushRoute
     @State private var playlists: [Playlist] = []
     @State private var saveMessage: String?
@@ -43,6 +43,17 @@ struct VideoDetailView: View {
                 PlayerView(details: request.details, summary: video, startAt: request.startAt, session: session)
             }
         }
+        .fullScreenCover(isPresented: $showDescription) {
+            DescriptionSheet(title: details.value?.title ?? video.title, text: details.value?.description ?? "")
+        }
+        #if DEBUG
+        .onChange(of: details.value?.videoId) { _, id in
+            // `INVIDIOUS_DEBUG_DESCRIPTION=1` opens the description sheet once the video has loaded.
+            if id != nil, ProcessInfo.processInfo.environment["INVIDIOUS_DEBUG_DESCRIPTION"] == "1" {
+                showDescription = true
+            }
+        }
+        #endif
     }
 
     private var isLive: Bool {
@@ -225,16 +236,18 @@ struct VideoDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Description")
                     .font(.title3.weight(.semibold))
+                // The preview stays three lines tall; a focused button that grew to the full text
+                // would scroll the page to its bottom. Selecting it opens the whole description.
                 Button {
-                    withAnimation { descriptionExpanded.toggle() }
+                    showDescription = true
                 } label: {
                     VStack(alignment: .leading, spacing: 10) {
                         Text(text)
                             .font(.callout)
                             .foregroundStyle(.primary)
-                            .lineLimit(descriptionExpanded ? nil : 3)
+                            .lineLimit(3)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(descriptionExpanded ? "Show less" : "More")
+                        Text("More")
                             .font(.callout.weight(.semibold))
                             .foregroundStyle(.secondary)
                     }
@@ -286,5 +299,76 @@ struct VideoDetailView: View {
     private func play(from position: TimeInterval) {
         guard let loaded = details.value else { return }
         playback = PlaybackRequest(details: loaded, startAt: position)
+    }
+}
+
+/// Full-screen, scrollable description. Each paragraph is focusable so the remote scrolls through
+/// the text; Menu closes the sheet.
+struct DescriptionSheet: View {
+    let title: String
+    let text: String
+
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var focusedParagraph: Int?
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(title)
+                    .font(.title2.weight(.semibold))
+                    .padding(.bottom, 20)
+                ForEach(Array(paragraphs.enumerated()), id: \.offset) { index, paragraph in
+                    Text(paragraph)
+                        .font(.callout)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                        .background(
+                            focusedParagraph == index ? Color.white.opacity(0.1) : .clear,
+                            in: RoundedRectangle(cornerRadius: 12)
+                        )
+                        .focusable()
+                        .focused($focusedParagraph, equals: index)
+                }
+                Text("Press Menu to go back")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 20)
+            }
+            .frame(maxWidth: 1400, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 120)
+            .padding(.vertical, 80)
+        }
+        .background(Color.black.ignoresSafeArea())
+        .onAppear { focusedParagraph = 0 }
+    }
+
+    /// Paragraphs of the description; long ones are split at sentence ends so each focus step
+    /// moves a readable amount.
+    private var paragraphs: [String] {
+        Self.paragraphs(of: text)
+    }
+
+    static func paragraphs(of text: String, maxLength: Int = 500) -> [String] {
+        text.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+            .flatMap { chunk($0, maxLength: maxLength) }
+    }
+
+    private static func chunk(_ paragraph: String, maxLength: Int) -> [String] {
+        guard paragraph.count > maxLength else { return [paragraph] }
+        var result: [String] = []
+        var current = ""
+        paragraph.enumerateSubstrings(in: paragraph.startIndex..., options: .bySentences) { sentence, _, _, _ in
+            guard let sentence else { return }
+            if !current.isEmpty, current.count + sentence.count > maxLength {
+                result.append(current.trimmingCharacters(in: .whitespaces))
+                current = ""
+            }
+            current += sentence
+        }
+        if !current.isEmpty { result.append(current.trimmingCharacters(in: .whitespaces)) }
+        return result.isEmpty ? [paragraph] : result
     }
 }

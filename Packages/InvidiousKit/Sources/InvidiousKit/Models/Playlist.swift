@@ -10,8 +10,14 @@ public struct Playlist: Codable, Hashable, Identifiable, Sendable {
     public var updated: Int?
     public var isListed: Bool
     public var videos: [PlaylistVideo]
+    /// `invidiousPlaylist` for lists stored on the instance, `playlist` for YouTube playlists.
+    public var type: String?
 
     public var id: String { playlistId }
+
+    /// True for the account's own lists, which can be edited and deleted. YouTube playlists
+    /// (a channel's lists) are read-only.
+    public var isInvidiousPlaylist: Bool { type != "playlist" }
 
     public var updatedDate: Date? {
         updated.map { Date(timeIntervalSince1970: TimeInterval($0)) }
@@ -32,6 +38,7 @@ public struct Playlist: Codable, Hashable, Identifiable, Sendable {
         updated = try c.decodeIfPresent(Int.self, forKey: .updated)
         isListed = try c.decodeIfPresent(Bool.self, forKey: .isListed) ?? false
         videos = try c.decodeIfPresent([PlaylistVideo].self, forKey: .videos) ?? []
+        type = try c.decodeIfPresent(String.self, forKey: .type)
     }
 }
 
