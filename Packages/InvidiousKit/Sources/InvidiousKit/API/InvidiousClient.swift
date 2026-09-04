@@ -133,6 +133,14 @@ public final class InvidiousClient: Sendable {
         try await send("POST", "/api/v1/auth/history/\(videoID)")
     }
 
+    public func unmarkWatched(videoID: String) async throws {
+        try await send("DELETE", "/api/v1/auth/history/\(videoID)")
+    }
+
+    public func clearHistory() async throws {
+        try await send("DELETE", "/api/v1/auth/history")
+    }
+
     // MARK: - Playlists
 
     /// The account's playlists. Each includes up to 100 videos.

@@ -7,12 +7,18 @@ struct ProfileToolbarModifier: ViewModifier {
 
     @Environment(AppModel.self) private var app
     @State private var showSettings = false
+    @State private var pushedRoute: Route?
 
     func body(content: Content) -> some View {
         content
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
+                        Button {
+                            pushedRoute = .history
+                        } label: {
+                            Label("Watch History", systemImage: "clock.arrow.circlepath")
+                        }
                         Button {
                             showSettings = true
                         } label: {
@@ -37,6 +43,9 @@ struct ProfileToolbarModifier: ViewModifier {
                     }
                     .accessibilityLabel("Profile")
                 }
+            }
+            .navigationDestination(item: $pushedRoute) { route in
+                MobileRouteDestination(route: route)
             }
             .sheet(isPresented: $showSettings) {
                 NavigationStack {

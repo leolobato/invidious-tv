@@ -6,8 +6,7 @@ struct MobileVideoDetailView: View {
 
     @Environment(AppModel.self) private var app
     @State private var details: LoadState<VideoDetails> = .idle
-    @State private var isPlaying = false
-    @State private var startAt: TimeInterval = 0
+    @State private var playback: PlaybackRequest?
     @State private var descriptionExpanded = false
     @State private var linkedRoute: Route?
     @State private var playlists: [Playlist] = []
@@ -51,9 +50,9 @@ struct MobileVideoDetailView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .task(id: video.videoId) { await load() }
-        .fullScreenCover(isPresented: $isPlaying) {
-            if let session = app.active, let loaded = details.value {
-                MobilePlayerView(details: loaded, summary: video, startAt: startAt, session: session)
+        .fullScreenCover(item: $playback) { request in
+            if let session = app.active {
+                MobilePlayerView(details: request.details, summary: video, startAt: request.startAt, session: session)
             }
         }
         .alert("New Playlist", isPresented: $showNewPlaylist) {
@@ -226,8 +225,8 @@ struct MobileVideoDetailView: View {
     }
 
     private func play(from position: TimeInterval) {
-        startAt = position
-        isPlaying = true
+        guard let loaded = details.value else { return }
+        playback = PlaybackRequest(details: loaded, startAt: position)
     }
 
     private func save(_ action: @escaping (InvidiousClient) async throws -> Void) {

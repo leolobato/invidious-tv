@@ -101,6 +101,8 @@ struct MobileRouteDestination: View {
             MobileChannelDetailView(channelID: id, channelName: name)
         case .playlist(let id, let title):
             MobilePlaylistDetailView(playlistID: id, title: title)
+        case .history:
+            MobileHistoryView()
         }
     }
 }

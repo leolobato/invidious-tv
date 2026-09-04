@@ -7,6 +7,7 @@ struct ChannelsView: View {
 
     @Environment(AppModel.self) private var app
     @State private var model: ChannelsViewModel
+    @State private var filter = ""
 
     private static let columns = Array(repeating: GridItem(.flexible(), spacing: 40), count: 6)
 
@@ -26,13 +27,18 @@ struct ChannelsView: View {
                 if channels.isEmpty {
                     EmptyStateView(title: "No subscriptions", message: "Channels you subscribe to will be listed here.", systemImage: "person.2")
                 } else {
+                    let shown = model.sorted(ChannelsViewModel.filtered(channels, query: filter), by: app.settings.channelSort)
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
                             toolbar
-                            if app.settings.channelLayout == .grid {
-                                grid(model.sorted(channels, by: app.settings.channelSort))
+                            if shown.isEmpty {
+                                Text("No channels match \u{201C}\(filter)\u{201D}.")
+                                    .foregroundStyle(.secondary)
+                                    .padding(.vertical, 40)
+                            } else if app.settings.channelLayout == .grid {
+                                grid(shown)
                             } else {
-                                list(model.sorted(channels, by: app.settings.channelSort))
+                                list(shown)
                             }
                         }
                         .padding(.horizontal, 60)
@@ -76,10 +82,16 @@ struct ChannelsView: View {
 
             Spacer()
 
+            TextField("Filter by name", text: $filter)
+                .textFieldStyle(.plain)
+                .autocorrectionDisabled()
+                .frame(width: 420)
+
             Text("\(model.state.value?.count ?? 0) channels")
                 .font(.callout)
                 .foregroundStyle(.secondary)
         }
+        .focusSection()
     }
 
     private func grid(_ channels: [SubscribedChannel]) -> some View {

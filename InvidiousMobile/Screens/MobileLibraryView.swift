@@ -15,10 +15,17 @@ struct MobileLibraryView: View {
             case .failed(let message):
                 ErrorView(message: message) { Task { await load() } }
             case .loaded(let playlists):
-                if playlists.isEmpty {
-                    EmptyStateView(title: "No playlists yet", message: "Use Save on a video to add it to Watch Later or a new playlist.", systemImage: "books.vertical")
-                } else {
-                    List(playlists) { playlist in
+                List {
+                    NavigationLink(value: Route.history) {
+                        Label("Watch History", systemImage: "clock.arrow.circlepath")
+                            .font(.body.weight(.medium))
+                    }
+                    if playlists.isEmpty {
+                        Text("No playlists yet. Use Save on a video to add it to Watch Later or a new playlist.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    ForEach(playlists) { playlist in
                         NavigationLink(value: Route.playlist(id: playlist.playlistId, title: playlist.title)) {
                             HStack(spacing: 14) {
                                 cover(playlist)
@@ -29,8 +36,8 @@ struct MobileLibraryView: View {
                             }
                         }
                     }
-                    .listStyle(.plain)
                 }
+                .listStyle(.plain)
             }
         }
         .navigationTitle("Library")

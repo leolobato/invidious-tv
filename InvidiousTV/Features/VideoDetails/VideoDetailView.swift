@@ -7,8 +7,7 @@ struct VideoDetailView: View {
 
     @Environment(AppModel.self) private var app
     @State private var details: LoadState<VideoDetails> = .idle
-    @State private var isPlaying = false
-    @State private var startAt: TimeInterval = 0
+    @State private var playback: PlaybackRequest?
     @State private var descriptionExpanded = false
     @State private var linkedRoute: Route?
     @State private var playlists: [Playlist] = []
@@ -39,9 +38,9 @@ struct VideoDetailView: View {
         .onAppear {
             playFocused = true
         }
-        .fullScreenCover(isPresented: $isPlaying) {
-            if let session = app.active, let loaded = details.value {
-                PlayerView(details: loaded, summary: video, startAt: startAt, session: session)
+        .fullScreenCover(item: $playback) { request in
+            if let session = app.active {
+                PlayerView(details: request.details, summary: video, startAt: request.startAt, session: session)
             }
         }
     }
@@ -288,7 +287,7 @@ struct VideoDetailView: View {
     }
 
     private func play(from position: TimeInterval) {
-        startAt = position
-        isPlaying = true
+        guard let loaded = details.value else { return }
+        playback = PlaybackRequest(details: loaded, startAt: position)
     }
 }

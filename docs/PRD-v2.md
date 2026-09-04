@@ -37,6 +37,14 @@ Builds on `PRD-v1.md`. Same architecture; features land one at a time on `main`.
     Scopes requested: `:feed`, `:subscriptions*`, `:history*`, `:playlists*`, `POST:tokens/unregister`
     (so removing the profile revokes its own token). Phone and TV must be on the same network.
 
+## Added along the way (2026-09-04)
+
+- Watch history: the account's history as a list (iOS, from the profile menu and Library, with swipe-to-remove) or a
+  grid (tvOS, from Library), paged, with Clear History. Invidious returns only IDs, so pages are resolved to video
+  summaries a few at a time and resume snapshots are reused.
+- Channel name filter on the Channels tab.
+- Original-language audio by default and an Audio menu for dubs; tappable description links; profile menu on iOS.
+
 ## Scoped out
 
 - DeArrow.

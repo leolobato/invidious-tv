@@ -110,6 +110,8 @@ struct RouteDestination: View {
             ChannelDetailView(channelID: id, channelName: name)
         case .playlist(let id, let title):
             PlaylistDetailView(playlistID: id, title: title)
+        case .history:
+            HistoryView()
         }
     }
 }

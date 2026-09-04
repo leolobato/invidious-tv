@@ -6,6 +6,7 @@ struct MobileChannelsView: View {
 
     @Environment(AppModel.self) private var app
     @State private var model: ChannelsViewModel
+    @State private var filter = ""
 
     init(session: ActiveSession) {
         self.session = session
@@ -21,8 +22,13 @@ struct MobileChannelsView: View {
             case .failed(let message):
                 ErrorView(message: message) { Task { await model.load() } }
             case .loaded(let channels):
+                let shown = model.sorted(ChannelsViewModel.filtered(channels, query: filter), by: settings.channelSort)
                 List {
-                    ForEach(model.sorted(channels, by: settings.channelSort)) { channel in
+                    if shown.isEmpty, !filter.isEmpty {
+                        Text("No channels match \u{201C}\(filter)\u{201D}.")
+                            .foregroundStyle(.secondary)
+                    }
+                    ForEach(shown) { channel in
                         NavigationLink(value: Route.channel(id: channel.authorId, name: channel.author)) {
                             HStack(spacing: 14) {
                                 ChannelAvatar(channelID: channel.authorId, name: channel.author, size: 44)
@@ -40,6 +46,8 @@ struct MobileChannelsView: View {
             }
         }
         .navigationTitle("Channels")
+        .searchable(text: $filter, prompt: "Filter by name")
+        .textInputAutocapitalization(.never)
         .profileToolbar(session: session)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

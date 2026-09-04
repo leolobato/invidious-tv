@@ -250,6 +250,20 @@ final class ActiveSession {
         }
     }
 
+    /// Removes one video from the account history.
+    func unmarkWatched(_ videoID: String) async throws {
+        try await client.unmarkWatched(videoID: videoID)
+        watchedIDs.remove(videoID)
+        recentHistory.removeAll { $0 == videoID }
+    }
+
+    /// Wipes the account history.
+    func clearHistory() async throws {
+        try await client.clearHistory()
+        watchedIDs = []
+        recentHistory = []
+    }
+
     /// Flags expired sessions; other errors are left to the caller to display.
     func handle(_ error: Error) {
         if let invidious = error as? InvidiousError, invidious.isSessionExpired {

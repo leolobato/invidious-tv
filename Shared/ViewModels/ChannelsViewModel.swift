@@ -49,6 +49,15 @@ final class ChannelsViewModel {
         recentLoadedAt = Date()
     }
 
+    /// Channels whose name contains every word of `query`, in any order.
+    nonisolated static func filtered(_ channels: [SubscribedChannel], query: String) -> [SubscribedChannel] {
+        let words = query.split(whereSeparator: \.isWhitespace).map(String.init)
+        guard !words.isEmpty else { return channels }
+        return channels.filter { channel in
+            words.allSatisfy { channel.author.localizedCaseInsensitiveContains($0) }
+        }
+    }
+
     func sorted(_ channels: [SubscribedChannel], by order: ChannelSortOrder) -> [SubscribedChannel] {
         switch order {
         case .nameAscending:

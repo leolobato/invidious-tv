@@ -233,6 +233,11 @@ final class PlayerViewModel {
         switch event {
         case .fileLoaded:
             hasLoaded = true
+            // `start` was set as a per-file option; seek as well in case the demuxer ignored it.
+            if pendingStart > 1 {
+                player?.seek(to: pendingStart)
+                pendingStart = 0
+            }
             if let audio = selection?.audio, let url = try? client.absoluteURL(audio.url) {
                 player?.addAudio(url: url)
             }

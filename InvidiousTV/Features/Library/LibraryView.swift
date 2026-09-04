@@ -18,17 +18,19 @@ struct LibraryView: View {
             case .failed(let message):
                 ErrorView(message: message) { Task { await load() } }
             case .loaded(let playlists):
-                if playlists.isEmpty {
-                    EmptyStateView(title: "No playlists yet", message: "Use Save on a video to add it to Watch Later or a new playlist.", systemImage: "books.vertical")
-                } else {
-                    ScrollView {
-                        LazyVGrid(columns: Self.columns, alignment: .leading, spacing: 48) {
-                            ForEach(playlists) { playlist in
-                                PlaylistCard(playlist: playlist)
-                            }
+                ScrollView {
+                    LazyVGrid(columns: Self.columns, alignment: .leading, spacing: 48) {
+                        HistoryCard()
+                        ForEach(playlists) { playlist in
+                            PlaylistCard(playlist: playlist)
                         }
-                        .padding(.horizontal, 60)
-                        .padding(.vertical, 40)
+                    }
+                    .padding(.horizontal, 60)
+                    .padding(.vertical, 40)
+                    if playlists.isEmpty {
+                        Text("No playlists yet. Use Save on a video to add it to Watch Later or a new playlist.")
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 60)
                     }
                 }
             }
@@ -112,5 +114,37 @@ struct PlaylistCard: View {
         var parts = ["\(playlist.videoCount) video\(playlist.videoCount == 1 ? "" : "s")"]
         if let when = VideoFormatting.relativeDate(playlist.updatedDate) { parts.append("updated \(when)") }
         return parts.joined(separator: " · ")
+    }
+}
+
+/// Library tile that opens the account's watch history.
+struct HistoryCard: View {
+    var body: some View {
+        NavigationLink(value: Route.history) {
+            VStack(alignment: .leading, spacing: 12) {
+                ZStack {
+                    Rectangle().fill(Color.white.opacity(0.08))
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 60, weight: .light))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+                .aspectRatio(16 / 9, contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Watch History")
+                        .font(.callout.weight(.medium))
+                        .lineLimit(2, reservesSpace: true)
+                    Text("Videos you have watched")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 14)
+            }
+        }
+        .buttonStyle(.card)
     }
 }

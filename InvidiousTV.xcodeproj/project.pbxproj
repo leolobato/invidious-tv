@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		038FC85BBCE93E961889F18F /* MobileRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD650F61F7FF3673770859E2 /* MobileRootView.swift */; };
+		0529E95CA290F38BB020ECD3 /* PlaybackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95258386A535DBB4EE292790 /* PlaybackRequest.swift */; };
 		08B8EF0530B74EDDE9DFDC9D /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 943D826D3391960469FECB83 /* NukeUI */; };
 		09F7DE0826E32E7A773AE666 /* SubscriptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C0B4674F282107AE1A5A9D /* SubscriptionsViewModel.swift */; };
 		102272925542480914581F82 /* ChannelAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A9427FADA84323C510F0A4 /* ChannelAvatar.swift */; };
+		1470A9375BD42C1771FADA0F /* PlaybackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95258386A535DBB4EE292790 /* PlaybackRequest.swift */; };
 		1E0B48AA060452EF70342EB2 /* PlayerSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */; };
 		216566179D01A4AD34B4F1B2 /* PlaylistStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51519F08762814D06699C571 /* PlaylistStore.swift */; };
 		2326F1373A102FE0EBA3D6E4 /* PlaylistDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69BE0ADC370577477BF8CC6 /* PlaylistDetailViewModel.swift */; };
@@ -30,6 +32,7 @@
 		45FCCB1747DF8AEA067C0FBE /* SharedLinkInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1416DBFCFFB6A0F1FD2CB9F4 /* SharedLinkInbox.swift */; };
 		47F495622BB56EC000ED46E6 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329EB1E901FD7778F7E86671 /* AppSettings.swift */; };
 		4ABD571FD81DD7FA50E658A0 /* ChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895C0DADB95A1BAC8DD3A5BA /* ChannelsView.swift */; };
+		4B2AD23A0436AC9DB4484C5C /* MobileHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3092FBB04209C2C36EB01129 /* MobileHistoryView.swift */; };
 		4D0666ADDAE210F0FB6BB18D /* MobileVideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811E2401C001E5CD82A5F89E /* MobileVideoDetailView.swift */; };
 		4E06EEB1B5DD4242696312BC /* InvidiousTVTopShelf.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F6CEF5427FE26AD17B0F7A52 /* InvidiousTVTopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5315F87E6901AD3E3E6652E8 /* ChannelAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A9427FADA84323C510F0A4 /* ChannelAvatar.swift */; };
@@ -57,6 +60,7 @@
 		771C9A859C7BFF953D1B1219 /* MobilePlaylistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB89FE9AEFBEB267982D8096 /* MobilePlaylistDetailView.swift */; };
 		7B2880A706DA530721A26C71 /* MPVRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80249D5188AE8701EB57C76 /* MPVRenderView.swift */; };
 		7B3731A7008B5DD692A8E350 /* ProfilePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2505562FD229D3AD0919AB /* ProfilePickerView.swift */; };
+		7C85B3891009702A420B72F7 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D8C1A728388699841AE72E /* HistoryViewModel.swift */; };
 		7D79C49EC241FDDA3C93ECDA /* InvidiousMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22929995829374A0E8C9A2F6 /* InvidiousMobileApp.swift */; };
 		7E19F3A65D1A9896C98F4CCE /* ChannelsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBEAA29BD37225ED7401526D /* ChannelsViewModel.swift */; };
 		83BCAD66727BF43762FF8CF4 /* MPVKit-GPL in Frameworks */ = {isa = PBXBuildFile; productRef = 065D9708C6498D3CE2F11398 /* MPVKit-GPL */; };
@@ -64,6 +68,7 @@
 		8650DE8194302058BDD41572 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8713894BE7019F63D8E1E66D /* MainTabView.swift */; };
 		866355D85A7A083159DFA8B5 /* ChannelAvatarCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A07E3CF928BC8C80F61A796 /* ChannelAvatarCache.swift */; };
 		8B1EC2354CA8FD22A005879D /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = C65B84B52EEA58D080AB22A4 /* Nuke */; };
+		8BE9291EC1D8591CA483A799 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D8C1A728388699841AE72E /* HistoryViewModel.swift */; };
 		9308A16190A2171CC018A610 /* InvidiousMobileShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 61712AD5B62E413509701877 /* InvidiousMobileShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		971E71BC74AC48FE3E3013C8 /* ProfileToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C91B9347579D86E6859A180 /* ProfileToolbar.swift */; };
 		97616D7B16DEC2E372818E18 /* DescriptionLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734FE41A48934B68052A93E /* DescriptionLinks.swift */; };
@@ -97,6 +102,7 @@
 		DCAACCB5F7D5F0B7F79A1F21 /* SharedLinkInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1416DBFCFFB6A0F1FD2CB9F4 /* SharedLinkInbox.swift */; };
 		E376BA99D32D4E7DB78D0D69 /* ChannelDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143AFBBEDCC6B18DAC04E068 /* ChannelDetailViewModel.swift */; };
 		E37B650A3FC8A1C43FE21F34 /* InvidiousKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2207398EEEDBDB6D39046E /* InvidiousKit */; };
+		E7117A2EC09743044D36899D /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC556BC915BDF06181F67BF /* HistoryView.swift */; };
 		EA5AF3F9A71B03020E94DC85 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F024D22BFD1F96C4086A2C69 /* PlayerView.swift */; };
 		EAD08D67E71C261FDBD4F316 /* MPVSoftwareRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266C96762B22A3016A932831 /* MPVSoftwareRenderView.swift */; };
 		ECD5C571539AE14BBF7602DE /* ChannelDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143AFBBEDCC6B18DAC04E068 /* ChannelDetailViewModel.swift */; };
@@ -166,12 +172,14 @@
 		27C2613FB9B5F24A980F2DAA /* MobileLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileLibraryView.swift; sourceTree = "<group>"; };
 		2DDD53AA026D6836137DBFA3 /* PlayerSurfaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSurfaceView.swift; sourceTree = "<group>"; };
 		2E9782D5C80D92169942F946 /* InvidiousTVTopShelf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InvidiousTVTopShelf.entitlements; sourceTree = "<group>"; };
+		3092FBB04209C2C36EB01129 /* MobileHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileHistoryView.swift; sourceTree = "<group>"; };
 		329EB1E901FD7778F7E86671 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		3490047CEA672877A83996A3 /* MPVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVPlayer.swift; sourceTree = "<group>"; };
 		3C8E1A303B7855C69321E233 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3CE9CB9C6D56A485F16A5958 /* MobileChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChannelsView.swift; sourceTree = "<group>"; };
 		3DC52E1D8A673462725030F5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		41A9427FADA84323C510F0A4 /* ChannelAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatar.swift; sourceTree = "<group>"; };
+		41D8C1A728388699841AE72E /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		48C0B4674F282107AE1A5A9D /* SubscriptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsViewModel.swift; sourceTree = "<group>"; };
 		49D3843ACEA1D6A3B9EA25D1 /* MobileHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileHomeView.swift; sourceTree = "<group>"; };
 		49F86554D761350ACBF7E2C6 /* MobileVideoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileVideoCard.swift; sourceTree = "<group>"; };
@@ -198,6 +206,7 @@
 		8D41C560EEF3CE5DE000D134 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		90740D6F323332190A479E6E /* ChannelTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTile.swift; sourceTree = "<group>"; };
 		91F883F64E6CB3DD6CD76D2E /* InvidiousTVApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvidiousTVApp.swift; sourceTree = "<group>"; };
+		95258386A535DBB4EE292790 /* PlaybackRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRequest.swift; sourceTree = "<group>"; };
 		95317364D886353D5E677A3A /* ContentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProvider.swift; sourceTree = "<group>"; };
 		9A07E3CF928BC8C80F61A796 /* ChannelAvatarCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvatarCache.swift; sourceTree = "<group>"; };
 		9C91B9347579D86E6859A180 /* ProfileToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolbar.swift; sourceTree = "<group>"; };
@@ -225,6 +234,7 @@
 		F69BE0ADC370577477BF8CC6 /* PlaylistDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailViewModel.swift; sourceTree = "<group>"; };
 		F6CEF5427FE26AD17B0F7A52 /* InvidiousTVTopShelf.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = InvidiousTVTopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBA1DE307B5B6223A830A323 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		FBC556BC915BDF06181F67BF /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,6 +284,7 @@
 			children = (
 				B245FE01BE7A570815E8A5F1 /* MobileChannelDetailView.swift */,
 				3CE9CB9C6D56A485F16A5958 /* MobileChannelsView.swift */,
+				3092FBB04209C2C36EB01129 /* MobileHistoryView.swift */,
 				49D3843ACEA1D6A3B9EA25D1 /* MobileHomeView.swift */,
 				27C2613FB9B5F24A980F2DAA /* MobileLibraryView.swift */,
 				EB89FE9AEFBEB267982D8096 /* MobilePlaylistDetailView.swift */,
@@ -386,6 +397,7 @@
 			children = (
 				143AFBBEDCC6B18DAC04E068 /* ChannelDetailViewModel.swift */,
 				BBEAA29BD37225ED7401526D /* ChannelsViewModel.swift */,
+				41D8C1A728388699841AE72E /* HistoryViewModel.swift */,
 				190C1F5553637661F87974FC /* HomeViewModel.swift */,
 				F69BE0ADC370577477BF8CC6 /* PlaylistDetailViewModel.swift */,
 				A6280DDA6620D9F367345040 /* SearchViewModel.swift */,
@@ -456,6 +468,7 @@
 		AC5667382A0FCA4A6443C8EC /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				FBC556BC915BDF06181F67BF /* HistoryView.swift */,
 				0B6F5F1DBC13AD60C98C61FD /* LibraryView.swift */,
 				093A784CA6F38C80794C2F69 /* PlaylistDetailView.swift */,
 			);
@@ -566,6 +579,7 @@
 				0EBB0FB2844465300983085F /* AppModel.swift */,
 				329EB1E901FD7778F7E86671 /* AppSettings.swift */,
 				9A07E3CF928BC8C80F61A796 /* ChannelAvatarCache.swift */,
+				95258386A535DBB4EE292790 /* PlaybackRequest.swift */,
 				51519F08762814D06699C571 /* PlaylistStore.swift */,
 				1AEE71F8C11AB8C4C82B28F7 /* Route.swift */,
 				1416DBFCFFB6A0F1FD2CB9F4 /* SharedLinkInbox.swift */,
@@ -779,6 +793,8 @@
 				65394B098F63A56FD53236F7 /* ChannelsViewModel.swift in Sources */,
 				697FAD628E1DE71B50E7F873 /* CommentsSection.swift in Sources */,
 				FEE3540B65E0FF8EAFD2FB21 /* DescriptionLinks.swift in Sources */,
+				E7117A2EC09743044D36899D /* HistoryView.swift in Sources */,
+				7C85B3891009702A420B72F7 /* HistoryViewModel.swift in Sources */,
 				3737FA79B24FB95DA45FFFF7 /* HomeView.swift in Sources */,
 				53C76D823E82FF2E64FB12B3 /* HomeViewModel.swift in Sources */,
 				2EA5B28084531E767B1E21FB /* InvidiousTVApp.swift in Sources */,
@@ -789,6 +805,7 @@
 				55556362C635A9FBE0EDB1DB /* MPVSoftwareRenderView.swift in Sources */,
 				8650DE8194302058BDD41572 /* MainTabView.swift in Sources */,
 				3B3DDFDB9D3608F97CDF4845 /* PhoneLoginView.swift in Sources */,
+				0529E95CA290F38BB020ECD3 /* PlaybackRequest.swift in Sources */,
 				1E0B48AA060452EF70342EB2 /* PlayerSurfaceView.swift in Sources */,
 				EA5AF3F9A71B03020E94DC85 /* PlayerView.swift in Sources */,
 				3989A5EE93EC394691AE351F /* PlayerViewModel.swift in Sources */,
@@ -826,6 +843,7 @@
 				7E19F3A65D1A9896C98F4CCE /* ChannelsViewModel.swift in Sources */,
 				C9277B237D6A97B35191A8C0 /* CommentsSection.swift in Sources */,
 				97616D7B16DEC2E372818E18 /* DescriptionLinks.swift in Sources */,
+				8BE9291EC1D8591CA483A799 /* HistoryViewModel.swift in Sources */,
 				CFB497D9041DBD71CB0C460C /* HomeViewModel.swift in Sources */,
 				7D79C49EC241FDDA3C93ECDA /* InvidiousMobileApp.swift in Sources */,
 				2E5503389C35EF658D208A6B /* LoginView.swift in Sources */,
@@ -834,6 +852,7 @@
 				EAD08D67E71C261FDBD4F316 /* MPVSoftwareRenderView.swift in Sources */,
 				A69F61494A49CBBA38372128 /* MobileChannelDetailView.swift in Sources */,
 				5714B260DA1A813A4387888E /* MobileChannelsView.swift in Sources */,
+				4B2AD23A0436AC9DB4484C5C /* MobileHistoryView.swift in Sources */,
 				64F634EC867C44611FC2DFED /* MobileHomeView.swift in Sources */,
 				723FAD4E476592C4A23273C9 /* MobileLibraryView.swift in Sources */,
 				5C4F7301ED93B20D3AB819A0 /* MobilePlayerView.swift in Sources */,
@@ -844,6 +863,7 @@
 				C173597B206A904335EE1F58 /* MobileTabView.swift in Sources */,
 				D5DF6C366F85F26159C86E40 /* MobileVideoCard.swift in Sources */,
 				4D0666ADDAE210F0FB6BB18D /* MobileVideoDetailView.swift in Sources */,
+				1470A9375BD42C1771FADA0F /* PlaybackRequest.swift in Sources */,
 				4392D35422DF90E2B452E969 /* PlayerViewModel.swift in Sources */,
 				2326F1373A102FE0EBA3D6E4 /* PlaylistDetailViewModel.swift in Sources */,
 				B2D6D17A3533B052AA4A9163 /* PlaylistStore.swift in Sources */,
