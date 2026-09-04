@@ -106,6 +106,13 @@ struct MobilePlayerView: View {
                             }
                         }
                     }
+                    if model.audioTracks.count > 1 {
+                        Menu("Audio") {
+                            ForEach(model.audioTracks) { track in
+                                Button { model.selectAudioTrack(track) } label: { Label(track.displayName, systemImage: model.selectedAudioTrack == track ? "checkmark" : "") }
+                            }
+                        }
+                    }
                     if model.availableHeights.count > 1 {
                         Menu("Quality") {
                             Button { model.setQuality(nil) } label: { Label("Auto", systemImage: model.qualityOverride == nil ? "checkmark" : "") }

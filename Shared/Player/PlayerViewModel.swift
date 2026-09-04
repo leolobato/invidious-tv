@@ -34,6 +34,10 @@ final class PlayerViewModel {
     private(set) var availableHeights: [Int] = []
     /// nil means automatic (best allowed).
     var qualityOverride: Int?
+    /// Audio languages the video offers (empty when YouTube labels none).
+    private(set) var audioTracks: [AudioTrack] = []
+    /// Language being played; nil until streams load.
+    private(set) var selectedAudioTrack: AudioTrack?
 
     // Captions
     private(set) var selectedCaption: Caption?
@@ -177,6 +181,7 @@ final class PlayerViewModel {
     private func loadStreams(startAt: TimeInterval) {
         guard let player else { return }
         availableHeights = StreamSelector.availableHeights(details, preferences: settings.streamPreferences)
+        audioTracks = StreamSelector.audioTracks(details.adaptiveFormats)
         hasLoaded = false
         videoSize = nil
 
@@ -185,8 +190,9 @@ final class PlayerViewModel {
             return
         }
 
-        if let chosen = StreamSelector.select(details, preferences: streamPreferences), let url = try? client.absoluteURL(chosen.video.url) {
+        if let chosen = StreamSelector.select(details, preferences: streamPreferences, audioTrack: selectedAudioTrack), let url = try? client.absoluteURL(chosen.video.url) {
             selection = chosen
+            selectedAudioTrack = chosen.audio?.audioTrack
             player.load(url: url, startAt: startAt)
             return
         }
@@ -207,6 +213,18 @@ final class PlayerViewModel {
         qualityOverride = height
         pendingStart = currentTime
         loadStreams(startAt: currentTime)
+    }
+
+    /// Switches the audio language without interrupting the video.
+    func selectAudioTrack(_ track: AudioTrack) {
+        guard track != selectedAudioTrack, var current = selection else { return }
+        guard let audio = StreamSelector.bestAudio(details.adaptiveFormats, track: track), let url = try? client.absoluteURL(audio.url) else { return }
+        current.audio = audio
+        selection = current
+        selectedAudioTrack = audio.audioTrack ?? track
+        if hasLoaded {
+            player?.replaceAudio(url: url)
+        }
     }
 
     // MARK: - Events

@@ -42,12 +42,25 @@ struct MobileHomeView: View {
         .navigationTitle("Home")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    app.deactivate()
+                Menu {
+                    Section(session.profile.name) {
+                        ForEach(app.profiles.profiles.filter { $0.id != session.profile.id }) { profile in
+                            Button {
+                                if (try? app.activate(profile)) == nil { app.deactivate() }
+                            } label: {
+                                Label(profile.name, systemImage: "person.circle")
+                            }
+                        }
+                        Button {
+                            app.deactivate()
+                        } label: {
+                            Label("Manage Profiles", systemImage: "person.2")
+                        }
+                    }
                 } label: {
                     ProfileAvatar(profile: session.profile, size: 30)
                 }
-                .accessibilityLabel("Switch profile")
+                .accessibilityLabel("Profile")
             }
         }
         .task {

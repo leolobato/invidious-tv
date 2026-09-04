@@ -139,6 +139,12 @@ final class MPVPlayer: @unchecked Sendable {
         command(["audio-add", url.absoluteString, "select"])
     }
 
+    /// Swaps the external audio track for another URL (e.g. a different language).
+    func replaceAudio(url: URL) {
+        command(["audio-remove"])
+        command(["audio-add", url.absoluteString, "select"])
+    }
+
     func play() {
         setProperty("pause", flag: false)
     }

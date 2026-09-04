@@ -89,6 +89,13 @@ struct MobileProfilePicker: View {
                 }
             }
             .navigationTitle("Invidious")
+            .toolbar {
+                if let last = app.profiles.lastUsedProfile, app.hasSession(last) {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { try? app.activate(last) }
+                    }
+                }
+            }
             .task {
                 if app.profiles.profiles.isEmpty { showLogin = true }
             }

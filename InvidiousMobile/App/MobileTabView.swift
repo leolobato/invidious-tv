@@ -89,14 +89,23 @@ struct MobileTabView: View {
 extension View {
     func withMobileRoutes() -> some View {
         navigationDestination(for: Route.self) { route in
-            switch route {
-            case .video(let video):
-                MobileVideoDetailView(video: video)
-            case .channel(let id, let name):
-                MobileChannelDetailView(channelID: id, channelName: name)
-            case .playlist(let id, let title):
-                MobilePlaylistDetailView(playlistID: id, title: title)
-            }
+            MobileRouteDestination(route: route)
+        }
+    }
+}
+
+/// Screen for a navigation route, shared by link-based and programmatic navigation.
+struct MobileRouteDestination: View {
+    let route: Route
+
+    var body: some View {
+        switch route {
+        case .video(let video):
+            MobileVideoDetailView(video: video)
+        case .channel(let id, let name):
+            MobileChannelDetailView(channelID: id, channelName: name)
+        case .playlist(let id, let title):
+            MobilePlaylistDetailView(playlistID: id, title: title)
         }
     }
 }

@@ -93,14 +93,23 @@ extension View {
     /// Registers the navigation destinations used across all tabs.
     func withRoutes() -> some View {
         navigationDestination(for: Route.self) { route in
-            switch route {
-            case .video(let video):
-                VideoDetailView(video: video)
-            case .channel(let id, let name):
-                ChannelDetailView(channelID: id, channelName: name)
-            case .playlist(let id, let title):
-                PlaylistDetailView(playlistID: id, title: title)
-            }
+            RouteDestination(route: route)
+        }
+    }
+}
+
+/// Screen for a navigation route, shared by link-based and programmatic navigation.
+struct RouteDestination: View {
+    let route: Route
+
+    var body: some View {
+        switch route {
+        case .video(let video):
+            VideoDetailView(video: video)
+        case .channel(let id, let name):
+            ChannelDetailView(channelID: id, channelName: name)
+        case .playlist(let id, let title):
+            PlaylistDetailView(playlistID: id, title: title)
         }
     }
 }

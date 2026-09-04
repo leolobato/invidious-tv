@@ -27,7 +27,7 @@ struct PlayerView: View {
     static let autoplayDelay = 8
 
     enum OptionFocus: Hashable {
-        case speed, captions, quality, close, autoplayCancel, autoplayNow
+        case speed, captions, audio, quality, close, autoplayCancel, autoplayNow
     }
 
     var body: some View {
@@ -398,6 +398,21 @@ struct PlayerView: View {
                     Label(model.selectedCaption?.label ?? "Captions", systemImage: "captions.bubble")
                 }
                 .focused($optionFocus, equals: .captions)
+            }
+
+            if model.audioTracks.count > 1 {
+                Menu {
+                    ForEach(model.audioTracks) { track in
+                        Button {
+                            model.selectAudioTrack(track)
+                        } label: {
+                            Label(track.displayName, systemImage: model.selectedAudioTrack == track ? "checkmark" : "")
+                        }
+                    }
+                } label: {
+                    Label(model.selectedAudioTrack?.displayName ?? "Audio", systemImage: "waveform")
+                }
+                .focused($optionFocus, equals: .audio)
             }
 
             if model.availableHeights.count > 1 {

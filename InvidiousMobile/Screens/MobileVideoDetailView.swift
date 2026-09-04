@@ -9,6 +9,7 @@ struct MobileVideoDetailView: View {
     @State private var isPlaying = false
     @State private var startAt: TimeInterval = 0
     @State private var descriptionExpanded = false
+    @State private var linkedRoute: Route?
     @State private var playlists: [Playlist] = []
     @State private var saveMessage: String?
     @State private var showNewPlaylist = false
@@ -177,23 +178,39 @@ struct MobileVideoDetailView: View {
     @ViewBuilder
     private var description: some View {
         if let text = details.value?.description, !text.isEmpty {
-            Button {
-                withAnimation { descriptionExpanded.toggle() }
-            } label: {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(text)
-                        .font(.footnote)
-                        .foregroundStyle(.primary)
-                        .lineLimit(descriptionExpanded ? nil : 3)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 6) {
+                // Links stay tappable because the text is not wrapped in the expand button.
+                Text(DescriptionLinks.attributed(text))
+                    .font(.footnote)
+                    .foregroundStyle(.primary)
+                    .tint(.accentColor)
+                    .lineLimit(descriptionExpanded ? nil : 3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .environment(\.openURL, OpenURLAction { url in
+                        guard let link = YouTubeLink.parse(url.absoluteString), let client = app.active?.client else {
+                            return .systemAction
+                        }
+                        Task {
+                            if let route = await LinkRouter.route(for: link, client: client) {
+                                linkedRoute = route
+                            }
+                        }
+                        return .handled
+                    })
+                Button {
+                    withAnimation { descriptionExpanded.toggle() }
+                } label: {
                     Text(descriptionExpanded ? "Show less" : "More")
                         .font(.footnote.weight(.semibold))
                         .foregroundStyle(.secondary)
                 }
-                .padding(12)
-                .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
+            .padding(12)
+            .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+            .navigationDestination(item: $linkedRoute) { route in
+                MobileRouteDestination(route: route)
+            }
         }
     }
 

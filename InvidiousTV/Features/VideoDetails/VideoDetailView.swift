@@ -10,6 +10,7 @@ struct VideoDetailView: View {
     @State private var isPlaying = false
     @State private var startAt: TimeInterval = 0
     @State private var descriptionExpanded = false
+    @State private var linkedRoute: Route?
     @State private var playlists: [Playlist] = []
     @State private var saveMessage: String?
     @State private var showNewPlaylist = false
@@ -243,6 +244,33 @@ struct VideoDetailView: View {
                 .buttonStyle(.plain)
                 .tint(.white)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+
+                // The remote cannot tap inside the text, so YouTube links become buttons.
+                let links = DescriptionLinks.inAppLinks(in: text)
+                if !links.isEmpty {
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 16) {
+                            ForEach(links, id: \.url) { item in
+                                Button {
+                                    guard let client = app.active?.client else { return }
+                                    Task {
+                                        if let route = await LinkRouter.route(for: item.link, client: client) {
+                                            linkedRoute = route
+                                        }
+                                    }
+                                } label: {
+                                    Label(DescriptionLinks.label(for: item.url, link: item.link), systemImage: "link")
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 20)
+                    }
+                    .scrollClipDisabled()
+                }
+            }
+            .navigationDestination(item: $linkedRoute) { route in
+                RouteDestination(route: route)
             }
         }
     }
