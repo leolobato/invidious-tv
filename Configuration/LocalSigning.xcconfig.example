@@ -1,0 +1,4 @@
+// Copy to LocalSigning.xcconfig (gitignored) and fill in your values.
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+APP_BUNDLE_ID = com.yourcompany.invidioustv
+DEFAULT_INSTANCE_URL = http:/$()/192.168.1.10:3000

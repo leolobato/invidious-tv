@@ -1,0 +1,210 @@
+name: InvidiousTV
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    tvOS: "26.0"
+    iOS: "26.0"
+  xcodeVersion: "26.0"
+  generateEmptyDirectories: true
+configFiles:
+  Debug: Configuration/Base.xcconfig
+  Release: Configuration/Base.xcconfig
+packages:
+  InvidiousKit:
+    path: Packages/InvidiousKit
+  MPVKit:
+    url: https://github.com/yattee/MPVKit.git
+    exactVersion: 1.0.1
+  Nuke:
+    url: https://github.com/kean/Nuke
+    from: 12.8.0
+targets:
+  InvidiousTV:
+    type: application
+    platform: tvOS
+    sources:
+      - Shared
+      - InvidiousTV
+    dependencies:
+      - package: InvidiousKit
+      - package: MPVKit
+        product: MPVKit-GPL
+      - package: Nuke
+        product: Nuke
+      - package: Nuke
+        product: NukeUI
+      - target: InvidiousTVTopShelf
+    entitlements:
+      path: InvidiousTV/InvidiousTV.entitlements
+      properties:
+        com.apple.security.application-groups: [$(APP_GROUP_ID)]
+        com.apple.developer.ubiquity-kvstore-identifier: $(TeamIdentifierPrefix)$(APP_BUNDLE_ID)
+        keychain-access-groups: [$(AppIdentifierPrefix)$(APP_BUNDLE_ID).shared]
+    info:
+      path: InvidiousTV/Info.plist
+      properties:
+        CFBundleDisplayName: Invidious TV
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        InvidiousAppGroup: $(APP_GROUP_ID)
+        InvidiousAppBundleID: $(APP_BUNDLE_ID)
+        InvidiousDefaultInstance: $(DEFAULT_INSTANCE_URL)
+        InvidiousKeychainGroup: $(DEVELOPMENT_TEAM).$(APP_BUNDLE_ID).shared
+        CFBundleURLTypes:
+          - CFBundleURLName: $(APP_BUNDLE_ID).links
+            CFBundleURLSchemes: [invidioustv]
+        UILaunchScreen: {}
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        UIRequiredDeviceCapabilities: [arm64]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID)
+        PRODUCT_NAME: Invidious TV
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image
+        TARGETED_DEVICE_FAMILY: "3"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+  InvidiousMobile:
+    type: application
+    platform: iOS
+    sources:
+      - Shared
+      - InvidiousMobile
+    dependencies:
+      - package: InvidiousKit
+      - package: MPVKit
+        product: MPVKit-GPL
+      - package: Nuke
+        product: Nuke
+      - package: Nuke
+        product: NukeUI
+      - target: InvidiousMobileShare
+    entitlements:
+      path: InvidiousMobile/InvidiousMobile.entitlements
+      properties:
+        com.apple.security.application-groups: [$(APP_GROUP_ID)]
+        com.apple.developer.ubiquity-kvstore-identifier: $(TeamIdentifierPrefix)$(APP_BUNDLE_ID)
+    info:
+      path: InvidiousMobile/Info.plist
+      properties:
+        CFBundleDisplayName: Invidious
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        InvidiousAppGroup: $(APP_GROUP_ID)
+        InvidiousAppBundleID: $(APP_BUNDLE_ID)
+        InvidiousDefaultInstance: $(DEFAULT_INSTANCE_URL)
+        CFBundleURLTypes:
+          - CFBundleURLName: $(APP_BUNDLE_ID).links
+            CFBundleURLSchemes: [invidioustv]
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIBackgroundModes: [audio]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID).mobile
+        PRODUCT_NAME: Invidious
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  InvidiousMobileShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - InvidiousMobileShare
+      - path: Shared/App/SharedLinkInbox.swift
+    dependencies:
+      - package: InvidiousKit
+    entitlements:
+      path: InvidiousMobileShare/InvidiousMobileShare.entitlements
+      properties:
+        com.apple.security.application-groups: [$(APP_GROUP_ID)]
+    info:
+      path: InvidiousMobileShare/Info.plist
+      properties:
+        CFBundleDisplayName: Open in Invidious
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        InvidiousAppGroup: $(APP_GROUP_ID)
+        InvidiousAppBundleID: $(APP_BUNDLE_ID)
+        InvidiousDefaultInstance: $(DEFAULT_INSTANCE_URL)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID).mobile.share
+        PRODUCT_NAME: InvidiousMobileShare
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        TARGETED_DEVICE_FAMILY: "1,2"
+  InvidiousTVTopShelf:
+    type: tv-app-extension
+    platform: tvOS
+    sources:
+      - InvidiousTVTopShelf
+    dependencies:
+      - package: InvidiousKit
+    entitlements:
+      path: InvidiousTVTopShelf/InvidiousTVTopShelf.entitlements
+      properties:
+        com.apple.security.application-groups: [$(APP_GROUP_ID)]
+        keychain-access-groups: [$(AppIdentifierPrefix)$(APP_BUNDLE_ID).shared]
+    info:
+      path: InvidiousTVTopShelf/Info.plist
+      properties:
+        CFBundleDisplayName: Invidious TV Top Shelf
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        InvidiousAppGroup: $(APP_GROUP_ID)
+        InvidiousAppBundleID: $(APP_BUNDLE_ID)
+        InvidiousDefaultInstance: $(DEFAULT_INSTANCE_URL)
+        InvidiousKeychainGroup: $(DEVELOPMENT_TEAM).$(APP_BUNDLE_ID).shared
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.tv-top-shelf
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ContentProvider
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID).topshelf
+        PRODUCT_NAME: InvidiousTVTopShelf
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+schemes:
+  InvidiousTV:
+    build:
+      targets:
+        InvidiousTV: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: []
+  InvidiousMobile:
+    build:
+      targets:
+        InvidiousMobile: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: []

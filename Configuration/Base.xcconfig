@@ -1,0 +1,11 @@
+// Default open-source configuration
+DEVELOPMENT_TEAM =
+CODE_SIGN_STYLE = Automatic
+CODE_SIGN_IDENTITY = Apple Development
+
+APP_BUNDLE_ID = com.example.invidioustv
+APP_GROUP_ID = group.$(APP_BUNDLE_ID)
+// Instance offered on first launch. Leave empty to make the user type one. Escape the slashes: http:/$()/host:port
+DEFAULT_INSTANCE_URL =
+
+#include? "LocalSigning.xcconfig"

@@ -1,0 +1,110 @@
+# Invidious TV
+
+A tvOS and iOS client for a self-hosted [Invidious](https://github.com/iv-org/invidious) instance, in
+the style of the YouTube apps. SwiftUI, tvOS 26 and iOS 26, MPV playback. See `docs/PRD-v1.md` and
+`docs/PRD-v2.md` for the product requirements.
+
+This is an unofficial client. It is not affiliated with or endorsed by the Invidious project, and the
+Invidious name and logo belong to that project.
+
+Planned: livestreams. Invidious instances running invidious-companion currently return no playable
+manifest for live videos, so live playback is not available yet.
+
+## Layout
+
+| Path | Purpose |
+| --- | --- |
+| `project.yml` | XcodeGen spec. Run `xcodegen generate` after adding files. |
+| `Configuration/` | Signing. `Base.xcconfig` is committed; copy `LocalSigning.xcconfig.example` to `LocalSigning.xcconfig` and fill in your team and bundle ID. |
+| `Packages/InvidiousKit` | Platform-agnostic Swift package: API client, models, login, profiles, resume store, home feed builder, stream selection, search, playlists, comments, SponsorBlock. |
+| `Shared/` | App code compiled into both apps: app model, settings, stores, view models, MPV player core, shared views. |
+| `InvidiousTV/` | tvOS views and remote handling. `InvidiousTVTopShelf/` is the Top Shelf extension. |
+| `InvidiousMobile/` | iPhone and iPad views and touch player. `InvidiousMobileShare/` is the share extension that opens YouTube links. |
+
+## Build
+
+```sh
+brew install xcodegen
+cp Configuration/LocalSigning.xcconfig.example Configuration/LocalSigning.xcconfig  # edit values
+xcodegen generate
+open InvidiousTV.xcodeproj
+```
+
+`LocalSigning.xcconfig` holds your team, bundle ID and, optionally, `DEFAULT_INSTANCE_URL`, the instance
+offered on the login screen (slashes escaped as `http:/$()/host:port`). Without it the user types the
+instance URL on first launch. The bundle ID also names the app group, the shared keychain group and the
+unified-log subsystem.
+
+Package tests run on the Mac, no simulator needed:
+
+```sh
+cd Packages/InvidiousKit && swift test
+```
+
+Schemes: `InvidiousTV` (Apple TV) and `InvidiousMobile` (iPhone and iPad). Both share the debug hooks below;
+the iOS bundle ID is the tvOS one with `.mobile` appended.
+
+## Playback
+
+The player uses libmpv through [MPVKit](https://github.com/yattee/MPVKit) (GPL build, so the app is
+GPL). It plays the best adaptive video stream the device can decode plus a separate audio stream.
+Audio languages come from the `xtags` parameter of each audio stream URL (Invidious does not expose them
+as a field); the original language plays by default and the player's Audio menu switches dubs without
+reloading the video. On devices, mpv renders through OpenGL ES into a `CAEAGLLayer`. In the simulator, where OpenGL ES
+output is unreliable, it renders through mpv's software API into a `CGImage`, so simulator playback
+is capped at 720p and decoded on the CPU.
+
+## Sign-in and sync
+
+Profiles sign in with username and password, or on tvOS with a phone: the TV shows a QR code for the
+instance's `/authorize_token` page with a callback to a small HTTP listener on the TV (`TokenCallbackServer`
+in `InvidiousKit`). After approving in the phone's browser, the browser is redirected to the TV with the
+token and username, and the profile then authenticates with `Authorization: Bearer`. Phone and TV must
+share a network. Removing a token profile revokes its token on the instance.
+
+Resume positions sync through the iCloud key-value store (entitlement
+`com.apple.developer.ubiquity-kvstore-identifier`, shared by the tvOS and iOS apps). Buckets are keyed by
+instance and username, so any device signed in to the same Invidious account with the same iCloud account
+shares them. The Settings toggle turns it off. In the simulator without an iCloud account the store is local only.
+
+## Debug hooks (DEBUG builds only)
+
+Environment variables let you drive the app in the simulator without the remote. With `simctl`,
+prefix each with `SIMCTL_CHILD_`.
+
+| Variable | Effect |
+| --- | --- |
+| `INVIDIOUS_AUTOLOGIN_USER`, `INVIDIOUS_AUTOLOGIN_PASSWORD` | Sign in and activate that profile on launch. Optional `INVIDIOUS_AUTOLOGIN_INSTANCE`. |
+| `INVIDIOUS_DEBUG_TAB` | `search`, `home`, `subscriptions`, `channels`, `library` or `settings` (tvOS only; iOS opens Settings from the profile menu). |
+| `INVIDIOUS_DEBUG_SEARCH` | Query to prefill on the Search tab. |
+| `INVIDIOUS_DEBUG_FOCUS` | `rename` or `version` to focus a Settings row. |
+| `INVIDIOUS_DEBUG_COMMENTS` | Any value expands comments on video details. |
+| `INVIDIOUS_DEBUG_PHONE_LOGIN` | Any value opens the QR-code phone sign-in as soon as the login screen appears (tvOS). |
+| `INVIDIOUS_DEBUG_ROUTE` | `video:<id>`, `channel:<ucid>` or `playlist:<plid>`, pushed on the Home tab. |
+| `INVIDIOUS_AUTOPLAY_VIDEO` | Video ID to open directly in the player. |
+| `INVIDIOUS_DEBUG_REMOTE` | Scripted remote actions for the player, e.g. `8:select,3:down,1:pan:300,1:panEnd`. Actions: `select`, `playPause`, `left`, `right`, `up`, `down`, `menu`, `pan:<points>`, `panEnd`. |
+
+Example:
+
+```sh
+SIMCTL_CHILD_INVIDIOUS_AUTOLOGIN_USER=me SIMCTL_CHILD_INVIDIOUS_AUTOLOGIN_PASSWORD=secret \
+SIMCTL_CHILD_INVIDIOUS_AUTOPLAY_VIDEO=dQw4w9WgXcQ \
+xcrun simctl launch <simulator-udid> <your-bundle-id>
+```
+
+mpv and renderer messages go to the unified log under a subsystem named after your bundle ID:
+
+```sh
+xcrun simctl spawn <simulator-udid> log stream --level info --predicate 'subsystem == "<your-bundle-id>"'
+```
+
+## License and third-party notices
+
+Invidious TV is free software under the [GNU GPL-3.0](LICENSE), a consequence of linking the GPL build of
+MPVKit. It uses:
+
+- [MPVKit](https://github.com/yattee/MPVKit) (GPL-3.0), which bundles [mpv](https://mpv.io) and FFmpeg (GPL/LGPL).
+- [Nuke](https://github.com/kean/Nuke) (MIT) for image loading and caching.
+- Segment data from [SponsorBlock](https://sponsor.ajay.app) (CC BY-NC-SA 4.0).
+- The API of [Invidious](https://github.com/iv-org/invidious) (AGPL-3.0). The app icon is derived from the
+  Invidious logo.
