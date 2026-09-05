@@ -287,6 +287,8 @@ public final class InvidiousClient: Sendable {
             throw InvidiousError.network(error.localizedDescription)
         }
         try validate(response, data: data)
+        // Invidious answers 200 with nothing in the body for streams that have not started.
+        guard !data.isEmpty else { throw InvidiousError.emptyResponse }
         do {
             return try decoder.decode(T.self, from: data)
         } catch {

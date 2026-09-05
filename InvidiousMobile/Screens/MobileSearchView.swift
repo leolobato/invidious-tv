@@ -101,6 +101,8 @@ struct MobileSearchView: View {
                                 Image(systemName: "chevron.right").foregroundStyle(.tertiary)
                             }
                             .padding(.horizontal, 16)
+                            .frame(maxWidth: .infinity)
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                     }

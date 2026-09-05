@@ -10,6 +10,7 @@ final class AppModel {
     let resume: ResumeStore
     let settings: AppSettings
     let channelAvatars: ChannelAvatarCache
+    let videoMetadata = VideoMetadataCache()
     let playlists = PlaylistStore()
     let topShelf = TopShelfSnapshotStore(appGroup: Bundle.main.object(forInfoDictionaryKey: "InvidiousAppGroup") as? String ?? "")
     private let sessions: any SessionStore

@@ -12,8 +12,6 @@ struct MobilePlayerView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
     @State private var model: PlayerViewModel?
-    @State private var sliderValue: Double = 0
-    @State private var isSliding = false
     @State private var upNext: VideoSummary?
     @State private var countdown = 8
     @State private var countdownTask: Task<Void, Never>?
@@ -33,6 +31,14 @@ struct MobilePlayerView: View {
                     .onTapGesture {
                         if model.controlsVisible { model.hideControls() } else { model.showControls() }
                     }
+                    // A clear downward swipe closes the player, like the system video player.
+                    .gesture(
+                        DragGesture(minimumDistance: 40)
+                            .onEnded { value in
+                                let dy = value.translation.height
+                                if dy > 100, dy > abs(value.translation.width) * 1.5 { dismiss() }
+                            }
+                    )
                 overlay(model)
             }
         }
@@ -122,6 +128,10 @@ struct MobilePlayerView: View {
                             }
                         }
                     }
+                    Divider()
+                    ShareLink(item: URL(string: "https://www.youtube.com/watch?v=\(model.details.videoId)")!) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle").font(.title2).padding(10)
                 }
@@ -141,27 +151,17 @@ struct MobilePlayerView: View {
             Spacer()
 
             VStack(spacing: 6) {
-                Slider(
-                    value: Binding(
-                        get: { isSliding ? sliderValue : model.displayTime },
-                        set: { value in
-                            sliderValue = value
-                            model.scrub(to: value)
-                        }
-                    ),
-                    in: 0...max(model.duration, 1),
-                    onEditingChanged: { editing in
-                        isSliding = editing
-                        if !editing { model.commitScrub() }
-                    }
-                )
-                .tint(.red)
+                MobileScrubBar(model: model)
                 HStack {
                     Text(VideoFormatting.clockTime(Int(model.displayTime)))
                     Spacer()
                     Text(model.qualityLabel).foregroundStyle(.white.opacity(0.7))
                     Spacer()
-                    Text("-" + VideoFormatting.clockTime(max(0, Int(model.duration - model.displayTime))))
+                    if model.details.liveNow {
+                        Label("LIVE", systemImage: "dot.radiowaves.left.and.right").foregroundStyle(.red)
+                    } else {
+                        Text("-" + VideoFormatting.clockTime(max(0, Int(model.duration - model.displayTime))))
+                    }
                 }
                 .font(.caption.monospacedDigit())
             }
@@ -223,5 +223,57 @@ struct MobilePlayerView: View {
             session.handle(error)
             dismiss()
         }
+    }
+}
+
+/// Touch progress bar: drag anywhere on it to scrub, with SponsorBlock segments marked and a
+/// storyboard preview above the knob while scrubbing.
+struct MobileScrubBar: View {
+    let model: PlayerViewModel
+
+    private static let previewWidth: CGFloat = 160
+
+    var body: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let x = width * model.progress
+            let knob: CGFloat = model.isScrubbing ? 18 : 12
+            ZStack(alignment: .leading) {
+                Capsule().fill(.white.opacity(0.3)).frame(height: 4)
+                if model.duration > 0 {
+                    ForEach(model.sponsorSegments.filter(\.isSkippable)) { segment in
+                        let start = width * min(max(segment.start / model.duration, 0), 1)
+                        let end = width * min(max(segment.end / model.duration, 0), 1)
+                        Rectangle()
+                            .fill(Color.green.opacity(0.9))
+                            .frame(width: max(end - start, 2), height: 4)
+                            .offset(x: start)
+                    }
+                }
+                Capsule().fill(Color.red).frame(width: x, height: 4)
+                Circle()
+                    .fill(.white)
+                    .frame(width: knob, height: knob)
+                    .offset(x: x - knob / 2)
+                    .animation(.easeOut(duration: 0.1), value: model.isScrubbing)
+                if model.isScrubbing, model.storyboard != nil {
+                    SeekPreviewView(model: model, width: Self.previewWidth)
+                        .frame(width: Self.previewWidth, height: Self.previewWidth * 9 / 16 + 34)
+                        .offset(x: min(max(x - Self.previewWidth / 2, 0), width - Self.previewWidth), y: -90)
+                }
+            }
+            .frame(height: 28)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        guard model.duration > 0 else { return }
+                        let fraction = min(max(value.location.x / width, 0), 1)
+                        model.scrub(to: fraction * model.duration)
+                    }
+                    .onEnded { _ in model.commitScrub() }
+            )
+        }
+        .frame(height: 28)
     }
 }

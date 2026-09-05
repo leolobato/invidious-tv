@@ -71,10 +71,17 @@ struct VideoDetailView: View {
         let primary = thumbs.first { $0.quality == "maxresdefault" } ?? thumbs.best(maxWidth: 1280)
         let fallbacks = ["sddefault", "high", "medium"].compactMap { q in thumbs.first { $0.quality == q } }
         return HStack(alignment: .top, spacing: 50) {
-            RemoteImage(url: primary.flatMap { client?.url(for: $0) }, fallbacks: fallbacks.compactMap { client?.url(for: $0) })
-                .aspectRatio(16 / 9, contentMode: .fill)
-                .frame(width: 880, height: 495)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            ZStack(alignment: .bottomTrailing) {
+                RemoteImage(url: primary.flatMap { client?.url(for: $0) }, fallbacks: fallbacks.compactMap { client?.url(for: $0) })
+                    .aspectRatio(16 / 9, contentMode: .fill)
+                if isLive {
+                    durationBadge("LIVE", color: .red)
+                } else if let length = details.value?.lengthSeconds ?? (video.lengthSeconds > 0 ? video.lengthSeconds : nil), length > 0 {
+                    durationBadge(VideoFormatting.duration(length), color: .black.opacity(0.75))
+                }
+            }
+            .frame(width: 880, height: 495)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
             VStack(alignment: .leading, spacing: 24) {
                 Text(details.value?.title ?? video.title)
@@ -132,6 +139,16 @@ struct VideoDetailView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    private func durationBadge(_ text: String, color: Color) -> some View {
+        Text(text)
+            .font(.callout.weight(.semibold))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(color, in: RoundedRectangle(cornerRadius: 8))
+            .foregroundStyle(.white)
+            .padding(16)
     }
 
     private var saveMenu: some View {
@@ -290,6 +307,7 @@ struct VideoDetailView: View {
         do {
             let loaded = try await client.video(id: video.videoId, proxy: app.settings.proxyMedia)
             details = .loaded(loaded)
+            app.videoMetadata.remember(loaded)
         } catch {
             app.active?.handle(error)
             details = .failed(error.localizedDescription)

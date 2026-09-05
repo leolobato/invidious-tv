@@ -31,6 +31,9 @@ final class MPVRenderView: UIView {
     private let scheduleLock = NSLock()
     private var isTornDown = false
     private var renderedFrames = 0
+    /// Set when the view changed size: the last frame must be drawn again at the new size even if
+    /// mpv has nothing new (paused video), otherwise Core Animation stretches the old one.
+    private var needsRedraw = false
 
     override class var layerClass: AnyClass { CAEAGLLayer.self }
 
@@ -100,6 +103,7 @@ final class MPVRenderView: UIView {
             deleteFramebuffer()
             createFramebufferLocked()
             EAGLContext.setCurrent(nil)
+            needsRedraw = true
         }
         scheduleRender()
     }
@@ -123,7 +127,10 @@ final class MPVRenderView: UIView {
     /// Runs on the render queue.
     private func performRender() {
         guard !isTornDown, let player, let glContext, framebuffer != 0 else { return }
-        guard player.hasNewFrame() else { return }
+        // Always consume mpv's update flags, then draw when there is a new frame or a new size.
+        let hasNewFrame = player.hasNewFrame()
+        guard hasNewFrame || needsRedraw else { return }
+        needsRedraw = false
         EAGLContext.setCurrent(glContext)
         glBindFramebuffer(GLenum(GL_FRAMEBUFFER), framebuffer)
         player.render(fbo: GLint(framebuffer), width: renderWidth, height: renderHeight)

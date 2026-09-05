@@ -36,11 +36,12 @@ final class SubscriptionsViewModel {
         do {
             let next = page + 1
             let result = try await session.client.feed(page: next, maxResults: Self.pageSize)
+            let pageVideos = result.allVideos
             let known = Set(videos.map(\.videoId))
-            let fresh = result.videos.filter { !known.contains($0.videoId) }
+            let fresh = pageVideos.filter { !known.contains($0.videoId) }
             videos.append(contentsOf: fresh)
             page = next
-            if result.videos.count < Self.pageSize || fresh.isEmpty {
+            if pageVideos.count < Self.pageSize || fresh.isEmpty {
                 reachedEnd = true
             }
             state = .loaded(())

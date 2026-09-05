@@ -18,6 +18,8 @@ final class MPVSoftwareRenderView: UIView {
     private let scheduleLock = NSLock()
     private var isTornDown = false
     private var renderedFrames = 0
+    /// Set when the view changed size, so a paused video is redrawn at the new size.
+    private var needsRedraw = false
 
     /// Keeps the CPU path affordable.
     private static let maxWidth = 1280
@@ -56,6 +58,7 @@ final class MPVSoftwareRenderView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        renderQueue.async { [self] in needsRedraw = true }
         scheduleRender()
     }
 
@@ -76,7 +79,10 @@ final class MPVSoftwareRenderView: UIView {
     }
 
     private func performRender() {
-        guard !isTornDown, let player, player.hasNewFrame() else { return }
+        guard !isTornDown, let player else { return }
+        let hasNewFrame = player.hasNewFrame()
+        guard hasNewFrame || needsRedraw else { return }
+        needsRedraw = false
         let targetSize = DispatchQueue.main.sync { bounds.size }
         guard targetSize.width > 0, targetSize.height > 0 else { return }
         ensureBuffer(for: targetSize)

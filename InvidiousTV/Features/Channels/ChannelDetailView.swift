@@ -86,9 +86,10 @@ struct ChannelDetailView: View {
         let client = app.active?.client
         VStack(alignment: .leading, spacing: 0) {
             if let banner = channel?.authorBanners.best(minWidth: 1920), let url = client?.url(for: banner) {
-                RemoteImage(url: url)
+                Color.clear
                     .frame(height: 260)
                     .frame(maxWidth: .infinity)
+                    .overlay { RemoteImage(url: url) }
                     .clipped()
             }
             HStack(alignment: .center, spacing: 30) {

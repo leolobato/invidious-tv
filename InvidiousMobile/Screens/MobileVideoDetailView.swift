@@ -81,22 +81,30 @@ struct MobileVideoDetailView: View {
         return Button {
             play(from: resumePoint ?? 0)
         } label: {
-            ZStack {
+            ZStack(alignment: .bottomTrailing) {
                 RemoteImage(url: primary.flatMap { client?.url(for: $0) }, fallbacks: fallbacks.compactMap { client?.url(for: $0) })
                     .aspectRatio(16 / 9, contentMode: .fill)
-                if details.value == nil {
-                    ProgressView().tint(.white)
-                } else if isLive {
-                    Text("Livestreams are not supported yet.")
-                        .font(.footnote.weight(.semibold))
-                        .padding(8)
-                        .background(.black.opacity(0.7), in: Capsule())
-                        .foregroundStyle(.white)
-                } else {
-                    Image(systemName: "play.circle.fill")
-                        .font(.system(size: 64))
-                        .foregroundStyle(.white.opacity(0.9))
-                        .shadow(radius: 8)
+                Group {
+                    if details.value == nil {
+                        ProgressView().tint(.white)
+                    } else if isLive {
+                        Text("Livestreams are not supported yet.")
+                            .font(.footnote.weight(.semibold))
+                            .padding(8)
+                            .background(.black.opacity(0.7), in: Capsule())
+                            .foregroundStyle(.white)
+                    } else {
+                        Image(systemName: "play.circle.fill")
+                            .font(.system(size: 64))
+                            .foregroundStyle(.white.opacity(0.9))
+                            .shadow(radius: 8)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if isLive {
+                    durationBadge("LIVE", color: .red)
+                } else if let length = details.value?.lengthSeconds ?? (video.lengthSeconds > 0 ? video.lengthSeconds : nil), length > 0 {
+                    durationBadge(VideoFormatting.duration(length), color: .black.opacity(0.75))
                 }
             }
             .aspectRatio(16 / 9, contentMode: .fit)
@@ -105,6 +113,16 @@ struct MobileVideoDetailView: View {
         }
         .buttonStyle(.plain)
         .disabled(details.value == nil || isLive)
+    }
+
+    private func durationBadge(_ text: String, color: Color) -> some View {
+        Text(text)
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(color, in: RoundedRectangle(cornerRadius: 4))
+            .foregroundStyle(.white)
+            .padding(10)
     }
 
     private var channelRow: some View {
@@ -122,6 +140,9 @@ struct MobileVideoDetailView: View {
                 Spacer()
                 Image(systemName: "chevron.right").foregroundStyle(.tertiary)
             }
+            // A plain button only reacts where it draws; make the whole row, spacer included, tappable.
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
@@ -177,34 +198,23 @@ struct MobileVideoDetailView: View {
     @ViewBuilder
     private var description: some View {
         if let text = details.value?.description, !text.isEmpty {
-            VStack(alignment: .leading, spacing: 6) {
-                // Links stay tappable because the text is not wrapped in the expand button.
-                Text(DescriptionLinks.attributed(text))
-                    .font(.footnote)
-                    .foregroundStyle(.primary)
-                    .tint(.accentColor)
-                    .lineLimit(descriptionExpanded ? nil : 3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .environment(\.openURL, OpenURLAction { url in
-                        guard let link = YouTubeLink.parse(url.absoluteString), let client = app.active?.client else {
-                            return .systemAction
-                        }
-                        Task {
-                            if let route = await LinkRouter.route(for: link, client: client) {
-                                pushRoute(route)
-                            }
-                        }
-                        return .handled
-                    })
-                Button {
-                    withAnimation { descriptionExpanded.toggle() }
-                } label: {
-                    Text(descriptionExpanded ? "Show less" : "More")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.secondary)
+            // Links stay tappable because the text is not wrapped in the expand button.
+            ExpandableText(
+                text: Text(DescriptionLinks.attributed(text)).font(.footnote).foregroundStyle(.primary),
+                expanded: $descriptionExpanded
+            )
+            .tint(.accentColor)
+            .environment(\.openURL, OpenURLAction { url in
+                guard let link = YouTubeLink.parse(url.absoluteString), let client = app.active?.client else {
+                    return .systemAction
                 }
-                .buttonStyle(.plain)
-            }
+                Task {
+                    if let route = await LinkRouter.route(for: link, client: client) {
+                        pushRoute(route)
+                    }
+                }
+                return .handled
+            })
             .padding(12)
             .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
         }
@@ -214,7 +224,9 @@ struct MobileVideoDetailView: View {
         guard let client = app.active?.client else { return }
         if details.value == nil { details = .loading }
         do {
-            details = .loaded(try await client.video(id: video.videoId, proxy: app.settings.proxyMedia))
+            let loaded = try await client.video(id: video.videoId, proxy: app.settings.proxyMedia)
+            details = .loaded(loaded)
+            app.videoMetadata.remember(loaded)
         } catch {
             app.active?.handle(error)
             details = .failed(error.localizedDescription)

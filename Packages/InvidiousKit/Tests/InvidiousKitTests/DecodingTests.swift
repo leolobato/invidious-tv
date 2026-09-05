@@ -22,6 +22,18 @@ struct DecodingTests {
         #expect(published == published.sorted(by: >))
     }
 
+    @Test func feedPageMergesNotificationsNewestFirst() throws {
+        let make = { (id: String, published: Int) in
+            VideoSummary(videoId: id, title: id, author: "a", authorId: "c", lengthSeconds: 60, published: published)
+        }
+        let page = FeedPage(
+            notifications: [make("n1", 500), make("n2", 300)],
+            videos: [make("v1", 400), make("v2", 200), make("v3", 100)]
+        )
+        #expect(page.allVideos.map(\.videoId) == ["n1", "v1", "n2", "v2", "v3"])
+        #expect(FeedPage(videos: []).allVideos.isEmpty)
+    }
+
     @Test func decodesSubscriptions() throws {
         let subs = try Fixtures.decode([SubscribedChannel].self, "subscriptions")
         #expect(subs.count > 100)

@@ -10,6 +10,7 @@ public enum InvidiousError: Error, LocalizedError, Sendable, Equatable {
     case network(String)
     case loginDisabled
     case tokenRejected
+    case emptyResponse
 
     public var errorDescription: String? {
         switch self {
@@ -34,6 +35,8 @@ public enum InvidiousError: Error, LocalizedError, Sendable, Equatable {
             return "Login is disabled on this instance."
         case .tokenRejected:
             return "The instance did not accept the token from your phone. Please try again."
+        case .emptyResponse:
+            return "The instance returned no data for this video. If it is a live stream or premiere, it may not have started yet."
         }
     }
 

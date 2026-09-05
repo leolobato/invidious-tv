@@ -8,8 +8,11 @@ struct MobileVideoCard: View {
 
     @Environment(AppModel.self) private var app
 
+    /// The list entry with length and live state filled in from the cache.
+    private var resolved: VideoSummary { app.videoMetadata.resolved(video) }
+
     var body: some View {
-        NavigationLink(value: Route.video(video)) {
+        NavigationLink(value: Route.video(resolved)) {
             VStack(alignment: .leading, spacing: 8) {
                 thumbnail
                 HStack(alignment: .top, spacing: 10) {
@@ -32,6 +35,10 @@ struct MobileVideoCard: View {
         }
         .buttonStyle(.plain)
         .opacity(app.active?.watchedIDs.contains(video.videoId) == true && progress == nil ? 0.6 : 1)
+        .task(id: video.videoId) {
+            guard VideoMetadataCache.needsLookup(video), let client = app.active?.client else { return }
+            await app.videoMetadata.load(videoID: video.videoId, using: client)
+        }
     }
 
     private var progress: Double? {
@@ -49,10 +56,13 @@ struct MobileVideoCard: View {
             RemoteImage(url: primary.flatMap { client?.url(for: $0) }, fallbacks: fallbacks.compactMap { client?.url(for: $0) })
                 .aspectRatio(16 / 9, contentMode: .fill)
                 .clipped()
-            if video.liveNow {
+            let resolved = resolved
+            if resolved.liveNow {
                 badge("LIVE", color: .red)
-            } else if video.lengthSeconds > 0 {
-                badge(VideoFormatting.duration(video.lengthSeconds), color: .black.opacity(0.75))
+            } else if resolved.isUpcoming {
+                badge("UPCOMING", color: .gray)
+            } else if resolved.lengthSeconds > 0 {
+                badge(VideoFormatting.duration(resolved.lengthSeconds), color: .black.opacity(0.75))
             }
             if let progress, progress > 0 {
                 VStack {
