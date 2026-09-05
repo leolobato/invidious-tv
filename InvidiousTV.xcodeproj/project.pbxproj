@@ -90,6 +90,7 @@
 		B2A241EB4A16C24E3A3DCFAD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12045615266B24845E59CFE4 /* Assets.xcassets */; };
 		B2D6D17A3533B052AA4A9163 /* PlaylistStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51519F08762814D06699C571 /* PlaylistStore.swift */; };
 		B48C6442BE6715285A44399A /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF488CB9FFFBB6E892D161F0 /* RemoteImage.swift */; };
+		B48E56CA193876BD4185AE2B /* OrientationLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A29EE916D85FB8DA456D852 /* OrientationLock.swift */; };
 		BA9AE3423F7B7E28FEF70A47 /* ChannelTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90740D6F323332190A479E6E /* ChannelTile.swift */; };
 		BB210A3953FF40A940D1DDC9 /* ProfilePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4ECBC1869642AA6BE7B13CA /* ProfilePalette.swift */; };
 		BECC62D2BEE3066690D39C08 /* VideoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA6DDFBF56A062D0BDE15BC /* VideoCard.swift */; };
@@ -182,6 +183,7 @@
 		3092FBB04209C2C36EB01129 /* MobileHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileHistoryView.swift; sourceTree = "<group>"; };
 		329EB1E901FD7778F7E86671 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		3490047CEA672877A83996A3 /* MPVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVPlayer.swift; sourceTree = "<group>"; };
+		3A29EE916D85FB8DA456D852 /* OrientationLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationLock.swift; sourceTree = "<group>"; };
 		3C8E1A303B7855C69321E233 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3CE9CB9C6D56A485F16A5958 /* MobileChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChannelsView.swift; sourceTree = "<group>"; };
 		3DC52E1D8A673462725030F5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 			children = (
 				BD650F61F7FF3673770859E2 /* MobileRootView.swift */,
 				4C4F37A2E55ADF21E59C381A /* MobileTabView.swift */,
+				3A29EE916D85FB8DA456D852 /* OrientationLock.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -879,6 +882,7 @@
 				C173597B206A904335EE1F58 /* MobileTabView.swift in Sources */,
 				D5DF6C366F85F26159C86E40 /* MobileVideoCard.swift in Sources */,
 				4D0666ADDAE210F0FB6BB18D /* MobileVideoDetailView.swift in Sources */,
+				B48E56CA193876BD4185AE2B /* OrientationLock.swift in Sources */,
 				1470A9375BD42C1771FADA0F /* PlaybackRequest.swift in Sources */,
 				4392D35422DF90E2B452E969 /* PlayerViewModel.swift in Sources */,
 				2326F1373A102FE0EBA3D6E4 /* PlaylistDetailViewModel.swift in Sources */,

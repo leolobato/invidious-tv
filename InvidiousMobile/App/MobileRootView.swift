@@ -30,6 +30,9 @@ struct MobileRootView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { consumeSharedLink() }
         }
+        .onChange(of: app.settings.autoRotate, initial: true) { _, autoRotate in
+            OrientationLock.apply(OrientationLock.interfaceMask(autoRotate: autoRotate))
+        }
     }
 
     private func open(videoID: String) {

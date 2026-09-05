@@ -45,13 +45,17 @@ struct MobilePlayerView: View {
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
         .onAppear {
+            OrientationLock.apply(OrientationLock.playerMask(autoRotate: app.settings.autoRotate))
             if model == nil {
                 let vm = PlayerViewModel(details: details, summary: summary, startAt: startAt, session: session, settings: app.settings, resume: app.resume)
                 model = vm
                 vm.start()
             }
         }
-        .onDisappear { model?.stop() }
+        .onDisappear {
+            model?.stop()
+            OrientationLock.apply(OrientationLock.interfaceMask(autoRotate: app.settings.autoRotate))
+        }
         .onChange(of: model?.finished ?? false) { _, finished in
             guard finished, let model else { return }
             if let next = queuedNext(after: model.details.videoId) ?? (app.settings.autoplayNext ? model.nextVideo(excluding: session.watchedIDs) : nil) {

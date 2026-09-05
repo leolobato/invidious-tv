@@ -58,6 +58,15 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            #if os(iOS)
+            Section("Display") {
+                Toggle("Auto-rotate", isOn: $settings.autoRotate)
+                Text("When off, the app stays in portrait and videos always play in landscape.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            #endif
+
             Section("Sync") {
                 Toggle("Sync resume positions with iCloud", isOn: $settings.iCloudSync)
                     .onChange(of: settings.iCloudSync) { _, _ in app.applyCloudSyncSetting() }

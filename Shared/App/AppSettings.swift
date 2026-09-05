@@ -63,6 +63,11 @@ final class AppSettings {
         didSet { defaults.set(channelLayout.rawValue, forKey: Keys.channelLayout) }
     }
 
+    /// iOS only. When off, the app stays in portrait and the player turns to landscape by itself.
+    var autoRotate: Bool {
+        didSet { defaults.set(autoRotate, forKey: Keys.autoRotate) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         instanceURLString = defaults.string(forKey: Keys.instance) ?? Self.defaultInstance
@@ -80,6 +85,7 @@ final class AppSettings {
         }
         channelSort = defaults.string(forKey: Keys.channelSort).flatMap(ChannelSortOrder.init) ?? .nameAscending
         channelLayout = defaults.string(forKey: Keys.channelLayout).flatMap(ChannelLayout.init) ?? .grid
+        autoRotate = defaults.object(forKey: Keys.autoRotate) as? Bool ?? true
     }
 
     var instanceURL: URL? {
@@ -127,6 +133,7 @@ final class AppSettings {
         static let sponsorBlockCategories = "settings.sponsorBlockCategories"
         static let channelSort = "settings.channelSort"
         static let channelLayout = "settings.channelLayout"
+        static let autoRotate = "settings.autoRotate"
     }
 }
 
