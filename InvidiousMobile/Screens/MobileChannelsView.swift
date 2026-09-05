@@ -21,6 +21,8 @@ struct MobileChannelsView: View {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             case .failed(let message):
                 ErrorView(message: message) { Task { await model.load() } }
+            case .loaded(let channels) where channels.isEmpty:
+                EmptyStateView(title: "No subscriptions", message: "Channels you subscribe to will be listed here.", systemImage: "person.2")
             case .loaded(let channels):
                 let shown = model.sorted(ChannelsViewModel.filtered(channels, query: filter), by: settings.channelSort)
                 List {

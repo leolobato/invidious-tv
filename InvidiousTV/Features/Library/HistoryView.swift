@@ -43,11 +43,17 @@ struct HistoryView: View {
                             Button("Clear History", role: .destructive) { confirmClear = true }
                         }
                         .focusSection()
-                        VideoGrid(videos: model.videos) {
-                            Task { await model.loadMore() }
-                        }
+                        VideoGrid(
+                            videos: model.videos,
+                            onReachEnd: { Task { await model.loadMore() } },
+                            removeTitle: "Remove from History",
+                            onRemove: { video in Task { await model.remove(video) } }
+                        )
                         if model.isLoadingMore {
                             ProgressView().frame(maxWidth: .infinity)
+                        }
+                        if let error = model.actionError {
+                            Text(error).font(.callout).foregroundStyle(.red)
                         }
                     }
                     .padding(.horizontal, 60)

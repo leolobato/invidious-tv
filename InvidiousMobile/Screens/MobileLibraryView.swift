@@ -31,7 +31,7 @@ struct MobileLibraryView: View {
                                 cover(playlist)
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(playlist.title).font(.body.weight(.medium)).lineLimit(2)
-                                    Text("\(playlist.videoCount) videos").font(.caption).foregroundStyle(.secondary)
+                                    Text(subtitle(playlist)).font(.caption).foregroundStyle(.secondary)
                                 }
                             }
                         }
@@ -45,6 +45,12 @@ struct MobileLibraryView: View {
         .task { await load() }
         .refreshable { await load() }
         .onChange(of: app.playlists.version) { _, _ in Task { await load() } }
+    }
+
+    private func subtitle(_ playlist: Playlist) -> String {
+        var parts = ["\(playlist.videoCount) video\(playlist.videoCount == 1 ? "" : "s")"]
+        if let when = VideoFormatting.relativeDate(playlist.updatedDate) { parts.append("updated \(when)") }
+        return parts.joined(separator: " · ")
     }
 
     private func cover(_ playlist: Playlist) -> some View {

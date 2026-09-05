@@ -26,7 +26,12 @@ struct MobileHomeView: View {
                     ErrorView(message: message) { Task { await model.load(force: true) } }
                         .frame(height: 300)
                 case .loaded(let videos):
-                    if !videos.isEmpty {
+                    if videos.isEmpty {
+                        if continueWatching.isEmpty, model.latest.value?.isEmpty ?? true {
+                            EmptyStateView(title: "Nothing to recommend yet", message: "Watch a few videos and recommendations will appear here.", systemImage: "sparkles")
+                                .frame(height: 300)
+                        }
+                    } else {
                         Text("Recommended")
                             .font(.title3.weight(.semibold))
                             .padding(.horizontal, 16)
